@@ -50,28 +50,6 @@ struct RelULeakLayer : NeuralLayer
 	void load(std::ifstream& file);
 };
 
-
-//---------------------------------------------------------
-//  a layer that uses the quadradent formula as activation
-//---------------------------------------------------------
-struct SquaredLayer : NeuralLayer
-{
-	SquaredLayer()
-	{
-		type = SQUARED_LAYER;
-	}
-
-	void init(Shape _in_shape)
-	{
-		out_size = in_size;
-		out_shape = in_shape;
-	}
-	float* forward(float* input);
-	float* backward(float* d_output);
-	void save(std::ofstream& file) {}
-	void load(std::ifstream& file) {}
-};
-
 struct SigmoidLayer : NeuralLayer
 {
 	SigmoidLayer()
@@ -120,27 +98,8 @@ struct SineLayer : NeuralLayer
 		out_size = in_size;
 		out_shape = in_shape;
 	}
-	float* forward(float* input)
-	{
-		X.data = input;
-
-		for (int i = 0; i < out_size; i++)
-		{
-			Y[i] = sinf(X[i]);
-		}
-
-		return Y.data;
-	}
-
-	float* backward(float* d_output)
-	{
-		for (int i = 0; i < in_size; i++)
-		{
-			dX[i] = cosf(X[i]) * d_output[i];
-		}
-
-		return dX.data;
-	}
+	float* forward(float* input);
+	float* backward(float* d_output);
 	void save(std::ofstream& file) {}
 	void load(std::ifstream& file) {}
 };

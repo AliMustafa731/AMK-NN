@@ -15,9 +15,8 @@
 #define SIGMOID_LAYER 6
 #define TANH_LAYER 7
 #define RELU_LEAK_LAYER 8
-#define SQUARED_LAYER 9
-#define DROPOUT_LAYER 10
-#define SINE_LAYER 11
+#define DROPOUT_LAYER 9
+#define SINE_LAYER 10
 
 //----------------------------------------------
 //  Base Layer Class

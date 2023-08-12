@@ -191,7 +191,6 @@ void NeuralNetwork::load(std::ifstream& file)
 		if (type == RELU_LEAK_LAYER) layers[i] = new RelULeakLayer();
 		if (type == SIGMOID_LAYER) layers[i] = new SigmoidLayer();
 		if (type == TANH_LAYER) layers[i] = new TanhLayer();
-		if (type == SQUARED_LAYER) layers[i] = new SquaredLayer();
 		if (type == SINE_LAYER) layers[i] = new SineLayer();
 		if (type == DROPOUT_LAYER) layers[i] = new DropoutLayer();
 
