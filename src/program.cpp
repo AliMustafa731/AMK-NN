@@ -10,7 +10,6 @@
 #include "utils/stb_image.h"
 #include "utils/utils.h"
 #include "neural_network.h"
-#include "painter_network.h"
 
 // enable windows visual theme style
 #pragma comment(linker,"\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
