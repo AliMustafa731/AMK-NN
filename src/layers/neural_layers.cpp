@@ -41,6 +41,7 @@ void NeuralLayer::save_parameters(std::ofstream& file)
 {
 	int params_num = parameters.size();
 
+	file.write((char*)&trainable, sizeof(bool));
 	file.write((char*)&params_num, sizeof(int));
 
 	if (parameters.size() < 1)
@@ -52,6 +53,7 @@ void NeuralLayer::save_parameters(std::ofstream& file)
 	{
 		file.write((char*)&parameters[i].size, sizeof(int));
 		file.write((char*)&parameters[i].decay_rate, sizeof(float));
+		file.write((char*)&parameters[i].is_trainable, sizeof(bool));
 		file.write((char*)parameters[i].values.data, parameters[i].size * sizeof(float));
 		file.write((char*)parameters[i].velocities.data, parameters[i].size * sizeof(float));
 		file.write((char*)parameters[i].squared_gradients.data, parameters[i].size * sizeof(float));
@@ -61,6 +63,8 @@ void NeuralLayer::save_parameters(std::ofstream& file)
 void NeuralLayer::load_parameters(std::ifstream& file)
 {
 	int params_num = 0;
+
+	file.read((char*)&trainable, sizeof(bool));
 	file.read((char*)&params_num, sizeof(int));
 
 	if (params_num < 1)
@@ -73,9 +77,20 @@ void NeuralLayer::load_parameters(std::ifstream& file)
 		int size = 0;
 		file.read((char*)&size, sizeof(int));
 		file.read((char*)&parameters[i].decay_rate, sizeof(float));
+		file.read((char*)&parameters[i].is_trainable, sizeof(bool));
 		file.read((char*)parameters[i].values.data, parameters[i].size * sizeof(float));
 		file.read((char*)parameters[i].velocities.data, parameters[i].size * sizeof(float));
 		file.read((char*)parameters[i].squared_gradients.data, parameters[i].size * sizeof(float));
+	}
+}
+
+void NeuralLayer::setTrainable(bool state)
+{
+	trainable = state;
+
+	for (int i = 0; i < parameters.size(); i++)
+	{
+		parameters[i].is_trainable = state;
 	}
 }
 
@@ -100,6 +115,8 @@ void FullLayer::init(Shape _in_shape)
 		W[i] = random(-1.0f, 1.0f);
 		dW[i] = 0;
 	}
+
+	setTrainable(true);
 }
 
 float* FullLayer::forward(float* input)
@@ -122,12 +139,15 @@ float* FullLayer::backward(float* d_output)
 {
 	dY.data = d_output;
 
-	for (int i = 0; i < out_size; i++)
+	if (trainable)
 	{
-		dB[i] += dY[i];
-		for (int j = 0; j < in_size; j++)
+		for (int i = 0; i < out_size; i++)
 		{
-			dW[i + j * out_size] += X[j] * dY[i];
+			dB[i] += dY[i];
+			for (int j = 0; j < in_size; j++)
+			{
+				dW[i + j * out_size] += X[j] * dY[i];
+			}
 		}
 	}
 
@@ -191,6 +211,8 @@ void ConvLayer::init(Shape _in_shape)
 
 	_X_padd.init( in_shape.w + 2*padd.w, in_shape.h + 2*padd.h );
 	_dX_padd.init( in_shape.w + 2*padd.w, in_shape.h + 2*padd.h );
+
+	setTrainable(true);
 }
 
 float* ConvLayer::forward(float* input)
@@ -233,7 +255,10 @@ float* ConvLayer::backward(float* d_output)
 	int channels_out = out_shape.d;
 	Shape padd_out(kernel.w - 1, kernel.h - 1, 0);
 
-	copy_add(dB, dY);
+	if (trainable)
+	{
+		copy_add(dB, dY);
+	}
 	fill_array(dX, 0);
 
 	int dim_x = in_shape.w*in_shape.h;
@@ -253,7 +278,10 @@ float* ConvLayer::backward(float* d_output)
 		{
 			copy_matrix(_X_padd, _X, { padd.w, padd.h, 0, 0 }, _X.get_rect());
 
-			convolution_ex(_X_padd, _dY, _dK, stride);
+			if (trainable)
+			{
+				convolution_ex(_X_padd, _dY, _dK, stride);
+			}
 			convolution_transpose(_dY, _K, _dX_padd);
 
 			copy_matrix(_dX, _dX_padd, { 0, 0, 0, 0 }, { padd.w, padd.h, _dX.w, _dX.h });
@@ -321,6 +349,8 @@ void ConvTLayer::init(Shape _in_shape)
 	_dY = Matrix(out_shape.w, out_shape.h, NULL);
 
 	_Y_padd.init(out_shape.w + 2 * padd.w, out_shape.h + 2 * padd.h);
+
+	setTrainable(true);
 }
 
 float* ConvTLayer::forward(float* input)
@@ -363,7 +393,10 @@ float* ConvTLayer::backward(float* d_output)
 	int channels_out = out_shape.d;
 	Shape padd_out(kernel.w - 1, kernel.h - 1, 0);
 
-	copy_add(dB, dY);
+	if (trainable)
+	{
+		copy_add(dB, dY);
+	}
 	fill_array(dX, 0);
 
 	int dim_x = in_shape.w*in_shape.h;
@@ -381,7 +414,10 @@ float* ConvTLayer::backward(float* d_output)
 
 		for (int ch_in = 0; ch_in < channels_in; ch_in++)
 		{
-			convolution(_dY, _X, _dK);
+			if (trainable)
+			{
+				convolution(_dY, _X, _dK);
+			}
 			convolution(_dY, _K, _dX);
 
 			_K.data += dim_k[1];

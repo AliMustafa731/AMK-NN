@@ -35,6 +35,7 @@ struct NeuralLayer
 	void deallocate();
 	void save_parameters(std::ofstream& file);
 	void load_parameters(std::ifstream& file);
+	void setTrainable(bool state);
 
 	virtual void init(Shape _in_shape) = 0;
 	virtual float* forward(float* input) = 0;

@@ -120,6 +120,7 @@ struct DropoutLayer : NeuralLayer
 	}
 	DropoutLayer()
 	{
+		trainable = true;
 		type = DROPOUT_LAYER;
 	}
 

@@ -9,6 +9,11 @@ void Adam::update(std::vector<Parameter*> &parameters)
 	{
 		Parameter *p = parameters[i];
 
+		if (!(p->is_trainable))
+		{
+			continue;
+		}
+
 		for (int j = 0; j < p->size; j++)
 		{
 			float gradient = p->gradients[j];
@@ -33,6 +38,11 @@ void GradientDescent::update(std::vector<Parameter*> &parameters)
 	{
 		Parameter *p = parameters[i];
 
+		if (!(p->is_trainable))
+		{
+			continue;
+		}
+
 		for (int j = 0; j < p->size; j++)
 		{
 			float gradient = p->gradients[j];
@@ -52,6 +62,11 @@ void RMSPropagation::update(std::vector<Parameter*> &parameters)
 	for (int i = 0; i < parameters.size(); i++)
 	{
 		Parameter *p = parameters[i];
+
+		if (!(p->is_trainable))
+		{
+			continue;
+		}
 
 		for (int j = 0; j < p->size; j++)
 		{

@@ -106,7 +106,7 @@ void NeuralNetwork::set_trainable(bool option)
 {
 	for (int i = 0; i < layers.size(); i++)
 	{
-		layers[i]->trainable = option;
+		layers[i]->setTrainable(option);
 	}
 }
 

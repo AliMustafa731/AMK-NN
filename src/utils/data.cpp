@@ -22,7 +22,7 @@ void DataSet::release()
 	ptr.release();
 }
 
-void load_image(const char* filename, Color *dest, int *_w, int *_h)
+bool load_image(const char* filename, Color *dest, int *_w, int *_h)
 {
 	int w, h;
 	unsigned char* _data = stbi_load(filename, &w, &h, NULL, 3);
@@ -30,7 +30,7 @@ void load_image(const char* filename, Color *dest, int *_w, int *_h)
 	if (_data == NULL)
 	{
 		MessageBox(NULL, "Error : can't load the image", "Opss!", MB_OK);
-		return;
+		return false;
 	}
 
 	if (_w != NULL) { *_w = w; }
@@ -51,9 +51,11 @@ void load_image(const char* filename, Color *dest, int *_w, int *_h)
 	}
 
 	delete[] _data;
+
+	return true;
 }
 
-void load_image(const char* filename, Array<Color> &dest, int *_w, int *_h)
+bool load_image(const char* filename, Array<Color> &dest, int *_w, int *_h)
 {
 	int w, h;
 	unsigned char* _data = stbi_load(filename, &w, &h, NULL, 3);
@@ -61,7 +63,7 @@ void load_image(const char* filename, Array<Color> &dest, int *_w, int *_h)
 	if (_data == NULL)
 	{
 		MessageBox(NULL, "Error : can't load the image", "Opss!", MB_OK);
-		return;
+		return false;
 	}
 
 	if (_w != NULL) { *_w = w; }
@@ -82,6 +84,8 @@ void load_image(const char* filename, Array<Color> &dest, int *_w, int *_h)
 	}
 
 	delete[] _data;
+
+	return true;
 }
 
 void reverse_bytes(unsigned char* dest, unsigned char* src, int size)
@@ -108,14 +112,14 @@ void encode_one_hot(Array<float> &dest, Array<unsigned char> &src, int num_class
 	}
 }
 
-void load_mnist_images(const char* filename, DataSet &dest, int samples)
+bool load_mnist_images(const char* filename, DataSet &dest, int samples)
 {
 	int samples_count, _samples_count, width, _width, height, _height;
 
 	std::ifstream file;
 	file.open(filename, std::ios::out | std::ios::binary);
 
-	if (file.fail()) return;
+	if (file.fail()) return false;
 
 	file.seekg(4);
 	file.read((char*)&_samples_count, sizeof(int));
@@ -157,16 +161,18 @@ void load_mnist_images(const char* filename, DataSet &dest, int samples)
 	temp.release();
 
 	file.close();
+
+	return true;
 }
 
-void load_mnist_labels(const char* filename, DataSet &dest, int num_class, int samples)
+bool load_mnist_labels(const char* filename, DataSet &dest, int num_class, int samples)
 {
 	int samples_count, _samples_count;
 
 	std::ifstream file;
 	file.open(filename, std::ios::out | std::ios::binary);
 
-	if (file.fail()) return;
+	if (file.fail()) return false;
 
 	file.seekg(4);
 	file.read((char*)&_samples_count, sizeof(int));
@@ -190,4 +196,6 @@ void load_mnist_labels(const char* filename, DataSet &dest, int num_class, int s
 	temp.release();
 
 	file.close();
+
+	return true;
 }

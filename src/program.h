@@ -109,5 +109,6 @@ struct TrackBar
 	void set_pos(float x)
 	{
 		SendMessage(win_handle, TBM_SETPOS, TRUE, (LPARAM) 10000.0f * (x - min_rng) / (max_rng - min_rng));
+		update();
 	}
 };

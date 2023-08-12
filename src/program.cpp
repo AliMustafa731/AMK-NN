@@ -137,7 +137,6 @@ char file_name[512];
 TrackBar treackbar_learn_rate;
 TrackBar treackbar_momentum;
 TrackBar treackbar_squared_grad;
-TrackBar treackbar_select;
 
 HWND txt[32];
 HDC win_hdc;
@@ -146,10 +145,8 @@ HDC win_hdc;
 #define LOAD_MODEL_BUTTON 1
 #define SAVE_MODEL_BUTTON 2
 #define UP_SCALE_BUTTON 3
-#define SAVE_AS_BUTTON 4
-#define LOAD_BAR 5
-#define RANDOM_SELECT_BUTTIN 6
-#define ADD_NOISE_BUTTON 7
+#define LOAD_BAR 4
+#define RANDOM_SELECT_BUTTIN 5
 
 void ScaleImage(Array<Color> &dest, int w, int h)
 {
@@ -174,15 +171,18 @@ void ScaleImage(Array<Color> &dest, int w, int h)
 	}
 }
 
-void upScale(void *args)
+void up_scale_thread(void *args)
 {
 	ScaleImage(img_scaled, 256, 256);
 	scaled_output.draw(win_hdc, 632, 32, 256, 256);
 
 	EnableWindow(GetDlgItem((HWND)args, UP_SCALE_BUTTON), TRUE);
+	EnableWindow(GetDlgItem((HWND)args, SAVE_MODEL_BUTTON), TRUE);
+	EnableWindow(GetDlgItem((HWND)args, LOAD_MODEL_BUTTON), TRUE);
+	EnableWindow(GetDlgItem((HWND)args, TRAIN_BUTTON), TRUE);
 }
 
-void trainNetwork(void *args)
+void train_network_thread(void *args)
 {
 	int w = data.shape.w;
 	int h = data.shape.h;
@@ -241,14 +241,21 @@ void onCreate(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	win_hdc = GetDC(hwnd);
 
 	// load data
-	load_mnist_images("train-images.idx3-ubyte", data, 0);
-	load_mnist_labels("train-labels.idx1-ubyte", labels, 10, 0);
+	drawer_network.load("amk.AMKnn");
+
+	bool result_1 = load_mnist_images("mnist_digits_images.bin", data, 0);
+
+	if (!result_1)
+	{
+		MessageBox(NULL, "Error : the program didn't find the files it needs, make sure the executable is in it's main directory", "Opss!", MB_OK);
+		PostQuitMessage(0);
+	}
 
 	img_in.init(data.sample_size);
 	img_out.init(data.sample_size);
 	img_scaled.init(256 * 256);
 
-	f_img_in.data = data[rand32() % data.samples_num];
+	f_img_in.data = data[333];  // pick a random sample
 	f_img_in.size = data.sample_size;
 	float_one_channel_to_full_rgb(img_in.data, f_img_in.data, data.sample_size);
 
@@ -256,11 +263,14 @@ void onCreate(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	output = Image(data.shape.w, data.shape.h, img_out.data);
 	scaled_output = Image(256, 256, img_scaled.data);
 
+	ScaleImage(img_out, 28, 28);
+	output.draw(win_hdc, 332, 32, 256, 256);
+
 	// create buttons & controls
 	CreateWindow
 	(
-		WC_BUTTON, "Start train", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		800, 390, 120, 40, hwnd, (HMENU)TRAIN_BUTTON, GetModuleHandle(NULL), NULL
+		WC_BUTTON, "Start training", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+		410, 350, 120, 40, hwnd, (HMENU)TRAIN_BUTTON, GetModuleHandle(NULL), NULL
 	);
 	CreateWindow
 	(
@@ -275,36 +285,34 @@ void onCreate(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	CreateWindow
 	(
 		WC_BUTTON, "Up Scale", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		640, 390, 120, 40, hwnd, (HMENU)UP_SCALE_BUTTON, GetModuleHandle(NULL), NULL
-	);
-	CreateWindow
-	(
-		WC_BUTTON, "Save As", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		640, 460, 120, 40, hwnd, (HMENU)SAVE_AS_BUTTON, GetModuleHandle(NULL), NULL
+		720, 350, 120, 40, hwnd, (HMENU)UP_SCALE_BUTTON, GetModuleHandle(NULL), NULL
 	);
 	CreateWindow
 	(
 		WC_BUTTON, "Random Select", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		640, 530, 120, 40, hwnd, (HMENU)RANDOM_SELECT_BUTTIN, GetModuleHandle(NULL), NULL
-	);
-	CreateWindow
-	(
-		WC_BUTTON, "Randomize Params", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		640, 320, 160, 40, hwnd, (HMENU)ADD_NOISE_BUTTON, GetModuleHandle(NULL), NULL
+		100, 350, 120, 40, hwnd, (HMENU)RANDOM_SELECT_BUTTIN, GetModuleHandle(NULL), NULL
 	);
 
 	txt[0] = CreateWindow
 	(
 		"STATIC", "0", WS_VISIBLE | WS_CHILD | SS_LEFT,
-		200, 320, 150, 30, hwnd, NULL, GetModuleHandle(NULL), NULL
+		532, 310, 150, 30, hwnd, NULL, GetModuleHandle(NULL), NULL
+	);
+	txt[1] = CreateWindow
+	(
+		"STATIC", "Reconstruction Loss : ", WS_VISIBLE | WS_CHILD | SS_LEFT,
+		360, 310, 150, 30, hwnd, NULL, GetModuleHandle(NULL), NULL
+	);
+	txt[2] = CreateWindow
+	(
+		"STATIC", header_txt, WS_VISIBLE | WS_CHILD | SS_CENTER,
+		615, 525, 150, 100, hwnd, NULL, GetModuleHandle(NULL), NULL
 	);
 
-	treackbar_select = TrackBar(hwnd, 75, 400, 300, 30, "0", "9 Digit", 0.0f, 9.0f);
 	treackbar_learn_rate = TrackBar(hwnd, 75, 450, 300, 30, "0.0", "0.1  Learn Rate", 0.0f, 0.1f);
 	treackbar_momentum = TrackBar(hwnd, 75, 500, 300, 30, "0.0", "1.0  Momentum");
 	treackbar_squared_grad = TrackBar(hwnd, 75, 550, 300, 30, "0.0", "1.0  Squared Grad");
 
-	treackbar_select.set_pos(5.0f);
 	treackbar_learn_rate.set_pos(learn_rate);
 	treackbar_momentum.set_pos(momentum);
 	treackbar_squared_grad.set_pos(squared_grad);
@@ -365,32 +373,30 @@ void onCommand(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 			SetWindowText(GetDlgItem(hwnd, TRAIN_BUTTON), "Stop");
 
-			_beginthread(trainNetwork, 0, NULL);
+			EnableWindow(GetDlgItem(hwnd, SAVE_MODEL_BUTTON), FALSE);
+			EnableWindow(GetDlgItem(hwnd, LOAD_MODEL_BUTTON), FALSE);
+			EnableWindow(GetDlgItem(hwnd, UP_SCALE_BUTTON), FALSE);
+
+			_beginthread(train_network_thread, 0, NULL);
 		}
 		else
 		{
-			SetWindowText(GetDlgItem(hwnd, TRAIN_BUTTON), "Start train");
+			SetWindowText(GetDlgItem(hwnd, TRAIN_BUTTON), "Start training");
+
+			EnableWindow(GetDlgItem(hwnd, SAVE_MODEL_BUTTON), TRUE);
+			EnableWindow(GetDlgItem(hwnd, LOAD_MODEL_BUTTON), TRUE);
+			EnableWindow(GetDlgItem(hwnd, UP_SCALE_BUTTON), TRUE);
 		}
 	}
 
 	if (win_id == UP_SCALE_BUTTON)
 	{
 		EnableWindow(GetDlgItem(hwnd, UP_SCALE_BUTTON), FALSE);
+		EnableWindow(GetDlgItem(hwnd, SAVE_MODEL_BUTTON), FALSE);
+		EnableWindow(GetDlgItem(hwnd, LOAD_MODEL_BUTTON), FALSE);
+		EnableWindow(GetDlgItem(hwnd, TRAIN_BUTTON), FALSE);
 
-		_beginthread(upScale, 0, (void*)hwnd);
-	}
-
-	if (win_id == ADD_NOISE_BUTTON)
-	{
-		for (int i = 0; i < drawer_network.parameters.size(); i++)
-		{
-			Parameter *p = drawer_network.parameters[i];
-
-			for (int j = 0; j < p->size; j++)
-			{
-				p->values[j] += random(-0.25f, 0.25f);
-			}
-		}
+		_beginthread(up_scale_thread, 0, (void*)hwnd);
 	}
 
 	if (win_id == SAVE_MODEL_BUTTON)
@@ -406,16 +412,18 @@ void onCommand(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		if (GetOpenFileName(&of_load_amknn))
 		{
 			drawer_network.load(file_name);
+
+			Adam* p = (Adam*)drawer_network.optimizer;
+			learn_rate = p->learning_rate;
+			momentum = p->beta1;
+			squared_grad = p->beta2;
+
+			treackbar_learn_rate.set_pos(learn_rate);
+			treackbar_momentum.set_pos(momentum);
+			treackbar_squared_grad.set_pos(squared_grad);
+
 			ScaleImage(img_out, 28, 28);
 			output.draw(win_hdc, 332, 32, 256, 256);
-		}
-	}
-
-	if (win_id == SAVE_AS_BUTTON)
-	{
-		if (GetOpenFileName(&of_save_image))
-		{
-
 		}
 	}
 
@@ -434,7 +442,6 @@ void onCommand(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 void updateTrackbars(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	treackbar_select.update();
 	treackbar_squared_grad.update();
 	treackbar_learn_rate.update();
 	treackbar_momentum.update();
