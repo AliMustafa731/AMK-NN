@@ -222,11 +222,11 @@ void onCreate(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	(
 		Shape(2, 1, 1),
 		{
-			new FullLayer(50, 0.0001f),
+			new FullLayer(10, 0.0001f),
 			new SineLayer(),
-			new FullLayer(50, 0.0001f),
+			new FullLayer(10, 0.0001f),
 			new SineLayer(),
-			new FullLayer(50, 0.0001f),
+			new FullLayer(10, 0.0001f),
 			new SineLayer(),
 			new FullLayer(1),
 			new SigmoidLayer()
@@ -240,13 +240,12 @@ void onCreate(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	win_hdc = GetDC(hwnd);
 
 	// load data
-	drawer_network.load("amk.AMKnn");
 
 	bool result_1 = load_mnist_images("mnist_digits_images.bin", data, 0);
 
 	if (!result_1)
 	{
-		MessageBox(NULL, "Error : the program didn't find the files it needs, make sure the executable is in it's main directory", "Opss!", MB_OK);
+		MessageBox(NULL, "Error : can;t load \"mnist_digits_images.bin\", make sure the executable is in it's main directory", "Opss!", MB_OK);
 		PostQuitMessage(0);
 	}
 
