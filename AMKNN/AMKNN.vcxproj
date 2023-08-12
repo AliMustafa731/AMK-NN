@@ -147,7 +147,6 @@
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\neural_network.cpp" />
     <ClCompile Include="..\src\optimizers.cpp" />
-    <ClCompile Include="..\src\painter_network.cpp" />
     <ClCompile Include="..\src\program.cpp" />
     <ClCompile Include="..\src\utils\data.cpp" />
     <ClCompile Include="..\src\utils\stb_image.cpp" />
@@ -159,7 +158,6 @@
     <ClInclude Include="..\src\layers\neural_layers.h" />
     <ClInclude Include="..\src\neural_network.h" />
     <ClInclude Include="..\src\optimizers.h" />
-    <ClInclude Include="..\src\painter_network.h" />
     <ClInclude Include="..\src\program.h" />
     <ClInclude Include="..\src\utils\array.h" />
     <ClInclude Include="..\src\utils\data.h" />
