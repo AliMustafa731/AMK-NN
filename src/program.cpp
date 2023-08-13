@@ -114,9 +114,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 //-----------------------------------------------------
 
 DataSet data, labels;
-Image image, output, scaled_output;
-Array<Color> img_in, img_out, img_scaled;
-Array<float> f_img_in, f_img_out, f_img_scaled;
+Image img_1, img_2, img_3;
+Buffer<float> f_img_1;
 
 Array<float> netowrk_input, network_label;
 
@@ -147,7 +146,7 @@ HDC win_hdc;
 #define LOAD_BAR 4
 #define RANDOM_SELECT_BUTTIN 5
 
-void DrawerNetworkDraw(Array<Color> &dest, int w, int h)
+void DrawerNetworkDraw(Buffer<Color> &dest, int w, int h)
 {
 	float w_f = (float)w;
 	float h_f = (float)h;
@@ -172,8 +171,8 @@ void DrawerNetworkDraw(Array<Color> &dest, int w, int h)
 
 void up_scale_thread(void *args)
 {
-	DrawerNetworkDraw(img_scaled, 256, 256);
-	scaled_output.draw(win_hdc, 632, 32, 256, 256);
+	DrawerNetworkDraw(img_3.img, 256, 256);
+	img_3.draw(win_hdc, 632, 32, 256, 256);
 
 	EnableWindow(GetDlgItem((HWND)args, UP_SCALE_BUTTON), TRUE);
 	EnableWindow(GetDlgItem((HWND)args, SAVE_MODEL_BUTTON), TRUE);
@@ -197,7 +196,7 @@ void train_network_thread(void *args)
 		{
 			for (int y = 0; y < h; y++)
 			{
-				network_label[0] = f_img_in[x + y * w] / 255.0f;
+				network_label[0] = f_img_1[x + y * w] / 255.0f;
 				netowrk_input[0] = (float)x / w_f;
 				netowrk_input[1] = (float)y / h_f;
 
@@ -210,8 +209,8 @@ void train_network_thread(void *args)
 		}
 
 		drawer_network.optimizer->update(drawer_network.parameters);
-		DrawerNetworkDraw(img_out, w, h);
-		output.draw(win_hdc, 332, 32, 256, 256);
+		DrawerNetworkDraw(img_2.img, w, h);
+		img_2.draw(win_hdc, 332, 32, 256, 256);
 		SetWindowText(txt[0], std::to_string(loss).c_str());
 	}
 }
@@ -249,20 +248,15 @@ void onCreate(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		PostQuitMessage(0);
 	}
 
-	img_in.init(data.sample_size);
-	img_out.init(data.sample_size);
-	img_scaled.init(256 * 256);
+	img_1 = Image(data.shape.w, data.shape.h);
+	img_2 = Image(data.shape.w, data.shape.h);
+	img_3 = Image(256, 256);
 
-	f_img_in.data = data[rand32() % data.samples_num];  // pick a random sample
-	f_img_in.size = data.sample_size;
-	float_one_channel_to_full_rgb(img_in.data, f_img_in.data, data.sample_size);
+	f_img_1.init(data.shape.w, data.shape.h, data[rand32() % data.samples_num]);
+	float_one_channel_to_full_rgb(img_1.img.data, f_img_1.data, data.sample_size);
 
-	image = Image(data.shape.w, data.shape.h, img_in.data);
-	output = Image(data.shape.w, data.shape.h, img_out.data);
-	scaled_output = Image(256, 256, img_scaled.data);
-
-	DrawerNetworkDraw(img_out, 28, 28);
-	output.draw(win_hdc, 332, 32, 256, 256);
+	DrawerNetworkDraw(img_2.img, 28, 28);
+	img_2.draw(win_hdc, 332, 32, 256, 256);
 
 	// create buttons & controls
 	CreateWindow
@@ -420,21 +414,21 @@ void onCommand(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			treackbar_momentum.set_pos(momentum);
 			treackbar_squared_grad.set_pos(squared_grad);
 
-			DrawerNetworkDraw(img_out, 28, 28);
-			output.draw(win_hdc, 332, 32, 256, 256);
+			DrawerNetworkDraw(img_2.img, 28, 28);
+			img_2.draw(win_hdc, 332, 32, 256, 256);
 		}
 	}
 
 	if (win_id == RANDOM_SELECT_BUTTIN)
 	{
 		int idx = rand32() % data.samples_num;
-		f_img_in.data = data[idx];
-		f_img_in.size = data.sample_size;
-		float_one_channel_to_full_rgb(img_in.data, f_img_in.data, data.sample_size);
+		f_img_1.data = data[idx];
+		f_img_1.size = data.sample_size;
+		float_one_channel_to_full_rgb(img_1.img.data, f_img_1.data, data.sample_size);
 
-		image.draw(win_hdc, 32, 32, 256, 256);
-		output.draw(win_hdc, 332, 32, 256, 256);
-		scaled_output.draw(win_hdc, 632, 32, 256, 256);
+		img_1.draw(win_hdc, 32, 32, 256, 256);
+		img_2.draw(win_hdc, 332, 32, 256, 256);
+		img_3.draw(win_hdc, 632, 32, 256, 256);
 	}
 }
 
@@ -461,9 +455,9 @@ void onDraw(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 	FillRect(hdc, &ps.rcPaint, (HBRUSH)COLOR_WINDOW);
 
-	image.draw(hdc, 32, 32, 256, 256);
-	output.draw(hdc, 332, 32, 256, 256);
-	scaled_output.draw(hdc, 632, 32, 256, 256);
+	img_1.draw(hdc, 32, 32, 256, 256);
+	img_2.draw(hdc, 332, 32, 256, 256);
+	img_3.draw(hdc, 632, 32, 256, 256);
 
 	EndPaint(hwnd, &ps);
 	ReleaseDC(hwnd, hdc);

@@ -14,7 +14,7 @@ struct Program
 	int width, height;
 	HWND win_handle;
 
-	Program(){}
+	Program() {}
 	Program(const char* name, int _w, int _h)
 	{
 		init(name, _w, _h);
@@ -26,7 +26,7 @@ struct Program
 struct Image
 {
 	BITMAPINFO info;
-	Color* data;
+	Buffer<Color> img;
 
 	Image() {}
 	Image(int w, int h, Color* _data = NULL)
@@ -38,7 +38,14 @@ struct Image
 		info.bmiHeader.biBitCount = 32;
 		info.bmiHeader.biCompression = BI_RGB;
 
-		data = _data;
+		if (_data == NULL)
+		{
+			img.init(w, h);
+		}
+		else
+		{
+			img.init(w, h, _data);
+		}
 	}
 
 	void draw(HDC hdc, int x, int y, int w = 0, int h = 0)
@@ -49,7 +56,7 @@ struct Image
 		StretchDIBits
 		(
 			hdc, x, y, w, h, 0, 0,
-			info.bmiHeader.biWidth, info.bmiHeader.biHeight, (void*)data,
+			img.w, img.h, (void*)img.data,
 			&info, DIB_RGB_COLORS, SRCCOPY
 		);
 	}
@@ -60,7 +67,7 @@ struct TrackBar
 	HWND win_handle, left_txt, right_txt, state_txt;
 	float min_rng, max_rng;
 
-	TrackBar(){}
+	TrackBar() {}
 	TrackBar(HWND parent, int x, int y, int w, int h, const char* l_txt, const char* r_txt, float _min_rng = 0.0f, float _max_rng = 1.0f)
 	{
 		min_rng = _min_rng;

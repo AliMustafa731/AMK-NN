@@ -7,13 +7,13 @@
 template<typename T> struct Array
 {
 	T* data;
-	uint32_t size;
+	int size;
 
 	Array() {}
-	Array(uint32_t _size) { init(_size); }
-	Array(uint32_t _size, T* _data) { init(_size, _data); }
+	Array(int _size) { init(_size); }
+	Array(int _size, T* _data) { init(_size, _data); }
 
-	void init(uint32_t _size)
+	void init(int _size)
 	{
 		size = _size;
 		data = new T[size];
@@ -26,7 +26,7 @@ template<typename T> struct Array
 		}
 	}
 
-	void init(uint32_t _size, T* _data)
+	void init(int _size, T* _data)
 	{
 		size = _size;
 		data = _data;
@@ -41,7 +41,7 @@ template<typename T> struct Array
 		}
 	}
 
-	void resize(uint32_t _size)
+	void resize(int _size)
 	{
 		release();
 		init(_size);
@@ -65,14 +65,40 @@ template<typename T> struct Buffer
 	int w, h, size;
 
 	Buffer() {}
-	Buffer(int _w, int _h, T* _data)
+	Buffer(int _w, int _h) { init(_w, _h); }
+	Buffer(int _w, int _h, T* _data) { init(_w, _h, _data); }
+
+	void init(int _w, int _h)
+	{
+		w = _w;
+		h = _h;
+		size = w * h;
+		data = new T[w * h];
+
+		unsigned char* p = (unsigned char*)data;
+
+		for (int i = 0; i < size * sizeof(T); i++)
+		{
+			p[i] = 0;
+		}
+	}
+
+	void init(int _w, int _h, T* _data)
 	{
 		w = _w;
 		h = _h;
 		size = w * h;
 		data = _data;
 	}
-	Buffer(int _w, int _h) { init(_w, _h); }
+
+	void release()
+	{
+		if (data != NULL)
+		{
+			delete[] data;
+			data = NULL;
+		}
+	}
 
 	inline T operator()(int x, int y) const
 	{
@@ -93,29 +119,5 @@ template<typename T> struct Buffer
 	{
 		AMK_ASSERT(i < size);
 		return data[i];
-	}
-
-	void init(int _w, int _h)
-	{
-		w = _w;
-		h = _h;
-		size = w * h;
-		data = new T[w * h];
-
-		unsigned char* p = (unsigned char*)data;
-
-		for (int i = 0; i < size * sizeof(T); i++)
-		{
-			p[i] = 0;
-		}
-	}
-
-	void release()
-	{
-		if (data != NULL)
-		{
-			delete[] data;
-			data = NULL;
-		}
 	}
 };
