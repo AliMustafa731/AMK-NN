@@ -5,4 +5,5 @@
 !*.vcxproj
 !*.vcxproj.user
 !*.vcxproj.filters
+!AMKNN/mnist_digits_images.bin
 !.gitignore

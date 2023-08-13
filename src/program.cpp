@@ -147,7 +147,7 @@ HDC win_hdc;
 #define LOAD_BAR 4
 #define RANDOM_SELECT_BUTTIN 5
 
-void ScaleImage(Array<Color> &dest, int w, int h)
+void DrawerNetworkDraw(Array<Color> &dest, int w, int h)
 {
 	float w_f = (float)w;
 	float h_f = (float)h;
@@ -172,7 +172,7 @@ void ScaleImage(Array<Color> &dest, int w, int h)
 
 void up_scale_thread(void *args)
 {
-	ScaleImage(img_scaled, 256, 256);
+	DrawerNetworkDraw(img_scaled, 256, 256);
 	scaled_output.draw(win_hdc, 632, 32, 256, 256);
 
 	EnableWindow(GetDlgItem((HWND)args, UP_SCALE_BUTTON), TRUE);
@@ -210,7 +210,7 @@ void train_network_thread(void *args)
 		}
 
 		drawer_network.optimizer->update(drawer_network.parameters);
-		ScaleImage(img_out, w, h);
+		DrawerNetworkDraw(img_out, w, h);
 		output.draw(win_hdc, 332, 32, 256, 256);
 		SetWindowText(txt[0], std::to_string(loss).c_str());
 	}
@@ -222,7 +222,7 @@ void onCreate(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	(
 		Shape(2, 1, 1),
 		{
-			new FullLayer(10, 0.0001f),
+			new FullLayer(15, 0.0001f),
 			new SineLayer(),
 			new FullLayer(10, 0.0001f),
 			new SineLayer(),
@@ -253,7 +253,7 @@ void onCreate(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	img_out.init(data.sample_size);
 	img_scaled.init(256 * 256);
 
-	f_img_in.data = data[333];  // pick a random sample
+	f_img_in.data = data[rand32() % data.samples_num];  // pick a random sample
 	f_img_in.size = data.sample_size;
 	float_one_channel_to_full_rgb(img_in.data, f_img_in.data, data.sample_size);
 
@@ -261,7 +261,7 @@ void onCreate(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	output = Image(data.shape.w, data.shape.h, img_out.data);
 	scaled_output = Image(256, 256, img_scaled.data);
 
-	ScaleImage(img_out, 28, 28);
+	DrawerNetworkDraw(img_out, 28, 28);
 	output.draw(win_hdc, 332, 32, 256, 256);
 
 	// create buttons & controls
@@ -420,7 +420,7 @@ void onCommand(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			treackbar_momentum.set_pos(momentum);
 			treackbar_squared_grad.set_pos(squared_grad);
 
-			ScaleImage(img_out, 28, 28);
+			DrawerNetworkDraw(img_out, 28, 28);
 			output.draw(win_hdc, 332, 32, 256, 256);
 		}
 	}
