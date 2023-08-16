@@ -12,35 +12,35 @@
 
 struct NeuralNetwork
 {
-	std::vector<NeuralLayer*> layers;
-	std::vector<Parameter*> parameters;
-	std::vector<float> loss_gradients;
-	Optimizer* optimizer;
-	Shape in_shape;
+    std::vector<NeuralLayer*> layers;
+    std::vector<Parameter*> parameters;
+    std::vector<float> loss_gradients;
+    Optimizer* optimizer;
+    Shape in_shape;
 
-	NeuralNetwork(Shape _in_shape, std::vector<NeuralLayer*> _layers, Optimizer* _optimizer)
-	{
-		init(_in_shape, _layers, _optimizer);
-	}
-	NeuralNetwork() {}
+    NeuralNetwork(Shape _in_shape, std::vector<NeuralLayer*> _layers, Optimizer* _optimizer)
+    {
+        init(_in_shape, _layers, _optimizer);
+    }
+    NeuralNetwork() {}
 
-	NeuralLayer* output_layer() { return layers[layers.size() - 1]; }
-	NeuralLayer* input_layer() { return layers[0]; }
+    NeuralLayer* output_layer() { return layers[layers.size() - 1]; }
+    NeuralLayer* input_layer() { return layers[0]; }
 
-	void init(Shape _in_shape, std::vector<NeuralLayer*> _layers, Optimizer* _optimizer);
-	void set_optimizer(Optimizer* _optimizer);
-	void add(NeuralLayer* layer);
+    void init(Shape _in_shape, std::vector<NeuralLayer*> _layers, Optimizer* _optimizer);
+    void set_optimizer(Optimizer* _optimizer);
+    void add(NeuralLayer* layer);
 
-	float* forward(float* input);
-	float* backward(float* d_output);
+    float* forward(float* input);
+    float* backward(float* d_output);
 
-	void set_trainable(bool option);
+    void set_trainable(bool option);
 
-	void release();
-	void save(std::string filename);
-	void load(std::string filename);
-	void save(std::ofstream& file);
-	void load(std::ifstream& file);
+    void release();
+    void save(std::string filename);
+    void load(std::string filename);
+    void save(std::ofstream& file);
+    void load(std::ifstream& file);
 };
 
 //----------------------------------------------

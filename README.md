@@ -1,6 +1,7 @@
 # AMKNN
 Neural Networks Implementation in pure C++
-The goal was, as usual, to do everything from scratch without using any external libraries.
+The goal was to do everything from scratch without using any external libraries.
+
 # Demo
 I also made a demo program (included in the code in files **program.cpp** & **program.h**) where I implemented **implicit neural representations** on images,
 and also used the **Sine** function as a **non-linearity** (aka. Activation).
