@@ -202,7 +202,8 @@ void train_network_thread(void *args)
                 netowrk_input[1] = (float)y / h_f;
 
                 float *o = drawer_network.forward(netowrk_input.data);
-                drawer_network.backward(MSELoss(&drawer_network, network_label.data, size));
+                MSELoss(&drawer_network, network_label.data, size);
+                drawer_network.backward();
 
                 float _loss = network_label[0] - o[0];
                 loss += _loss * _loss * 0.5f;
@@ -254,7 +255,7 @@ void onCreate(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     img_3 = Image(256, 256);
 
     f_img_1.init(data.shape.w, data.shape.h, data[rand32() % data.samples_num]);
-    float_one_channel_to_full_rgb(img_1.img.data, f_img_1.data, data.sample_size);
+    embed_one_channel_to_color(img_1.img.data, f_img_1.data, data.sample_size);
 
     DrawerNetworkDraw(img_2.img, 28, 28);
     img_2.draw(win_hdc, 332, 32, 256, 256);
@@ -425,7 +426,7 @@ void onCommand(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         int idx = rand32() % data.samples_num;
         f_img_1.data = data[idx];
         f_img_1.size = data.sample_size;
-        float_one_channel_to_full_rgb(img_1.img.data, f_img_1.data, data.sample_size);
+        embed_one_channel_to_color(img_1.img.data, f_img_1.data, data.sample_size);
 
         img_1.draw(win_hdc, 32, 32, 256, 256);
         img_2.draw(win_hdc, 332, 32, 256, 256);

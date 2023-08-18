@@ -35,6 +35,17 @@ __forceinline void embed_one_channel_to_color(Color *dest, unsigned char* src, i
     }
 }
 
+__forceinline void embed_one_channel_to_color(Color* dest, float* src, int size)
+{
+    for (int i = 0; i < size; i++)
+    {
+        dest[i].r = (unsigned char)src[i];
+        dest[i].g = (unsigned char)src[i];
+        dest[i].b = (unsigned char)src[i];
+        dest[i].a = 0;
+    }
+}
+
 __forceinline void rgb_to_float(Colorf *dest, Color *src, int size)
 {
     for (int i = 0; i < size; i++)
@@ -69,16 +80,6 @@ __forceinline void float_to_rgb_one_channel(unsigned char *dest, float *src, int
     {
         dest[i] = (unsigned char)src[i];
     }
-}
-
-__forceinline void float_one_channel_to_full_rgb(Color* dest, float* src, int size)
-{
-    Array<unsigned char> temp(size);
-
-    float_to_rgb_one_channel(temp.data, src, size);
-    embed_one_channel_to_color(dest, temp.data, size);
-
-    temp.release();
 }
 
 template<typename T> void arrange_channels_to_blocks(Array<T> &dest, Array<T> &src, int channels)

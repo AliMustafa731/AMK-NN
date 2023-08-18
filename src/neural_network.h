@@ -28,11 +28,11 @@ struct NeuralNetwork
     NeuralLayer* input_layer() { return layers[0]; }
 
     void init(Shape _in_shape, std::vector<NeuralLayer*> _layers, Optimizer* _optimizer);
-    void set_optimizer(Optimizer* _optimizer);
     void add(NeuralLayer* layer);
 
     float* forward(float* input);
     float* backward(float* d_output);
+    float* backward();
 
     void set_trainable(bool option);
 
@@ -48,4 +48,4 @@ struct NeuralNetwork
 //----------------------------------------------
 float MSELoss(NeuralNetwork* network, DataSet* data, DataSet* labels);
 
-float* MSELoss(NeuralNetwork* network, float* labels, int batch_size);
+void MSELoss(NeuralNetwork* network, float* label, int batch_size);

@@ -5,6 +5,8 @@
 //----------------------------------------------
 //  Mean Squared Error Loss Function
 //----------------------------------------------
+
+// evaluate the loss, given a dataset & neural network
 float MSELoss(NeuralNetwork* network, DataSet* data, DataSet* labels)
 {
     float total_loss = 0;
@@ -22,23 +24,22 @@ float MSELoss(NeuralNetwork* network, DataSet* data, DataSet* labels)
     return (total_loss * 0.5f) / (float)data->samples_num;
 }
 
-float* MSELoss(NeuralNetwork* network, float* labels, int batch_size)
+// calculate the loss gradients
+void MSELoss(NeuralNetwork* network, float* label, int batch_size)
 {
     NeuralLayer* output_layer = network->output_layer();
 
     for (int i = 0; i < output_layer->out_size; i++)
     {
-        network->loss_gradients[i] = (output_layer->Y[i] - labels[i]) / (float)batch_size;
+        network->loss_gradients[i] = (output_layer->Y[i] - label[i]) / (float)batch_size;
     }
-
-    return network->loss_gradients.data();
 }
 
 void NeuralNetwork::init(Shape _in_shape, std::vector<NeuralLayer*> _layers, Optimizer* _optimizer)
 {
     release();
-
     in_shape = _in_shape;
+    optimizer = _optimizer;
 
     layers.reserve(_layers.size());
 
@@ -46,8 +47,6 @@ void NeuralNetwork::init(Shape _in_shape, std::vector<NeuralLayer*> _layers, Opt
     {
         add(_layers[i]);
     }
-
-    set_optimizer(_optimizer);
 }
 
 void NeuralNetwork::add(NeuralLayer* layer)
@@ -69,12 +68,9 @@ void NeuralNetwork::add(NeuralLayer* layer)
 
     loss_gradients.resize(layer->out_size);
 
-    if (layer->parameters.size() > 0)
+    for (int j = 0; j < layer->parameters.size(); j++)
     {
-        for (int j = 0; j < layer->parameters.size(); j++)
-        {
-            parameters.push_back(&layer->parameters[j]);
-        }
+        parameters.push_back(&layer->parameters[j]);
     }
 }
 
@@ -93,6 +89,18 @@ float* NeuralNetwork::forward(float* input)
 float* NeuralNetwork::backward(float* d_output)
 {
     float* dY = d_output;
+
+    for (int i = layers.size() - 1; i >= 0; i--)
+    {
+        dY = layers[i]->backward(dY);
+    }
+
+    return layers[0]->dX.data;
+}
+
+float* NeuralNetwork::backward()
+{
+    float* dY = loss_gradients.data();
 
     for (int i = layers.size() - 1; i >= 0; i--)
     {
@@ -239,9 +247,3 @@ void NeuralNetwork::load(std::string filename)
 
     file.close();
 }
-
-void NeuralNetwork::set_optimizer(Optimizer* _optimizer)
-{
-    optimizer = _optimizer;
-}
-
