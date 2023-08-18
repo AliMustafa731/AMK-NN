@@ -6,7 +6,7 @@ The goal was to do everything from scratch without using any external libraries.
 I also made a demo program (included in the code in files **program.cpp** & **program.h**) where I implemented **implicit neural representations** on images,
 and also used the **Sine** function as a **non-linearity** (aka. Activation).
 
-you can [download](https://github.com/AliMustafa731/AMKNN/releases/download/Release/AMKNN.Demo.zip) it.
+you can [download](https://mega.nz/file/NZ1kWJID#tBEPJcJY2Ne8rag3yNfBRNdKxGbTJKjzRZD5PmG_vSg) it.
 
 inspired by : https://youtu.be/ZjxPPvqNp3k,
 he has really good videos, you should check his channel.

@@ -1,14 +1,15 @@
 
+#include <Windows.h>
+#include <CommCtrl.h>
 #include <fstream>
 #include <string>
 #include <ctime>
-#include <Windows.h>
-#include <CommCtrl.h>
 #include <process.h>
 #include "program.h"
-#include "utils/data.h"
-#include "utils/stb_image.h"
-#include "utils/utils.h"
+#include "data/data.h"
+#include "data/graphics.h"
+#include "data/loaders.h"
+#include "data/utils.h"
 #include "neural_network.h"
 
 // enable windows visual theme style
@@ -43,7 +44,7 @@ void Program::init(const char* name, int _w, int _h)
         MessageBox(NULL, "Error : can't initialize the program : \"win_handle\"", "Opss!", MB_OK);
         exit(0);
     }
-    
+
     ShowWindow(win_handle, SW_SHOW);
     UpdateWindow(win_handle);
 
@@ -74,36 +75,36 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     switch (uMsg)
     {
-        case WM_CREATE:
-        {
-            onCreate(hwnd, uMsg, wParam, lParam);
-            updateTrackbars(hwnd, uMsg, wParam, lParam);
+    case WM_CREATE:
+    {
+        onCreate(hwnd, uMsg, wParam, lParam);
+        updateTrackbars(hwnd, uMsg, wParam, lParam);
 
-        } return 0;
+    } return 0;
 
-        case WM_COMMAND:
-        {
-            onCommand(hwnd, uMsg, wParam, lParam);
+    case WM_COMMAND:
+    {
+        onCommand(hwnd, uMsg, wParam, lParam);
 
-        } return 0;
+    } return 0;
 
-        case WM_HSCROLL:
-        {
-            updateTrackbars(hwnd, uMsg, wParam, lParam);
+    case WM_HSCROLL:
+    {
+        updateTrackbars(hwnd, uMsg, wParam, lParam);
 
-        } return 0;
+    } return 0;
 
-        case WM_PAINT:
-        {
-            onDraw(hwnd, uMsg, wParam, lParam);
+    case WM_PAINT:
+    {
+        onDraw(hwnd, uMsg, wParam, lParam);
 
-        } return 0;
+    } return 0;
 
-        case WM_DESTROY:
-        {
-            PostQuitMessage(0);
+    case WM_DESTROY:
+    {
+        PostQuitMessage(0);
 
-        } return 0;
+    } return 0;
 
     }
     return DefWindowProc(hwnd, uMsg, wParam, lParam);
@@ -462,3 +463,4 @@ void onDraw(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     EndPaint(hwnd, &ps);
     ReleaseDC(hwnd, hdc);
 }
+

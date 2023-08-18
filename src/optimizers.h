@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <fstream>
-#include "utils/data.h"
+#include "data/data.h"
 #include "common.h"
 
 #define GRADIENT_DESCENT 0

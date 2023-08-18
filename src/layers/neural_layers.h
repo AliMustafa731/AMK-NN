@@ -1,8 +1,8 @@
 #pragma once
 
 #include "optimizers.h"
-#include "utils/array.h"
-#include "utils/geometry.h"
+#include "data/array.h"
+#include "data/geometry.h"
 #include "common.h"
 #include <fstream>
 

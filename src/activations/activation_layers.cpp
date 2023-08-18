@@ -1,6 +1,27 @@
 
 #include "activations/activation_layers.h"
-#include "utils/utils.h"
+#include "data/utils.h"
+#include <cmath>
+
+
+__forceinline float sigmoid(float x)
+{
+    return 1.0f / (1.0f + exp(-x));
+}
+
+__forceinline float d_sigmoid_optimized(float x)
+{
+    return x * (1.0f - x); // assumes (x) must contain Sigmoid(input)
+}
+
+__forceinline float tanH(float x)
+{
+    return (2.0f / (1.0f + exp(x *-2.0f))) - 1.0f;
+}
+__forceinline float d_tanH_optimized(float x)
+{
+    return 1.0f - (x * x); // assumes (x) must contain Sigmoid(input)
+}
 
 float* RelULayer::forward(float* input)
 {
@@ -91,38 +112,48 @@ void RelULeakLayer::load(std::ifstream& file)
 float* SigmoidLayer::forward(float* input)
 {
     X.data = input;
+
     for (int i = 0; i < out_size; i++)
     {
         Y[i] = sigmoid(X[i]);
     }
+
     return Y.data;
 }
 
 float* SigmoidLayer::backward(float* d_output)
 {
+    dY.data = d_output;
+
     for (int i = 0; i < in_size; i++)
     {
-        dX[i] = d_sigmoid_optimized(Y[i]) * d_output[i];
+        dX[i] = d_sigmoid_optimized(Y[i]) * dY[i];
     }
+
     return dX.data;
 }
 
 float* TanhLayer::forward(float* input)
 {
     X.data = input;
+
     for (int i = 0; i < out_size; i++)
     {
         Y[i] = tanH(X[i]);
     }
+
     return Y.data;
 }
 
 float* TanhLayer::backward(float* d_output)
 {
+    dY.data = d_output;
+
     for (int i = 0; i < in_size; i++)
     {
-        dX[i] = d_tanH_optimized(Y[i]) * d_output[i];
+        dX[i] = d_tanH_optimized(Y[i]) * dY[i];
     }
+
     return dX.data;
 }
 

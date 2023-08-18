@@ -1,35 +1,6 @@
 #pragma once
 
-#include <cassert>
-#include "common.h"
-#include "utils/geometry.h"
-#include "utils/array.h"
-
-
-struct DataSet
-{
-    int sample_size, samples_num;
-    Shape shape;
-    Array<float> data;
-    Array<float*> ptr;
-
-    DataSet() {}
-    ~DataSet() { release(); }
-
-    void init(Shape _shape, int _samples_num);
-    void release();
-
-    inline float* operator[](int i) const
-    {
-        AMK_ASSERT(i < ptr.size);
-        return ptr[i];
-    }
-    inline float* &operator[](int i)
-    {
-        AMK_ASSERT(i < ptr.size);
-        return ptr[i];
-    }
-};
+#include "data/array.h"
 
 struct Color
 {
@@ -52,16 +23,6 @@ struct Colorf
         r = _r;  g = _g;  b = _b;
     }
 };
-
-bool load_image(const char* filename, Color *dest, int *_w = NULL, int *_h = NULL);
-
-bool load_image(const char* filename, Array<Color> &dest, int *_w = NULL, int *_h = NULL);
-
-void reverse_bytes(unsigned char* dest, unsigned char* src, int size);
-
-bool load_mnist_images(const char* filename, DataSet &dest, int samples = 0);
-
-bool load_mnist_labels(const char* filename, DataSet &dest, int num_class, int samples = 0);
 
 __forceinline void embed_one_channel_to_color(Color *dest, unsigned char* src, int size)
 {
@@ -139,57 +100,5 @@ template<typename T> void arrange_channels_to_color(Array<T> &dest, Array<T> &sr
         {
             dest[i + j] = src[i * channels];
         }
-    }
-}
-
-template<typename T> __forceinline void make_ptr_list(Array<T*> &dest, Array<T> &src, int element_size)
-{
-    int elements_num = src.size / element_size;
-    dest.init(elements_num);
-
-    for (int i = 0; i < elements_num; i++)
-    {
-        dest[i] = &src[i * element_size];
-    }
-}
-
-__forceinline float mean_value(float* data, int size)
-{
-    float mean = 0;
-
-    for (int i = 0; i < size; i++)
-    {
-        mean += data[i];
-    }
-
-    mean = mean / (float)size;
-
-    return mean;
-}
-
-__forceinline float standard_deviation(float* data, int size, float mean)
-{
-    float deviation = 0;
-
-    for (int i = 0; i < size; i++)
-    {
-        float x = data[i] - mean;
-        deviation += x * x;
-    }
-
-    deviation = deviation / (float)size;
-    deviation = sqrt(deviation);
-
-    return deviation;
-}
-
-__forceinline void standardize_data(float* data, int size)
-{
-    float mean = mean_value(data, size);
-    float deviation = standard_deviation(data, size, mean);
-
-    for (int i = 0; i < size; i++)
-    {
-        data[i] = (data[i] - mean) / (deviation + 1e-5f);
     }
 }

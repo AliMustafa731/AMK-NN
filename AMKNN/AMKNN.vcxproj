@@ -143,28 +143,31 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\src\activations\activation_layers.cpp" />
+    <ClCompile Include="..\src\data\data.cpp" />
+    <ClCompile Include="..\src\data\loaders.cpp" />
+    <ClCompile Include="..\src\extern\stb_image.cpp" />
+    <ClCompile Include="..\src\extern\stb_image_write.cpp" />
     <ClCompile Include="..\src\layers\neural_layers.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\neural_network.cpp" />
     <ClCompile Include="..\src\optimizers.cpp" />
     <ClCompile Include="..\src\program.cpp" />
-    <ClCompile Include="..\src\utils\data.cpp" />
-    <ClCompile Include="..\src\utils\stb_image.cpp" />
-    <ClCompile Include="..\src\utils\stb_image_write.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\activations\activation_layers.h" />
     <ClInclude Include="..\src\common.h" />
+    <ClInclude Include="..\src\data\array.h" />
+    <ClInclude Include="..\src\data\data.h" />
+    <ClInclude Include="..\src\data\geometry.h" />
+    <ClInclude Include="..\src\data\graphics.h" />
+    <ClInclude Include="..\src\data\loaders.h" />
+    <ClInclude Include="..\src\data\utils.h" />
+    <ClInclude Include="..\src\extern\stb_image.h" />
+    <ClInclude Include="..\src\extern\stb_image_write.h" />
     <ClInclude Include="..\src\layers\neural_layers.h" />
     <ClInclude Include="..\src\neural_network.h" />
     <ClInclude Include="..\src\optimizers.h" />
     <ClInclude Include="..\src\program.h" />
-    <ClInclude Include="..\src\utils\array.h" />
-    <ClInclude Include="..\src\utils\data.h" />
-    <ClInclude Include="..\src\utils\geometry.h" />
-    <ClInclude Include="..\src\utils\stb_image.h" />
-    <ClInclude Include="..\src\utils\stb_image_write.h" />
-    <ClInclude Include="..\src\utils\utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

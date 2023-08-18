@@ -3,8 +3,9 @@
 #include <Windows.h>
 #include <CommCtrl.h>
 #include <string>
-#include "utils/array.h"
-#include "utils/data.h"
+#include "data/array.h"
+#include "data/data.h"
+#include "data/graphics.h"
 #include "common.h"
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -14,7 +15,7 @@ struct Program
     int width, height;
     HWND win_handle;
 
-    Program() {}
+    Program(){}
     Program(const char* name, int _w, int _h)
     {
         init(name, _w, _h);
@@ -67,7 +68,7 @@ struct TrackBar
     HWND win_handle, left_txt, right_txt, state_txt;
     float min_rng, max_rng;
 
-    TrackBar() {}
+    TrackBar(){}
     TrackBar(HWND parent, int x, int y, int w, int h, const char* l_txt, const char* r_txt, float _min_rng = 0.0f, float _max_rng = 1.0f)
     {
         min_rng = _min_rng;

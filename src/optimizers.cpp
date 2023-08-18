@@ -21,8 +21,8 @@ void Adam::update(std::vector<Parameter*> &parameters)
             p->velocities[j] = beta1 * p->velocities[j] + (1.0f - beta1) * gradient;
             p->squared_gradients[j] = beta2 * p->squared_gradients[j] + ((1.0f - beta2) * gradient*gradient);
 
-            float velocity_corr = p->velocities[j] / (1.0f - beta1);
-            float squared_corr = p->squared_gradients[j] / (1.0f - beta2);
+            float velocity_corr = p->velocities[j] / (1.0f - beta1 + 1e-8f);
+            float squared_corr = p->squared_gradients[j] / (1.0f - beta2 + 1e-8f);
 
             p->values[j] -= learning_rate * velocity_corr / (sqrt(squared_corr) + 1e-8f);
             p->gradients[j] = 0;

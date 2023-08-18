@@ -1,92 +1,8 @@
 
-#include "utils/data.h"
-#include "utils/stb_image.h"
-#include <Windows.h>
+#include "data/loaders.h"
+#include "extern/stb_image.h"
 #include <fstream>
 
-void DataSet::init(Shape _shape, int _samples_num)
-{
-    shape = _shape;
-    samples_num = _samples_num;
-    sample_size = shape.size();
-
-    data.init(samples_num * sample_size);
-    make_ptr_list<float>(ptr, data, sample_size);
-}
-
-void DataSet::release()
-{
-    sample_size = 0;
-    samples_num = 0;
-    data.release();
-    ptr.release();
-}
-
-bool load_image(const char* filename, Color *dest, int *_w, int *_h)
-{
-    int w, h;
-    unsigned char* _data = stbi_load(filename, &w, &h, NULL, 3);
-
-    if (_data == NULL)
-    {
-        MessageBox(NULL, "Error : can't load the image", "Opss!", MB_OK);
-        return false;
-    }
-
-    if (_w != NULL) { *_w = w; }
-    if (_h != NULL) { *_h = h; }
-
-    dest = new Color[w * h];
-
-    for (int x = 0; x < w; x++)
-    {
-        for (int y = 0; y < h; y++)
-        {
-            int _idx = x + y * w;
-            int _idx_flip = x + (h - 1 - y)*w;
-            dest[_idx].r = _data[((_idx_flip) * 3)];
-            dest[_idx].g = _data[((_idx_flip) * 3) + 1];
-            dest[_idx].b = _data[((_idx_flip) * 3) + 2];
-        }
-    }
-
-    delete[] _data;
-
-    return true;
-}
-
-bool load_image(const char* filename, Array<Color> &dest, int *_w, int *_h)
-{
-    int w, h;
-    unsigned char* _data = stbi_load(filename, &w, &h, NULL, 3);
-
-    if (_data == NULL)
-    {
-        MessageBox(NULL, "Error : can't load the image", "Opss!", MB_OK);
-        return false;
-    }
-
-    if (_w != NULL) { *_w = w; }
-    if (_h != NULL) { *_h = h; }
-
-    dest.init(w * h);
-
-    for (int x = 0; x < w; x++)
-    {
-        for (int y = 0; y < h; y++)
-        {
-            int _idx = x + y * w;
-            int _idx_flip = x + (h - 1 - y)*w;
-            dest[_idx].r = _data[((_idx_flip) * 3)];
-            dest[_idx].g = _data[((_idx_flip) * 3) + 1];
-            dest[_idx].b = _data[((_idx_flip) * 3) + 2];
-        }
-    }
-
-    delete[] _data;
-
-    return true;
-}
 
 void reverse_bytes(unsigned char* dest, unsigned char* src, int size)
 {
@@ -196,6 +112,70 @@ bool load_mnist_labels(const char* filename, DataSet &dest, int num_class, int s
     temp.release();
 
     file.close();
+
+    return true;
+}
+
+bool load_image(const char* filename, Color *dest, int *_w, int *_h)
+{
+    int w, h;
+    unsigned char* _data = stbi_load(filename, &w, &h, NULL, 3);
+
+    if (_data == NULL)
+    {
+        return false;
+    }
+
+    if (_w != NULL) { *_w = w; }
+    if (_h != NULL) { *_h = h; }
+
+    dest = new Color[w * h];
+
+    for (int x = 0; x < w; x++)
+    {
+        for (int y = 0; y < h; y++)
+        {
+            int _idx = x + y * w;
+            int _idx_flip = x + (h - 1 - y)*w;
+            dest[_idx].r = _data[((_idx_flip) * 3)];
+            dest[_idx].g = _data[((_idx_flip) * 3) + 1];
+            dest[_idx].b = _data[((_idx_flip) * 3) + 2];
+        }
+    }
+
+    delete[] _data;
+
+    return true;
+}
+
+bool load_image(const char* filename, Array<Color> &dest, int *_w, int *_h)
+{
+    int w, h;
+    unsigned char* _data = stbi_load(filename, &w, &h, NULL, 3);
+
+    if (_data == NULL)
+    {
+        return false;
+    }
+
+    if (_w != NULL) { *_w = w; }
+    if (_h != NULL) { *_h = h; }
+
+    dest.init(w * h);
+
+    for (int x = 0; x < w; x++)
+    {
+        for (int y = 0; y < h; y++)
+        {
+            int _idx = x + y * w;
+            int _idx_flip = x + (h - 1 - y)*w;
+            dest[_idx].r = _data[((_idx_flip) * 3)];
+            dest[_idx].g = _data[((_idx_flip) * 3) + 1];
+            dest[_idx].b = _data[((_idx_flip) * 3) + 2];
+        }
+    }
+
+    delete[] _data;
 
     return true;
 }

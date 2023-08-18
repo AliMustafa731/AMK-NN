@@ -3,96 +3,13 @@
 #include <iostream>
 #include <string>
 #include <cassert>
-#include <cmath>
-#include "utils/array.h"
-#include "utils/geometry.h"
+#include "data/array.h"
+#include "data/geometry.h"
 #include "common.h"
 
 #define _max(a, b) (( (a) > (b) ) ? (a) : (b))
 #define _min(a, b) (( (a) < (b) ) ? (a) : (b))
 
-__forceinline void multiply(float* data, int size, float value)
-{
-    for (int i = 0; i < size; i++)
-    {
-        data[i] *= value;
-    }
-}
-
-__forceinline void copy_matrix(Matrix &dest, Matrix &src, Rect dest_rect, Rect src_rect)
-{
-    for (int y = src_rect.y; y < src_rect.h + src_rect.y; y++)
-    {
-        for (int x = src_rect.x; x < src_rect.w + src_rect.x; x++)
-        {
-            dest(x + dest_rect.x - src_rect.x, y + dest_rect.y - src_rect.y) = src(x, y);
-        }
-    }
-}
-
-__forceinline void copy_matrix(Matrix &dest, Matrix &src, Rect dest_rect, Rect src_rect, Shape stride)
-{
-    for (int y = src_rect.y; y < src_rect.h + src_rect.y; y++)
-    {
-        for (int x = src_rect.x; x < src_rect.w + src_rect.x; x++)
-        {
-            dest(x*(stride.w) + dest_rect.x - src_rect.x, y*(stride.h) + dest_rect.y - src_rect.y) = src(x, y);
-        }
-    }
-}
-
-__forceinline void copy(float *dest, float *src, uint32_t size)
-{
-    for (int i = 0; i < size; i++)
-    {
-        dest[i] = src[i];
-    }
-}
-
-__forceinline void copy(Array<float> dest, Array<float> src)
-{
-    AMK_ASSERT(dest.size == src.size);
-    for (int i = 0; i < dest.size; i++)
-    {
-        dest[i] = src[i];
-    }
-}
-
-__forceinline void copy_add(Array<float> dest, Array<float> src)
-{
-    AMK_ASSERT(dest.size == src.size);
-    for (int i = 0; i < dest.size; i++)
-    {
-        dest[i] += src[i];
-    }
-}
-
-__forceinline void fill_array(float *dest, float value, uint32_t size)
-{
-    for (int i = 0; i < size; i++)
-    {
-        dest[i] = value;
-    }
-}
-
-__forceinline void fill_array(Array<float> dest, float value)
-{
-    for (int i = 0; i < dest.size; i++)
-    {
-        dest[i] = value;
-    }
-}
-
-__forceinline void rotate_matrix(Matrix &dest, Matrix &src)
-{
-    AMK_ASSERT(dest.w == src.w && dest.h == src.h);
-    int size = dest.w * dest.h;
-
-    for (int i = 0; i < size ; i++)
-    {
-        dest.data[i] = src.data[size - 1 - i];
-    }
-}
 
 __forceinline void convolution(Matrix a, Matrix b, Matrix c)
 {
@@ -200,48 +117,87 @@ __forceinline void convolution_transpose(Matrix a, Matrix b, Matrix c, Shape str
     }
 }
 
-__forceinline float RelU(float x)
+__forceinline void multiply(float* data, int size, float value)
 {
-    return x > 0 ? x : 0;
+    for (int i = 0; i < size; i++)
+    {
+        data[i] *= value;
+    }
 }
 
-__forceinline float d_RelU(float x)
+__forceinline void copy_matrix(Matrix &dest, Matrix &src, Rect dest_rect, Rect src_rect)
 {
-    return x > 0;
+    for (int y = src_rect.y; y < src_rect.h + src_rect.y; y++)
+    {
+        for (int x = src_rect.x; x < src_rect.w + src_rect.x; x++)
+        {
+            dest(x + dest_rect.x - src_rect.x, y + dest_rect.y - src_rect.y) = src(x, y);
+        }
+    }
 }
 
-__forceinline float sigmoid(float x)
+__forceinline void copy_matrix(Matrix &dest, Matrix &src, Rect dest_rect, Rect src_rect, Shape stride)
 {
-    return 1 / (1 + exp(-x));
+    for (int y = src_rect.y; y < src_rect.h + src_rect.y; y++)
+    {
+        for (int x = src_rect.x; x < src_rect.w + src_rect.x; x++)
+        {
+            dest(x*(stride.w) + dest_rect.x - src_rect.x, y*(stride.h) + dest_rect.y - src_rect.y) = src(x, y);
+        }
+    }
 }
 
-__forceinline float d_sigmoid(float x)
+__forceinline void copy(float *dest, float *src, uint32_t size)
 {
-    float y = sigmoid(x);
-    return y * (1 - y);
+    for (int i = 0; i < size; i++)
+    {
+        dest[i] = src[i];
+    }
 }
 
-// this function assumes that (x) contains the activated output
-__forceinline float d_sigmoid_optimized(float x)
+__forceinline void copy(Array<float> dest, Array<float> src)
 {
-    return x * (1 - x);
+    AMK_ASSERT(dest.size == src.size);
+    for (int i = 0; i < dest.size; i++)
+    {
+        dest[i] = src[i];
+    }
 }
 
-__forceinline float tanH(float x)
+__forceinline void copy_add(Array<float> dest, Array<float> src)
 {
-    return (2 / (1 + exp(x *-2))) - 1;
+    AMK_ASSERT(dest.size == src.size);
+    for (int i = 0; i < dest.size; i++)
+    {
+        dest[i] += src[i];
+    }
 }
 
-__forceinline float d_tanH(float x)
+__forceinline void fill_array(float *dest, float value, uint32_t size)
 {
-    float y = tanH(x);
-    return 1 - (y * y);
+    for (int i = 0; i < size; i++)
+    {
+        dest[i] = value;
+    }
 }
 
-// this function assumes that (x) contains the activated output
-__forceinline float d_tanH_optimized(float x)
+__forceinline void fill_array(Array<float> dest, float value)
 {
-    return 1 - (x * x);
+    for (int i = 0; i < dest.size; i++)
+    {
+        dest[i] = value;
+    }
+}
+
+__forceinline void rotate_matrix(Matrix &dest, Matrix &src)
+{
+    AMK_ASSERT(dest.w == src.w && dest.h == src.h);
+    int size = dest.w * dest.h;
+
+    for (int i = 0; i < size; i++)
+    {
+        dest.data[i] = src.data[size - 1 - i];
+    }
 }
 
 __forceinline int rand32()

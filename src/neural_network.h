@@ -6,8 +6,8 @@
 #include "layers/neural_layers.h"
 #include "activations/activation_layers.h"
 #include "optimizers.h"
-#include "utils/utils.h"
-#include "utils/data.h"
+#include "data/utils.h"
+#include "data/data.h"
 #include "common.h"
 
 struct NeuralNetwork
