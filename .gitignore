@@ -7,4 +7,5 @@
 !*.vcxproj.filters
 !AMKNN/mnist_digits_images.bin
 !README.md
+!screenshot.jpg
 !.gitignore

@@ -8,10 +8,10 @@ where I used a **fully-connected** neural network that take as input the **Norma
 Since the coordinates are normalized, we can interpolate the **function (neural network after fitting to an image)** to get up-scaled image.
 I also used the **Sine** function as a **non-linearity** (aka. Activation).
 
-you can [download](https://mega.nz/file/NZ1kWJID#tBEPJcJY2Ne8rag3yNfBRNdKxGbTJKjzRZD5PmG_vSg) it.
+you can [download](https://mega.nz/file/BJcSFbwS#LtlwEECH3-bHDHCGQ0TsthSKivZF2HvNB5EUgdW-rJA) it.
 
 inspired by : https://youtu.be/ZjxPPvqNp3k
 
 Here's a screenshot of the demo :
 
-![Capture](https://github.com/AliMustafa731/AMKNN/assets/65477431/0dde7eca-0a7f-4e39-8de9-ab9ffb4e7551)
+![Demo](./screenshot.jpg)
