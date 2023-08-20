@@ -183,8 +183,8 @@ void train_network_thread(void *args)
 {
     int w = data.shape.w;
     int h = data.shape.h;
-    int w_f = (float)data.shape.w;
-    int h_f = (float)data.shape.h;
+    float w_f = (float)w;
+    float h_f = (float)h;
     int size = w * h;
 
     while (training)
@@ -200,16 +200,20 @@ void train_network_thread(void *args)
                 netowrk_input[1] = (float)y / h_f;
 
                 float *o = drawer_network.forward(netowrk_input.data);
-				MSELoss(&drawer_network, network_label.data, size);
+                MSELoss(&drawer_network, network_label.data, size);
                 drawer_network.backward();
 
                 float _loss = network_label[0] - o[0];
                 loss += _loss * _loss * 0.5f;
+
+                int idx = x + y * w;
+                img_2.img[idx].r = (unsigned char)0;
+                img_2.img[idx].g = (unsigned char)(55.0f + o[0] * 200.0f);
+                img_2.img[idx].b = (unsigned char)(55.0f + o[0] * 200.0f);
             }
         }
 
         drawer_network.optimizer->update(drawer_network.parameters);
-        DrawerNetworkDraw(img_2.img, w, h);
         img_2.draw(win_hdc, 332, 32, 256, 256);
         SetWindowText(txt[0], std::to_string(loss).c_str());
     }
@@ -253,13 +257,13 @@ void onCreate(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     img_3 = Image(256, 256);
 
     f_img_1.init(data.shape.w, data.shape.h, data[rand32() % data.samples_num]);
-	embed_one_channel_to_color(img_1.img.data, f_img_1.data, data.sample_size);
+    embed_one_channel_to_color(img_1.img.data, f_img_1.data, data.sample_size);
 
     DrawerNetworkDraw(img_2.img, 28, 28);
     img_2.draw(win_hdc, 332, 32, 256, 256);
 
-	DrawerNetworkDraw(img_3.img, 256, 256);
-	img_3.draw(win_hdc, 332, 32, 256, 256);
+    DrawerNetworkDraw(img_3.img, 256, 256);
+    img_3.draw(win_hdc, 332, 32, 256, 256);
 
     // create buttons & controls
     CreateWindow
@@ -427,7 +431,7 @@ void onCommand(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         int idx = rand32() % data.samples_num;
         f_img_1.data = data[idx];
         f_img_1.size = data.sample_size;
-		embed_one_channel_to_color(img_1.img.data, f_img_1.data, data.sample_size);
+        embed_one_channel_to_color(img_1.img.data, f_img_1.data, data.sample_size);
 
         img_1.draw(win_hdc, 32, 32, 256, 256);
         img_2.draw(win_hdc, 332, 32, 256, 256);
