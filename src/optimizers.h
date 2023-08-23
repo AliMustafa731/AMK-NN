@@ -1,6 +1,5 @@
 #pragma once
 
-#include <vector>
 #include <fstream>
 #include "data/data.h"
 #include "common.h"
@@ -46,7 +45,7 @@ struct Optimizer
     Optimizer() {}
     virtual ~Optimizer() {}
 
-    virtual void update(std::vector<Parameter*> &parameters) = 0;
+    virtual void update(List<Parameter*> &parameters) = 0;
     virtual void save(std::ofstream& file) = 0;
     virtual void load(std::ifstream& file) = 0;
 };
@@ -67,7 +66,7 @@ struct Adam : Optimizer
         beta2 = _beta2;
     }
 
-    void update(std::vector<Parameter*> &parameters);
+    void update(List<Parameter*> &parameters);
 
     void save(std::ofstream& file)
     {
@@ -98,7 +97,7 @@ struct GradientDescent : Optimizer
         momentum = _momentum;
     }
 
-    void update(std::vector<Parameter*> &parameters);
+    void update(List<Parameter*> &parameters);
 
     void save(std::ofstream& file)
     {
@@ -127,7 +126,7 @@ struct RMSPropagation : Optimizer
         beta = _beta;
     }
 
-    void update(std::vector<Parameter*> &parameters);
+    void update(List<Parameter*> &parameters);
 
     void save(std::ofstream& file)
     {

@@ -4,8 +4,8 @@
 
 //----------------------------------------------
 //  Mean Squared Error Loss Function
-//  forward :  loss = 0.5 * (Y` - Y)^2
-//  backward : d_loss_wrt_Y = (Y` - Y)
+//  forward :  loss = 0.5 * (Y - Y`)^2
+//  backward : d_loss_wrt_Y = (Y - Y`)
 //----------------------------------------------
 
 // evaluate the loss
@@ -56,12 +56,12 @@ void NeuralNetwork::add(NeuralLayer* layer)
     if (layers.size() > 0)
     {
         NeuralLayer* prev = layers[layers.size() - 1];
-        layers.push_back(layer);
+        layers.add(layer);
         layer->in_shape = prev->out_shape;
     }
     else
     {
-        layers.push_back(layer);
+        layers.add(layer);
         layer->in_shape = this->in_shape;
     }
     layer->in_size = layer->in_shape.size();
@@ -72,7 +72,7 @@ void NeuralNetwork::add(NeuralLayer* layer)
 
     for (int j = 0; j < layer->parameters.size(); j++)
     {
-        parameters.push_back(&layer->parameters[j]);
+        parameters.add(&layer->parameters[j]);
     }
 }
 
@@ -102,7 +102,7 @@ float* NeuralNetwork::backward(float* d_output)
 
 float* NeuralNetwork::backward()
 {
-    float* dY = loss_gradients.data();
+    float* dY = loss_gradients.data;
 
     for (int i = layers.size() - 1; i >= 0; i--)
     {
@@ -130,9 +130,9 @@ void NeuralNetwork::release()
             delete layers[i];
         }
     }
-    layers.clear();
-    parameters.clear();
-    loss_gradients.clear();
+    layers.release();
+    parameters.release();
+    loss_gradients.release();
 }
 
 const char* AMK_FORMAT = "AMKNN";
@@ -216,36 +216,41 @@ void NeuralNetwork::load(std::ifstream& file)
 
         layers[i]->load_parameters(file);
 
-        if (layers[i]->parameters.size() > 0)
-        {
-            for (int j = 0; j < layers[i]->parameters.size(); j++)
-            {
-                parameters.push_back(&layers[i]->parameters[j]);
-            }
-        }
+		for (int j = 0; j < layers[i]->parameters.size(); j++)
+		{
+			parameters.add(&layers[i]->parameters[j]);
+		}
     }
 
     loss_gradients.resize(output_layer()->out_size);
 }
 
-void NeuralNetwork::save(std::string filename)
+bool NeuralNetwork::save(std::string filename)
 {
     std::ofstream file;
     file.open(filename, std::ios::out | std::ios::binary);
-    if (file.fail()) return;
+
+	if (file.fail())
+	{
+		return false;
+	}
 
     save(file);
-
     file.close();
+	return true;
 }
 
-void NeuralNetwork::load(std::string filename)
+bool NeuralNetwork::load(std::string filename)
 {
     std::ifstream file;
     file.open(filename, std::ios::in | std::ios::binary);
-    if (file.fail()) return;
+
+	if (file.fail())
+	{
+		return false;
+	}
 
     load(file);
-
     file.close();
+	return true;
 }

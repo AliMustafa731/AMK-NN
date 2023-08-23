@@ -12,9 +12,9 @@
 
 struct NeuralNetwork
 {
-    std::vector<NeuralLayer*> layers;
-    std::vector<Parameter*> parameters;
-    std::vector<float> loss_gradients;
+    List<Parameter*> parameters;
+	Array<NeuralLayer*> layers;
+    Array<float> loss_gradients;
     Optimizer* optimizer;
     Shape in_shape;
 
@@ -37,8 +37,8 @@ struct NeuralNetwork
     void set_trainable(bool option);
 
     void release();
-    void save(std::string filename);
-    void load(std::string filename);
+    bool save(std::string filename);
+	bool load(std::string filename);
     void save(std::ofstream& file);
     void load(std::ifstream& file);
 };

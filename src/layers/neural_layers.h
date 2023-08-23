@@ -24,9 +24,9 @@
 struct NeuralLayer
 {
     Array<float> X, dX, Y, dY;
+	Array<Parameter> parameters;
     int in_size, out_size, type;
     Shape in_shape, out_shape;
-    std::vector<Parameter> parameters;
     bool trainable;
 
     NeuralLayer(){}

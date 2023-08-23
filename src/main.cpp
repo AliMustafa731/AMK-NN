@@ -1,6 +1,5 @@
 
 #include <Windows.h>
-#include <iostream>
 #include "program.h"
 #include "neural_network.h"
 

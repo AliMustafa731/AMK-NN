@@ -27,7 +27,7 @@ float* RelULayer::forward(float* input)
 {
     X.data = input;
 
-    for (int i = 0; i < X.size; i++)
+    for (int i = 0; i < X.size(); i++)
     {
         if (X[i] > 0)
         {
@@ -46,7 +46,7 @@ float* RelULayer::backward(float* d_output)
 {
     dY.data = d_output;
 
-    for (int i = 0; i < X.size; i++)
+    for (int i = 0; i < X.size(); i++)
     {
         if (X[i] > 0)
         {
@@ -65,7 +65,7 @@ float* RelULeakLayer::forward(float* input)
 {
     X.data = input;
 
-    for (int i = 0; i < X.size; i++)
+    for (int i = 0; i < X.size(); i++)
     {
         if (X[i] > 0)
         {
@@ -84,7 +84,7 @@ float* RelULeakLayer::backward(float* d_output)
 {
     dY.data = d_output;
 
-    for (int i = 0; i < X.size; i++)
+    for (int i = 0; i < X.size(); i++)
     {
         if (X[i] > 0)
         {
@@ -196,7 +196,7 @@ float* DropoutLayer::forward(float* input)
 {
     X.data = input;
 
-    for (int i = 0; i < X.size; i++)
+    for (int i = 0; i < X.size(); i++)
     {
         if (trainable)
         {
@@ -224,7 +224,7 @@ float* DropoutLayer::backward(float* d_output)
 {
     dY.data = d_output;
 
-    for (int i = 0; i < X.size; i++)
+    for (int i = 0; i < X.size(); i++)
     {
         if (trainable)
         {

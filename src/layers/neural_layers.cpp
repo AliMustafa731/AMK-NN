@@ -6,9 +6,10 @@ void NeuralLayer::allocate(int _in_size, int _out_size)
 {
     in_size = _in_size;
     out_size = _out_size;
+
     Y.init(out_size);
-    dY.size = out_size;
-    X.size = in_size;
+	dY.init(out_size, NULL);
+    X.init(in_size, NULL);
     dX.init(in_size);
 
     for (int j = 0; j < out_size; j++)
@@ -32,7 +33,7 @@ void NeuralLayer::deallocate()
         parameters[i].release();
     }
 
-    parameters.clear();
+    parameters.release();
 }
 
 void NeuralLayer::save_parameters(std::ofstream& file)

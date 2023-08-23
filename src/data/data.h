@@ -21,19 +21,19 @@ struct DataSet
 
     inline float* operator[](int i) const
     {
-        AMK_ASSERT(i < ptr.size);
+        AMK_ASSERT(i < ptr.size());
         return ptr[i];
     }
     inline float* &operator[](int i)
     {
-        AMK_ASSERT(i < ptr.size);
+        AMK_ASSERT(i < ptr.size());
         return ptr[i];
     }
 };
 
 template<typename T> __forceinline void make_ptr_list(Array<T*> &dest, Array<T> &src, int element_size)
 {
-    int elements_num = src.size / element_size;
+    int elements_num = src.size() / element_size;
     dest.init(elements_num);
 
     for (int i = 0; i < elements_num; i++)

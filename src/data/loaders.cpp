@@ -13,7 +13,7 @@ void reverse_bytes(unsigned char* dest, unsigned char* src, int size)
 
 void encode_one_hot(Array<float> &dest, Array<int> &src, int num_class)
 {
-    for (int i = 0; i < src.size; i++)
+    for (int i = 0; i < src.size(); i++)
     {
         dest[i * num_class + src[i]] = 1.0f;
     }
@@ -21,7 +21,7 @@ void encode_one_hot(Array<float> &dest, Array<int> &src, int num_class)
 
 void encode_one_hot(Array<float> &dest, Array<unsigned char> &src, int num_class)
 {
-    for (int i = 0; i < src.size; i++)
+    for (int i = 0; i < src.size(); i++)
     {
         dest[i * num_class + src[i]] = 1.0f;
     }

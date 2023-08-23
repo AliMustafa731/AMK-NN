@@ -1,7 +1,5 @@
 #pragma once
 
-#include <iostream>
-#include <string>
 #include <cassert>
 #include "data/array.h"
 #include "data/geometry.h"
@@ -157,8 +155,8 @@ __forceinline void copy(float *dest, float *src, uint32_t size)
 
 __forceinline void copy(Array<float> dest, Array<float> src)
 {
-    AMK_ASSERT(dest.size == src.size);
-    for (int i = 0; i < dest.size; i++)
+    AMK_ASSERT(dest.size() == src.size());
+    for (int i = 0; i < dest.size(); i++)
     {
         dest[i] = src[i];
     }
@@ -166,8 +164,8 @@ __forceinline void copy(Array<float> dest, Array<float> src)
 
 __forceinline void copy_add(Array<float> dest, Array<float> src)
 {
-    AMK_ASSERT(dest.size == src.size);
-    for (int i = 0; i < dest.size; i++)
+    AMK_ASSERT(dest.size() == src.size());
+    for (int i = 0; i < dest.size(); i++)
     {
         dest[i] += src[i];
     }
@@ -183,7 +181,7 @@ __forceinline void fill_array(float *dest, float value, uint32_t size)
 
 __forceinline void fill_array(Array<float> dest, float value)
 {
-    for (int i = 0; i < dest.size; i++)
+    for (int i = 0; i < dest.size(); i++)
     {
         dest[i] = value;
     }

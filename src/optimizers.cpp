@@ -3,11 +3,11 @@
 #include "neural_network.h"
 
 
-void Adam::update(std::vector<Parameter*> &parameters)
+void Adam::update(List<Parameter*> &parameters)
 {
-    for (int i = 0; i < parameters.size(); i++)
+    for (auto n = parameters.base ; n != NULL ; n = n->next)
     {
-        Parameter *p = parameters[i];
+        Parameter *p = n->value;
 
         if (!(p->is_trainable))
         {
@@ -32,11 +32,11 @@ void Adam::update(std::vector<Parameter*> &parameters)
     }
 }
 
-void GradientDescent::update(std::vector<Parameter*> &parameters)
+void GradientDescent::update(List<Parameter*> &parameters)
 {
-    for (int i = 0; i < parameters.size(); i++)
+	for (auto n = parameters.base; n != NULL; n = n->next)
     {
-        Parameter *p = parameters[i];
+        Parameter *p = n->value;
 
         if (!(p->is_trainable))
         {
@@ -57,11 +57,11 @@ void GradientDescent::update(std::vector<Parameter*> &parameters)
     }
 }
 
-void RMSPropagation::update(std::vector<Parameter*> &parameters)
+void RMSPropagation::update(List<Parameter*> &parameters)
 {
-    for (int i = 0; i < parameters.size(); i++)
+	for (auto n = parameters.base; n != NULL; n = n->next)
     {
-        Parameter *p = parameters[i];
+        Parameter *p = n->value;
 
         if (!(p->is_trainable))
         {
