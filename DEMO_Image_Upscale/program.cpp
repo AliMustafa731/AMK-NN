@@ -161,9 +161,9 @@ void DrawerNetworkDraw(Buffer<Color> &dest, int w, int h)
             float *o = drawer_network.forward(netowrk_input.data);
 
             int idx = x + y * w;
-            dest[idx].r = (unsigned char)0;
+            dest[idx].r = (unsigned char)(55.0f + o[0] * 200.0f);
             dest[idx].g = (unsigned char)(55.0f + o[0] * 200.0f);
-            dest[idx].b = (unsigned char)(55.0f + o[0] * 200.0f);
+            dest[idx].b = (unsigned char)0;
         }
     }
 }

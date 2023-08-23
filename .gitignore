@@ -5,7 +5,7 @@
 !*.vcxproj
 !*.vcxproj.user
 !*.vcxproj.filters
-!AMKNN/mnist_digits_images.bin
+!DEMO_Image_Upscale/mnist_digits_images.bin
 !README.md
 !screenshot.jpg
 !.gitignore
