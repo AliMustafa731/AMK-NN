@@ -25,13 +25,11 @@ void NeuralLayer::deallocate()
 {
     Y.release();
     dX.release();
+    this->release();
 
-    if (parameters.size() > 0)
+    for (int i = 0; i < parameters.size(); i++)
     {
-        for (int i = 0; i < parameters.size(); i++)
-        {
-            parameters[i].release();
-        }
+        parameters[i].release();
     }
 
     parameters.clear();
@@ -456,7 +454,7 @@ void MaxPoolLayer::init(Shape _in_shape)
     in_size = in_shape.size();
     out_size = out_shape.size();
 
-    max_indices = new int[out_size];
+    max_indices.init(out_size);
     window.d = 1;
 }
 
@@ -517,6 +515,11 @@ float* MaxPoolLayer::backward(float* d_output)
     }
 
     return dX.data;
+}
+
+void MaxPoolLayer::release()
+{
+    max_indices.release();
 }
 
 void MaxPoolLayer::save(std::ofstream& file)

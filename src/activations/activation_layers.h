@@ -19,6 +19,7 @@ struct RelULayer : NeuralLayer
         out_size = in_size;
         out_shape = in_shape;
     }
+    void release(){}
     float* forward(float* input);
     float* backward(float* d_output);
     void save(std::ofstream& file) {}
@@ -44,6 +45,7 @@ struct RelULeakLayer : NeuralLayer
         out_size = in_size;
         out_shape = in_shape;
     }
+    void release(){}
     float* forward(float* input);
     float* backward(float* d_output);
     void save(std::ofstream& file);
@@ -62,6 +64,7 @@ struct SigmoidLayer : NeuralLayer
         out_size = in_size;
         out_shape = in_shape;
     }
+    void release(){}
     float* forward(float* input);
     float* backward(float* d_output);
     void save(std::ofstream& file) {}
@@ -80,6 +83,7 @@ struct TanhLayer : NeuralLayer
         out_size = in_size;
         out_shape = in_shape;
     }
+    void release(){}
     float* forward(float* input);
     float* backward(float* d_output);
     void save(std::ofstream& file) {}
@@ -98,15 +102,16 @@ struct SineLayer : NeuralLayer
         out_size = in_size;
         out_shape = in_shape;
     }
+    void release(){}
     float* forward(float* input);
     float* backward(float* d_output);
     void save(std::ofstream& file) {}
     void load(std::ifstream& file) {}
 };
 
-//---------------------------------------------------------------------------------
-//  Dropout Layer (used as regularizer, improves generalization of the network)
-//---------------------------------------------------------------------------------
+//---------------------------------------------
+//  Dropout Layer randomly turn off nodes 
+//---------------------------------------------
 struct DropoutLayer : NeuralLayer
 {
     Array<float> mask;  // contains values that can have either (0) or (1)
@@ -125,6 +130,7 @@ struct DropoutLayer : NeuralLayer
     }
 
     void init(Shape _in_shape);
+    void release();
     float* forward(float* input);
     float* backward(float* d_output);
     void save(std::ofstream& file);

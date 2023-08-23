@@ -20,7 +20,7 @@ __forceinline float tanH(float x)
 }
 __forceinline float d_tanH_optimized(float x)
 {
-    return 1.0f - (x * x); // assumes (x) must contain Sigmoid(input)
+    return 1.0f - (x * x); // assumes (x) must contain Tanh(input)
 }
 
 float* RelULayer::forward(float* input)
@@ -157,12 +157,39 @@ float* TanhLayer::backward(float* d_output)
     return dX.data;
 }
 
+float* SineLayer::forward(float* input)
+{
+    X.data = input;
+
+    for (int i = 0; i < out_size; i++)
+    {
+        Y[i] = sinf(X[i]);
+    }
+
+    return Y.data;
+}
+
+float* SineLayer::backward(float* d_output)
+{
+    for (int i = 0; i < in_size; i++)
+    {
+        dX[i] = cosf(X[i]) * d_output[i];
+    }
+
+    return dX.data;
+}
+
 void DropoutLayer::init(Shape _in_shape)
 {
     out_size = in_size;
     out_shape = in_shape;
 
     mask.init(in_size);
+}
+
+void DropoutLayer::release()
+{
+    mask.release();
 }
 
 float* DropoutLayer::forward(float* input)
@@ -207,28 +234,6 @@ float* DropoutLayer::backward(float* d_output)
         {
             dX[i] = dY[i] / P;
         }
-    }
-
-    return dX.data;
-}
-
-float* SineLayer::forward(float* input)
-{
-    X.data = input;
-
-    for (int i = 0; i < out_size; i++)
-    {
-        Y[i] = sinf(X[i]);
-    }
-
-    return Y.data;
-}
-
-float* SineLayer::backward(float* d_output)
-{
-    for (int i = 0; i < in_size; i++)
-    {
-        dX[i] = cosf(X[i]) * d_output[i];
     }
 
     return dX.data;

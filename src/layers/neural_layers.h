@@ -38,6 +38,7 @@ struct NeuralLayer
     void setTrainable(bool state);
 
     virtual void init(Shape _in_shape) = 0;
+    virtual void release() = 0;
     virtual float* forward(float* input) = 0;
     virtual float* backward(float* d_output) = 0;
     virtual void save(std::ofstream& file) = 0;
@@ -74,6 +75,7 @@ struct FullLayer : NeuralLayer
     }
 
     void init(Shape _in_shape);
+    void release(){}
     float* forward(float* input);
     float* backward(float* d_output);
     void save(std::ofstream& file);
@@ -105,6 +107,7 @@ struct ConvLayer : NeuralLayer
     }
 
     void init(Shape _in_shape);
+    void release(){}
     float* forward(float* input);
     float* backward(float* d_output);
     void save(std::ofstream& file);
@@ -136,6 +139,7 @@ struct ConvTLayer : NeuralLayer
     }
 
     void init(Shape _in_shape);
+    void release(){}
     float* forward(float* input);
     float* backward(float* d_output);
     void save(std::ofstream& file);
@@ -148,7 +152,7 @@ struct ConvTLayer : NeuralLayer
 struct MaxPoolLayer : NeuralLayer
 {
     Shape window, stride;
-    int *max_indices;
+    Array<int> max_indices;
 
     MaxPoolLayer()
     {
@@ -162,6 +166,7 @@ struct MaxPoolLayer : NeuralLayer
     }
 
     void init(Shape _in_shape);
+    void release();
     float* forward(float* input);
     float* backward(float* d_output);
     void save(std::ofstream& file);
@@ -184,6 +189,7 @@ struct AvgPoolLayer : NeuralLayer
     }
 
     void init(Shape _in_shape);
+    void release(){}
     float* forward(float* input);
     float* backward(float* d_output);
     void save(std::ofstream& file);

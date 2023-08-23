@@ -4,9 +4,11 @@
 
 //----------------------------------------------
 //  Mean Squared Error Loss Function
+//  forward :  loss = 0.5 * (Y` - Y)^2
+//  backward : d_loss_wrt_Y = (Y` - Y)
 //----------------------------------------------
 
-// evaluate the loss, given a dataset & neural network
+// evaluate the loss
 float MSELoss(NeuralNetwork* network, DataSet* data, DataSet* labels)
 {
     float total_loss = 0;
