@@ -5,15 +5,17 @@
 #include <string>
 #include "layers/neural_layers.h"
 #include "activations/activation_layers.h"
-#include "optimizers.h"
-#include "data/utils.h"
-#include "data/data.h"
+#include "optimizers/optimizers.h"
+#include "utils/utils.h"
+#include "data/dataset.h"
+#include "data/list.h"
+#include "data/array.h"
 #include "common.h"
 
 struct NeuralNetwork
 {
     List<Parameter*> parameters;
-	Array<NeuralLayer*> layers;
+    Array<NeuralLayer*> layers;
     Array<float> loss_gradients;
     Optimizer* optimizer;
     Shape in_shape;
@@ -38,7 +40,7 @@ struct NeuralNetwork
 
     void release();
     bool save(std::string filename);
-	bool load(std::string filename);
+    bool load(std::string filename);
     void save(std::ofstream& file);
     void load(std::ifstream& file);
 };

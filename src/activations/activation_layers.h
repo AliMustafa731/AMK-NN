@@ -9,16 +9,9 @@
 //----------------------------------------------
 struct RelULayer : NeuralLayer
 {
-    RelULayer()
-    {
-        type = RElU_LAYER;
-    }
+    RelULayer();
 
-    void init(Shape _in_shape)
-    {
-        out_size = in_size;
-        out_shape = in_shape;
-    }
+    void init(Shape _in_shape);
     void release(){}
     float* forward(float* input);
     float* backward(float* d_output);
@@ -30,21 +23,10 @@ struct RelULeakLayer : NeuralLayer
 {
     float alpha;
 
-    RelULeakLayer(float _alpha)
-    {
-        alpha = _alpha;
-        type = RELU_LEAK_LAYER;
-    }
-    RelULeakLayer()
-    {
-        type = RELU_LEAK_LAYER;
-    }
+    RelULeakLayer(float _alpha);
+    RelULeakLayer();
 
-    void init(Shape _in_shape)
-    {
-        out_size = in_size;
-        out_shape = in_shape;
-    }
+    void init(Shape _in_shape);
     void release(){}
     float* forward(float* input);
     float* backward(float* d_output);
@@ -54,16 +36,9 @@ struct RelULeakLayer : NeuralLayer
 
 struct SigmoidLayer : NeuralLayer
 {
-    SigmoidLayer()
-    {
-        type = SIGMOID_LAYER;
-    }
+    SigmoidLayer();
 
-    void init(Shape _in_shape)
-    {
-        out_size = in_size;
-        out_shape = in_shape;
-    }
+    void init(Shape _in_shape);
     void release(){}
     float* forward(float* input);
     float* backward(float* d_output);
@@ -73,16 +48,9 @@ struct SigmoidLayer : NeuralLayer
 
 struct TanhLayer : NeuralLayer
 {
-    TanhLayer()
-    {
-        type = TANH_LAYER;
-    }
+    TanhLayer();
 
-    void init(Shape _in_shape)
-    {
-        out_size = in_size;
-        out_shape = in_shape;
-    }
+    void init(Shape _in_shape);
     void release(){}
     float* forward(float* input);
     float* backward(float* d_output);
@@ -92,16 +60,9 @@ struct TanhLayer : NeuralLayer
 
 struct SineLayer : NeuralLayer
 {
-    SineLayer()
-    {
-        type = SINE_LAYER;
-    }
+    SineLayer();
 
-    void init(Shape _in_shape)
-    {
-        out_size = in_size;
-        out_shape = in_shape;
-    }
+    void init(Shape _in_shape);
     void release(){}
     float* forward(float* input);
     float* backward(float* d_output);
@@ -109,25 +70,13 @@ struct SineLayer : NeuralLayer
     void load(std::ifstream& file) {}
 };
 
-//---------------------------------------------
-//  Dropout Layer randomly turn off nodes 
-//---------------------------------------------
 struct DropoutLayer : NeuralLayer
 {
     Array<float> mask;  // contains values that can have either (0) or (1)
     float P;            // the probability of nodes being kept working
 
-    DropoutLayer(float _P)
-    {
-        trainable = true;
-        P = _P;
-        type = DROPOUT_LAYER;
-    }
-    DropoutLayer()
-    {
-        trainable = true;
-        type = DROPOUT_LAYER;
-    }
+    DropoutLayer(float _P);
+    DropoutLayer();
 
     void init(Shape _in_shape);
     void release();

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "data/graphics.h"
+#include "utils/graphics.h"
 #include "data/array.h"
-#include "data/data.h"
+#include "data/dataset.h"
 
 void reverse_bytes(unsigned char* dest, unsigned char* src, int size);
 

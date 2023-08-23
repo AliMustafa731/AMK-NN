@@ -6,10 +6,10 @@
 #include <ctime>
 #include <process.h>
 #include "program.h"
-#include "data/data.h"
-#include "data/graphics.h"
-#include "data/loaders.h"
-#include "data/utils.h"
+#include "data/dataset.h"
+#include "utils/graphics.h"
+#include "utils/loaders.h"
+#include "utils/utils.h"
 #include "neural_network.h"
 
 // enable windows visual theme style

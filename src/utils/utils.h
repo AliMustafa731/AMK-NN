@@ -2,7 +2,7 @@
 
 #include <cassert>
 #include "data/array.h"
-#include "data/geometry.h"
+#include "utils/geometry.h"
 #include "common.h"
 
 #define _max(a, b) (( (a) > (b) ) ? (a) : (b))

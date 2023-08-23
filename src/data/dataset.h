@@ -2,7 +2,7 @@
 
 #include <cassert>
 #include "common.h"
-#include "data/geometry.h"
+#include "utils/geometry.h"
 #include "data/array.h"
 
 

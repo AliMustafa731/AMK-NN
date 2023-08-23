@@ -216,10 +216,10 @@ void NeuralNetwork::load(std::ifstream& file)
 
         layers[i]->load_parameters(file);
 
-		for (int j = 0; j < layers[i]->parameters.size(); j++)
-		{
-			parameters.add(&layers[i]->parameters[j]);
-		}
+        for (int j = 0; j < layers[i]->parameters.size(); j++)
+        {
+            parameters.add(&layers[i]->parameters[j]);
+        }
     }
 
     loss_gradients.resize(output_layer()->out_size);
@@ -230,14 +230,14 @@ bool NeuralNetwork::save(std::string filename)
     std::ofstream file;
     file.open(filename, std::ios::out | std::ios::binary);
 
-	if (file.fail())
-	{
-		return false;
-	}
+    if (file.fail())
+    {
+        return false;
+    }
 
     save(file);
     file.close();
-	return true;
+    return true;
 }
 
 bool NeuralNetwork::load(std::string filename)
@@ -245,12 +245,12 @@ bool NeuralNetwork::load(std::string filename)
     std::ifstream file;
     file.open(filename, std::ios::in | std::ios::binary);
 
-	if (file.fail())
-	{
-		return false;
-	}
+    if (file.fail())
+    {
+        return false;
+    }
 
     load(file);
     file.close();
-	return true;
+    return true;
 }

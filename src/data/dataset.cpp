@@ -1,5 +1,5 @@
 
-#include "data/data.h"
+#include "data/dataset.h"
 
 void DataSet::init(Shape _shape, int _samples_num)
 {

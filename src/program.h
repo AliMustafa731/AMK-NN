@@ -4,8 +4,9 @@
 #include <CommCtrl.h>
 #include <string>
 #include "data/array.h"
-#include "data/data.h"
-#include "data/graphics.h"
+#include "data/buffer.h"
+#include "data/dataset.h"
+#include "utils/graphics.h"
 #include "common.h"
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);

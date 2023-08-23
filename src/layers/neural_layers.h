@@ -1,8 +1,8 @@
 #pragma once
 
-#include "optimizers.h"
+#include "optimizers/optimizers.h"
 #include "data/array.h"
-#include "data/geometry.h"
+#include "utils/geometry.h"
 #include "common.h"
 #include <fstream>
 
@@ -24,7 +24,7 @@
 struct NeuralLayer
 {
     Array<float> X, dX, Y, dY;
-	Array<Parameter> parameters;
+    Array<Parameter> parameters;
     int in_size, out_size, type;
     Shape in_shape, out_shape;
     bool trainable;
@@ -53,26 +53,8 @@ struct FullLayer : NeuralLayer
     Array<float> W, dW, B, dB;
     float weight_decay;
 
-    FullLayer()
-    {
-        type = FULL_LAYER;
-    }
-    FullLayer(int _size, float _weight_decay = 0, Shape _out_shape = Shape(0, 0, 0))
-    {
-        trainable = true;
-        weight_decay = _weight_decay;
-        type = FULL_LAYER;
-        out_size = _size;
-
-        if (_out_shape.size() == 0)
-        {
-            out_shape = { out_size, 1, 1 };
-        }
-        else
-        {
-            out_shape = _out_shape;
-        }
-    }
+    FullLayer();
+    FullLayer(int _size, float _weight_decay = 0, Shape _out_shape = Shape(0, 0, 0));
 
     void init(Shape _in_shape);
     void release(){}
@@ -92,19 +74,8 @@ struct ConvLayer : NeuralLayer
     Shape kernel, padd, stride;
     float weight_decay;
 
-    ConvLayer()
-    {
-        type = CONV_LAYER;
-    }
-    ConvLayer(Shape _kernel, Shape _stride = Shape(1, 1, 0), Shape _padd = Shape(0, 0, 0), float _weight_decay = 0)
-    {
-        trainable = true;
-        type = CONV_LAYER;
-        kernel = _kernel;
-        stride = _stride;
-        padd = _padd;
-        weight_decay = _weight_decay;
-    }
+    ConvLayer();
+    ConvLayer(Shape _kernel, Shape _stride = Shape(1, 1, 0), Shape _padd = Shape(0, 0, 0), float _weight_decay = 0);
 
     void init(Shape _in_shape);
     void release(){}
@@ -124,19 +95,8 @@ struct ConvTLayer : NeuralLayer
     Shape kernel, padd, stride;
     float weight_decay;
 
-    ConvTLayer()
-    {
-        type = CONV_TRANSPOSE_LAYER;
-    }
-    ConvTLayer(Shape _kernel, Shape _stride = Shape(1, 1, 0), Shape _padd = Shape(0, 0, 0), float _weight_decay = 0)
-    {
-        trainable = true;
-        type = CONV_TRANSPOSE_LAYER;
-        kernel = _kernel;
-        stride = _stride;
-        padd = _padd;
-        weight_decay = _weight_decay;
-    }
+    ConvTLayer();
+    ConvTLayer(Shape _kernel, Shape _stride = Shape(1, 1, 0), Shape _padd = Shape(0, 0, 0), float _weight_decay = 0);
 
     void init(Shape _in_shape);
     void release(){}
@@ -154,16 +114,8 @@ struct MaxPoolLayer : NeuralLayer
     Shape window, stride;
     Array<int> max_indices;
 
-    MaxPoolLayer()
-    {
-        type = MAX_POOL_LAYER;
-    }
-    MaxPoolLayer(Shape _window, Shape _stride)
-    {
-        type = MAX_POOL_LAYER;
-        window = _window;
-        stride = _stride;
-    }
+    MaxPoolLayer();
+    MaxPoolLayer(Shape _window, Shape _stride);
 
     void init(Shape _in_shape);
     void release();
@@ -177,16 +129,8 @@ struct AvgPoolLayer : NeuralLayer
 {
     Shape window, stride;
 
-    AvgPoolLayer()
-    {
-        type = AVG_POOL_LAYER;
-    }
-    AvgPoolLayer(Shape _window, Shape _stride)
-    {
-        type = AVG_POOL_LAYER;
-        window = _window;
-        stride = _stride;
-    }
+    AvgPoolLayer();
+    AvgPoolLayer(Shape _window, Shape _stride);
 
     void init(Shape _in_shape);
     void release(){}
