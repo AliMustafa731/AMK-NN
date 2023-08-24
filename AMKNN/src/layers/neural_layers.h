@@ -17,6 +17,7 @@
 #define RELU_LEAK_LAYER 8
 #define DROPOUT_LAYER 9
 #define SINE_LAYER 10
+#define ELTWISE_LINEAR_LAYER 11
 
 //----------------------------------------------
 //  Base Layer Class
@@ -55,6 +56,25 @@ struct FullLayer : NeuralLayer
 
     FullLayer();
     FullLayer(int _size, float _weight_decay = 0, Shape _out_shape = Shape(0, 0, 0));
+
+    void init(Shape _in_shape);
+    void release(){}
+    float* forward(float* input);
+    float* backward(float* d_output);
+    void save(std::ofstream& file);
+    void load(std::ifstream& file);
+};
+
+//----------------------------------------------
+//  Element-wise linear sacle & offset
+//----------------------------------------------
+struct EltwiseLinear : NeuralLayer
+{
+    Array<float> A, dA, B, dB;
+    float weight_decay;
+
+    EltwiseLinear();
+    EltwiseLinear(float _weight_decay);
 
     void init(Shape _in_shape);
     void release(){}

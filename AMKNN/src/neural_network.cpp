@@ -203,6 +203,7 @@ void NeuralNetwork::load(std::ifstream& file)
         if (type == TANH_LAYER) layers[i] = new TanhLayer();
         if (type == SINE_LAYER) layers[i] = new SineLayer();
         if (type == DROPOUT_LAYER) layers[i] = new DropoutLayer();
+        if (type == ELTWISE_LINEAR_LAYER) layers[i] = new EltwiseLinear();
 
         layers[i]->load(file);
 

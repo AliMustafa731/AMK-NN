@@ -43,6 +43,7 @@
     <ClCompile Include="src\layers\avg_pool.cpp" />
     <ClCompile Include="src\layers\convolutional.cpp" />
     <ClCompile Include="src\layers\convolutional_transposed.cpp" />
+    <ClCompile Include="src\layers\element_wise_linear.cpp" />
     <ClCompile Include="src\layers\fully_connected.cpp" />
     <ClCompile Include="src\layers\max_pool.cpp" />
     <ClCompile Include="src\layers\neural_layers.cpp" />
