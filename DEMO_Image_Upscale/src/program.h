@@ -3,6 +3,7 @@
 #include <Windows.h>
 #include <CommCtrl.h>
 #include <string>
+
 #include "data/array.h"
 #include "data/buffer.h"
 #include "data/dataset.h"

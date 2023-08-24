@@ -4,11 +4,13 @@
 #include <fstream>
 #include <string>
 #include <ctime>
+
 #include <process.h>
 #include "program.h"
+#include "loaders.h"
+
 #include "data/dataset.h"
 #include "utils/graphics.h"
-#include "utils/loaders.h"
 #include "utils/utils.h"
 #include "neural_network.h"
 
