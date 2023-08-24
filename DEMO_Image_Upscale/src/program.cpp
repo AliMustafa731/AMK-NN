@@ -158,8 +158,8 @@ void DrawerNetworkDraw(Buffer<Color> &dest, int w, int h)
     {
         for (int y = 0; y < h; y++)
         {
-            netowrk_input[0] = (float)x / w_f;
-            netowrk_input[1] = (float)y / h_f;
+            netowrk_input[0] = (float)x * 10.0f / w_f;
+            netowrk_input[1] = (float)y * 10.0f / h_f;
             float *o = drawer_network.forward(netowrk_input.data);
 
             int idx = x + y * w;
@@ -198,8 +198,8 @@ void train_network_thread(void *args)
             for (int y = 0; y < h; y++)
             {
                 network_label[0] = f_img_1[x + y * w] / 255.0f;
-                netowrk_input[0] = (float)x / w_f;
-                netowrk_input[1] = (float)y / h_f;
+                netowrk_input[0] = (float)x * 10.0f / w_f;
+                netowrk_input[1] = (float)y * 10.0f / h_f;
 
                 float *o = drawer_network.forward(netowrk_input.data);
                 MSELoss(&drawer_network, network_label.data, size);
