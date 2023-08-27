@@ -1,5 +1,5 @@
 
-#include "neural_network.h"
+#include "layers/base_layer.h"
 #include <cmath>
 
 void NeuralLayer::allocate(int _in_size, int _out_size)

@@ -1,6 +1,7 @@
 
-#include "layers/neural_layers.h"
+#include "layers/convolutional.h"
 #include "utils/utils.h"
+#include "utils/random.h"
 
 void ConvLayer::init(Shape _in_shape)
 {

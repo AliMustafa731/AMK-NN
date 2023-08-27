@@ -1,5 +1,5 @@
 
-#include "activations/activation_layers.h"
+#include "activations/sine.h"
 #include <cmath>
 
 float* SineLayer::forward(float* input)

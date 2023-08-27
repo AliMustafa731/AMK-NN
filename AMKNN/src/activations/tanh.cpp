@@ -1,5 +1,5 @@
 
-#include "activations/activation_layers.h"
+#include "activations/tanh.h"
 #include <cmath>
 
 __forceinline float tanH(float x)

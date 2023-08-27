@@ -1,5 +1,5 @@
 
-#include "layers/neural_layers.h"
+#include "layers/avg_pool.h"
 #include "utils/utils.h"
 
 void AvgPoolLayer::init(Shape _in_shape)

@@ -51,6 +51,60 @@
     <ClInclude Include="src\activations\activation_layers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\activations\dropout.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\activations\relu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\activations\relu_leak.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\activations\sigmoid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\activations\sine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\activations\tanh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\layers\base_layer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\optimizers\parameter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\layers\avg_pool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\layers\convolutional.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\layers\convolutional_transposed.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\layers\element_wise_linear.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\layers\fully_connected.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\layers\max_pool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\optimizers\adam.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\optimizers\gradient_descent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\optimizers\optimizer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\optimizers\rms_propagation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\activations\dropout.cpp">
@@ -89,9 +143,6 @@
     <ClCompile Include="src\layers\max_pool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\layers\neural_layers.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\optimizers\adam.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -105,6 +156,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\layers\element_wise_linear.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\base_layer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

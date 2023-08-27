@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+
 #include "layers/neural_layers.h"
 #include "activations/activation_layers.h"
 #include "optimizers/optimizers.h"

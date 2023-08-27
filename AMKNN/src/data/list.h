@@ -25,6 +25,11 @@ template<typename T> struct List
             prev = NULL;
         }
     };
+    
+    static inline bool compareNode(Node *a, Node *b)
+    {
+        return (a->next == b->next && a->prev == b->prev);
+    }
 
     Node *base, *head;
     int length;
@@ -55,7 +60,7 @@ template<typename T> struct List
         for (Node *n = base; n->next != NULL; n = n->next)
         {
             // check if the node is within our linked list
-            if (n == node)
+            if (compareNode(n, node))
             {
                 external_node = false;
                 break;

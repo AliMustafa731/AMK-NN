@@ -1,6 +1,6 @@
 
-#include "activations/activation_layers.h"
-#include "utils/utils.h"
+#include "activations/dropout.h"
+#include "utils/random.h"
 
 void DropoutLayer::init(Shape _in_shape)
 {

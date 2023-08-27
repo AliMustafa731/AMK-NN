@@ -1,6 +1,6 @@
 
-#include "layers/neural_layers.h"
-#include "utils/utils.h"
+#include "layers/element_wise_linear.h"
+#include "utils/random.h"
 
 void EltwiseLinear::init(Shape _in_shape)
 {

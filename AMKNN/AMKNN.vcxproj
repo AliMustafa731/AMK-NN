@@ -20,14 +20,32 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\activations\activation_layers.h" />
+    <ClInclude Include="src\activations\dropout.h" />
+    <ClInclude Include="src\activations\relu.h" />
+    <ClInclude Include="src\activations\relu_leak.h" />
+    <ClInclude Include="src\activations\sigmoid.h" />
+    <ClInclude Include="src\activations\sine.h" />
+    <ClInclude Include="src\activations\tanh.h" />
     <ClInclude Include="src\common.h" />
     <ClInclude Include="src\data\array.h" />
     <ClInclude Include="src\data\buffer.h" />
     <ClInclude Include="src\data\dataset.h" />
     <ClInclude Include="src\data\list.h" />
+    <ClInclude Include="src\layers\avg_pool.h" />
+    <ClInclude Include="src\layers\base_layer.h" />
+    <ClInclude Include="src\layers\convolutional.h" />
+    <ClInclude Include="src\layers\convolutional_transposed.h" />
+    <ClInclude Include="src\layers\element_wise_linear.h" />
+    <ClInclude Include="src\layers\fully_connected.h" />
+    <ClInclude Include="src\layers\max_pool.h" />
     <ClInclude Include="src\layers\neural_layers.h" />
     <ClInclude Include="src\neural_network.h" />
+    <ClInclude Include="src\optimizers\adam.h" />
+    <ClInclude Include="src\optimizers\gradient_descent.h" />
+    <ClInclude Include="src\optimizers\optimizer.h" />
     <ClInclude Include="src\optimizers\optimizers.h" />
+    <ClInclude Include="src\optimizers\parameter.h" />
+    <ClInclude Include="src\optimizers\rms_propagation.h" />
     <ClInclude Include="src\utils\geometry.h" />
     <ClInclude Include="src\utils\graphics.h" />
     <ClInclude Include="src\utils\utils.h" />
@@ -46,7 +64,7 @@
     <ClCompile Include="src\layers\element_wise_linear.cpp" />
     <ClCompile Include="src\layers\fully_connected.cpp" />
     <ClCompile Include="src\layers\max_pool.cpp" />
-    <ClCompile Include="src\layers\neural_layers.cpp" />
+    <ClCompile Include="src\layers\base_layer.cpp" />
     <ClCompile Include="src\neural_network.cpp" />
     <ClCompile Include="src\optimizers\adam.cpp" />
     <ClCompile Include="src\optimizers\gradient_descent.cpp" />

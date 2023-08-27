@@ -1,5 +1,4 @@
 
-#include <fstream>
 #include "neural_network.h"
 
 //----------------------------------------------

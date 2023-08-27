@@ -1,6 +1,6 @@
 
-#include "layers/neural_layers.h"
-#include "utils/utils.h"
+#include "layers/fully_connected.h"
+#include "utils/random.h"
 
 void FullLayer::init(Shape _in_shape)
 {

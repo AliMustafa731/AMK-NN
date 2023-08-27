@@ -1,5 +1,5 @@
 
-#include "optimizers/optimizers.h"
+#include "optimizers/gradient_descent.h"
 
 void GradientDescent::update(List<Parameter*> &parameters)
 {

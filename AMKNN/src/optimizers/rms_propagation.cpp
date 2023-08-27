@@ -1,5 +1,5 @@
 
-#include "optimizers/optimizers.h"
+#include "optimizers/rms_propagation.h"
 
 void RMSPropagation::update(List<Parameter*> &parameters)
 {

@@ -1,5 +1,5 @@
 
-#include "activations/activation_layers.h"
+#include "activations/sigmoid.h"
 #include <cmath>
 
 __forceinline float sigmoid(float x)

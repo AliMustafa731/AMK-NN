@@ -12,6 +12,7 @@
 #include "data/dataset.h"
 #include "utils/graphics.h"
 #include "utils/utils.h"
+#include "utils/random.h"
 #include "neural_network.h"
 
 // enable windows visual theme style

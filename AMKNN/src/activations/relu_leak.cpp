@@ -1,5 +1,5 @@
 
-#include "activations/activation_layers.h"
+#include "activations/relu_leak.h"
 
 float* RelULeakLayer::forward(float* input)
 {

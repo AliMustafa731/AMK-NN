@@ -1,5 +1,5 @@
 
-#include "layers/neural_layers.h"
+#include "layers/max_pool.h"
 #include "utils/utils.h"
 
 void MaxPoolLayer::init(Shape _in_shape)
