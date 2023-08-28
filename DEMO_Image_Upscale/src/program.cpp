@@ -241,7 +241,7 @@ void onCreate(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
     netowrk_input.init(drawer_network.in_shape.size());
     network_label.init(drawer_network.output_layer()->out_size);
-	loss_function.init(drawer_network.output_layer()->out_size);
+    loss_function.init(drawer_network.output_layer()->out_size);
 
     win_hdc = GetDC(hwnd);
 
@@ -321,17 +321,17 @@ void onCreate(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
     // Initialize OPENFILENAME for loading and saving
 
-	CreateOPENFILENAME
-	(
-		&of_load_amknn, hwnd, file_name, sizeof(file_name), ".AMKnn Neural Network format\0*.AMKnn\0\0", "AMKnn",
-		OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY
-	);
+    CreateOPENFILENAME
+    (
+        &of_load_amknn, hwnd, file_name, sizeof(file_name), ".AMKnn Neural Network format\0*.AMKnn\0\0", "AMKnn",
+        OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY
+    );
 
-	CreateOPENFILENAME
-	(
-		&of_save_amknn, hwnd, file_name, sizeof(file_name), ".AMKnn Neural Network format\0*.AMKnn\0\0", "AMKnn",
-		OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT
-	);
+    CreateOPENFILENAME
+    (
+        &of_save_amknn, hwnd, file_name, sizeof(file_name), ".AMKnn Neural Network format\0*.AMKnn\0\0", "AMKnn",
+        OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT
+    );
 }
 
 void onCommand(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)

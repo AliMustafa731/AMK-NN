@@ -6,12 +6,12 @@
 
 struct Optimizer
 {
-	int type;
+    int type;
 
-	Optimizer() {}
-	virtual ~Optimizer() {}
+    Optimizer() {}
+    virtual ~Optimizer() {}
 
-	virtual void update(List<Parameter*> &parameters) = 0;
-	virtual void save(std::ofstream& file) = 0;
-	virtual void load(std::ifstream& file) = 0;
+    virtual void update(List<Parameter*> &parameters) = 0;
+    virtual void save(std::ofstream& file) = 0;
+    virtual void load(std::ifstream& file) = 0;
 };

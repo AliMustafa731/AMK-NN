@@ -49,21 +49,21 @@ struct NeuralNetwork
 //----------------------------------------------
 struct LossFunction
 {
-	Array<float> gradients;
+    Array<float> gradients;
 
-	LossFunction(){}
-	~LossFunction(){}
+    LossFunction(){}
+    ~LossFunction(){}
 
-	void init(int _grad_size);
-	void release();
-	virtual float evaluate(NeuralNetwork* network, DataSet* data, DataSet* labels) = 0;
-	virtual float* gradient(NeuralNetwork* network, float* label, int batch_size) = 0;
+    void init(int _grad_size);
+    void release();
+    virtual float evaluate(NeuralNetwork* network, DataSet* data, DataSet* labels) = 0;
+    virtual float* gradient(NeuralNetwork* network, float* label, int batch_size) = 0;
 };
 
 struct MSELoss : LossFunction
 {
-	MSELoss() {};
+    MSELoss() {};
 
-	float evaluate(NeuralNetwork* network, DataSet* data, DataSet* labels);
-	float* gradient(NeuralNetwork* network, float* label, int batch_size);
+    float evaluate(NeuralNetwork* network, DataSet* data, DataSet* labels);
+    float* gradient(NeuralNetwork* network, float* label, int batch_size);
 };

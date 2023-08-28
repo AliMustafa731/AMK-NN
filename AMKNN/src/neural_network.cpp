@@ -35,7 +35,7 @@ float* MSELoss::gradient(NeuralNetwork* network, float* label, int batch_size)
         gradients[i] = (output_layer->Y[i] - label[i]) / (float)batch_size;
     }
 
-	return gradients.data;
+    return gradients.data;
 }
 
 void LossFunction::init(int _grad_size) { gradients.init(_grad_size); }
