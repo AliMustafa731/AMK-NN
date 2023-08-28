@@ -133,7 +133,6 @@ const char* header_txt = "\nBy : Ali Mustafa Kamel\n2022-2023";
 
 OPENFILENAME of_load_amknn = { 0 };
 OPENFILENAME of_save_amknn = { 0 };
-OPENFILENAME of_save_image = { 0 };
 char file_name[512];
 
 TrackBar treackbar_learn_rate;
@@ -320,47 +319,18 @@ void onCreate(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     treackbar_squared_grad.set_pos(squared_grad);
 
     // Initialize OPENFILENAME for loading and saving
-    ZeroMemory(&of_load_amknn, sizeof(of_load_amknn));
-    ZeroMemory(&of_save_amknn, sizeof(of_save_amknn));
-    ZeroMemory(&of_save_image, sizeof(of_save_image));
 
-    of_load_amknn.lStructSize = sizeof(of_load_amknn);
-    of_load_amknn.hwndOwner = hwnd;
-    of_load_amknn.lpstrFile = file_name;
-    of_load_amknn.lpstrFile[0] = '\0';  // Set to '\0' so that GetOpenFileName does not use the contents of file_name to initialize itself.
-    of_load_amknn.nMaxFile = sizeof(file_name);
-    of_load_amknn.lpstrFilter = ".AMKnn Neural Network format\0*.AMKnn\0\0";
-    of_load_amknn.nFilterIndex = 1;
-    of_load_amknn.lpstrFileTitle = NULL;
-    of_load_amknn.nMaxFileTitle = 0;
-    of_load_amknn.lpstrInitialDir = NULL;
-    of_load_amknn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+	CreateOPENFILENAME
+	(
+		&of_load_amknn, hwnd, file_name, sizeof(file_name), ".AMKnn Neural Network format\0*.AMKnn\0\0", "AMKnn",
+		OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY
+	);
 
-    of_save_amknn.lStructSize = sizeof(of_save_image);
-    of_save_amknn.hwndOwner = hwnd;
-    of_save_amknn.lpstrFile = file_name;
-    of_save_amknn.lpstrFile[0] = '\0';
-    of_save_amknn.nMaxFile = sizeof(file_name);
-    of_save_amknn.lpstrFilter = ".AMKnn Neural Network format\0*.AMKnn\0\0";
-    of_save_amknn.nFilterIndex = 1;
-    of_save_amknn.lpstrFileTitle = NULL;
-    of_save_amknn.nMaxFileTitle = 0;
-    of_save_amknn.lpstrInitialDir = NULL;
-    of_save_amknn.lpstrDefExt = "AMKnn";
-    of_save_amknn.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
-
-    of_save_image.lStructSize = sizeof(of_save_image);
-    of_save_image.hwndOwner = hwnd;
-    of_save_image.lpstrFile = file_name;
-    of_save_image.lpstrFile[0] = '\0';
-    of_save_image.nMaxFile = sizeof(file_name);
-    of_save_image.lpstrFilter = ".png format\0*.png\0\0";
-    of_save_image.nFilterIndex = 1;
-    of_save_image.lpstrFileTitle = NULL;
-    of_save_image.nMaxFileTitle = 0;
-    of_save_image.lpstrInitialDir = NULL;
-    of_save_image.lpstrDefExt = "png";
-    of_save_image.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+	CreateOPENFILENAME
+	(
+		&of_save_amknn, hwnd, file_name, sizeof(file_name), ".AMKnn Neural Network format\0*.AMKnn\0\0", "AMKnn",
+		OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT
+	);
 }
 
 void onCommand(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)

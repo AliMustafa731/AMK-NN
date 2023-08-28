@@ -14,7 +14,6 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 struct Program
 {
-    int width, height;
     HWND win_handle;
 
     Program(){}
@@ -122,3 +121,21 @@ struct TrackBar
         update();
     }
 };
+
+inline void CreateOPENFILENAME(OPENFILENAME *ofn, HWND parent, char* buffer, int buffer_size, const char* filters, const char* default_ext, DWORD flags)
+{
+	ZeroMemory(ofn, sizeof(OPENFILENAME));
+
+	ofn->lStructSize = sizeof(OPENFILENAME);
+	ofn->hwndOwner = parent;
+	ofn->lpstrFile = (LPSTR)buffer;
+	ofn->lpstrFile[0] = '\0';
+	ofn->nMaxFile = buffer_size;
+	ofn->lpstrFilter = (LPSTR)filters;
+	ofn->nFilterIndex = 1;
+	ofn->lpstrFileTitle = NULL;
+	ofn->nMaxFileTitle = 0;
+	ofn->lpstrInitialDir = NULL;
+	ofn->lpstrDefExt = (LPSTR)default_ext;
+	ofn->Flags = flags;
+}
