@@ -17,7 +17,6 @@ struct NeuralNetwork
 {
     List<Parameter*> parameters;
     Array<NeuralLayer*> layers;
-    Array<float> loss_gradients;
     Optimizer* optimizer;
     Shape in_shape;
 
@@ -27,15 +26,14 @@ struct NeuralNetwork
     }
     NeuralNetwork() {}
 
-    NeuralLayer* output_layer() { return layers[layers.size() - 1]; }
-    NeuralLayer* input_layer() { return layers[0]; }
+    inline NeuralLayer* output_layer() { return layers[layers.size() - 1]; }
+    inline NeuralLayer* input_layer() { return layers[0]; }
 
     void init(Shape _in_shape, std::vector<NeuralLayer*> _layers, Optimizer* _optimizer);
     void add(NeuralLayer* layer);
 
     float* forward(float* input);
     float* backward(float* d_output);
-    float* backward();
 
     void set_trainable(bool option);
 
@@ -47,8 +45,25 @@ struct NeuralNetwork
 };
 
 //----------------------------------------------
-//  Mean Squared Error Loss Function
+//  Loss Function
 //----------------------------------------------
-float MSELoss(NeuralNetwork* network, DataSet* data, DataSet* labels);
+struct LossFunction
+{
+	Array<float> gradients;
 
-void MSELoss(NeuralNetwork* network, float* label, int batch_size);
+	LossFunction(){}
+	~LossFunction(){}
+
+	void init(int _grad_size);
+	void release();
+	virtual float evaluate(NeuralNetwork* network, DataSet* data, DataSet* labels) = 0;
+	virtual float* gradient(NeuralNetwork* network, float* label, int batch_size) = 0;
+};
+
+struct MSELoss : LossFunction
+{
+	MSELoss() {};
+
+	float evaluate(NeuralNetwork* network, DataSet* data, DataSet* labels);
+	float* gradient(NeuralNetwork* network, float* label, int batch_size);
+};

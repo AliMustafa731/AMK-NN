@@ -8,7 +8,7 @@
 //----------------------------------------------
 
 // evaluate the loss
-float MSELoss(NeuralNetwork* network, DataSet* data, DataSet* labels)
+float MSELoss::evaluate(NeuralNetwork* network, DataSet* data, DataSet* labels)
 {
     float total_loss = 0;
 
@@ -26,16 +26,24 @@ float MSELoss(NeuralNetwork* network, DataSet* data, DataSet* labels)
 }
 
 // calculate the loss gradients
-void MSELoss(NeuralNetwork* network, float* label, int batch_size)
+float* MSELoss::gradient(NeuralNetwork* network, float* label, int batch_size)
 {
     NeuralLayer* output_layer = network->output_layer();
 
     for (int i = 0; i < output_layer->out_size; i++)
     {
-        network->loss_gradients[i] = (output_layer->Y[i] - label[i]) / (float)batch_size;
+        gradients[i] = (output_layer->Y[i] - label[i]) / (float)batch_size;
     }
+
+	return gradients.data;
 }
 
+void LossFunction::init(int _grad_size) { gradients.init(_grad_size); }
+void LossFunction::release() { gradients.release(); }
+
+//-----------------------------------------
+//  Sequential Neural Network Structure
+//-----------------------------------------
 void NeuralNetwork::init(Shape _in_shape, std::vector<NeuralLayer*> _layers, Optimizer* _optimizer)
 {
     release();
@@ -67,8 +75,6 @@ void NeuralNetwork::add(NeuralLayer* layer)
     layer->init(layer->in_shape);
     layer->allocate(layer->in_shape.size(), layer->out_shape.size());
 
-    loss_gradients.resize(layer->out_size);
-
     for (int j = 0; j < layer->parameters.size(); j++)
     {
         parameters.add(&layer->parameters[j]);
@@ -99,18 +105,6 @@ float* NeuralNetwork::backward(float* d_output)
     return layers[0]->dX.data;
 }
 
-float* NeuralNetwork::backward()
-{
-    float* dY = loss_gradients.data;
-
-    for (int i = layers.size() - 1; i >= 0; i--)
-    {
-        dY = layers[i]->backward(dY);
-    }
-
-    return layers[0]->dX.data;
-}
-
 void NeuralNetwork::set_trainable(bool option)
 {
     for (int i = 0; i < layers.size(); i++)
@@ -131,7 +125,6 @@ void NeuralNetwork::release()
     }
     layers.release();
     parameters.release();
-    loss_gradients.release();
 }
 
 const char* AMK_FORMAT = "AMKNN";
@@ -221,8 +214,6 @@ void NeuralNetwork::load(std::ifstream& file)
             parameters.add(&layers[i]->parameters[j]);
         }
     }
-
-    loss_gradients.resize(output_layer()->out_size);
 }
 
 bool NeuralNetwork::save(std::string filename)

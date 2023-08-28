@@ -124,6 +124,7 @@ Buffer<float> f_img_1;
 Array<float> netowrk_input, network_label;
 
 NeuralNetwork drawer_network;
+MSELoss loss_function;
 float learn_rate = 0.008f;
 float momentum = 0.75f;
 float squared_grad = 0.95f;
@@ -202,8 +203,7 @@ void train_network_thread(void *args)
                 netowrk_input[1] = (float)y * 10.0f / h_f;
 
                 float *o = drawer_network.forward(netowrk_input.data);
-                MSELoss(&drawer_network, network_label.data, size);
-                drawer_network.backward();
+                drawer_network.backward( loss_function.gradient(&drawer_network, network_label.data, size) );
 
                 float _loss = network_label[0] - o[0];
                 loss += _loss * _loss * 0.5f;
@@ -241,6 +241,7 @@ void onCreate(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
     netowrk_input.init(drawer_network.in_shape.size());
     network_label.init(drawer_network.output_layer()->out_size);
+	loss_function.init(drawer_network.output_layer()->out_size);
 
     win_hdc = GetDC(hwnd);
 
