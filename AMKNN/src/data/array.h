@@ -3,9 +3,11 @@
 #include <cassert>
 #include "common.h"
 
-//---------------------------
-//   Static Array Structure
-//---------------------------
+//---------------------------------
+//   Dynamic Array Structure
+//   you must use "reserve()"
+//   if you want to add elements
+//---------------------------------
 template<typename T> struct Array
 {
 private:
@@ -68,6 +70,22 @@ public:
 
     void add(T val)
     {
+        if (data == NULL) { return; }
+
+        // if length eceeds the capacity
+        // realloctate double the amount of memory
+        if (_length >= _size)
+        {
+            _size *= 2;
+
+            // initialize & copy new buffer
+            T* tmp = new T[_size];
+            for (int i = 0; i < _length; i++) { tmp[i] = data[i]; }
+
+            delete[] data;
+            data = tmp;
+        }
+
         data[_length] = val;
         _length += 1;
     }
