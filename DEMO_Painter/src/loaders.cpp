@@ -65,6 +65,14 @@ void normalize(Buffer<Colorf> &target)
     }
 }
 
+void normalize(Buffer<float> &target)
+{
+    for (int i = 0; i < target.size; i++)
+    {
+        target[i] /= 255.0f;
+    }
+}
+
 void denormalize(Buffer<Colorf> &target)
 {
     for (int i = 0; i < target.size; i++)
@@ -72,5 +80,13 @@ void denormalize(Buffer<Colorf> &target)
         target[i].r *= 255.0f;
         target[i].g *= 255.0f;
         target[i].b *= 255.0f;
+    }
+}
+
+void denormalize(Buffer<float> &target)
+{
+    for (int i = 0; i < target.size; i++)
+    {
+        target[i] *= 255.0f;
     }
 }

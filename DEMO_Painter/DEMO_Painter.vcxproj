@@ -152,12 +152,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\loaders.h" />
+    <ClInclude Include="src\painter.h" />
     <ClInclude Include="src\program.h" />
     <ClInclude Include="src\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\loaders.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\painter.cpp" />
     <ClCompile Include="src\program.cpp" />
     <ClCompile Include="src\stb_image.cpp" />
   </ItemGroup>

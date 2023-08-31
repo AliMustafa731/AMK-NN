@@ -9,4 +9,8 @@ int readImage(const char* filename, Buffer<Colorf> &target);
 
 void normalize(Buffer<Colorf> &target);
 
+void normalize(Buffer<float> &target);
+
 void denormalize(Buffer<Colorf> &target);
+
+void denormalize(Buffer<float> &target);

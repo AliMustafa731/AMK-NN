@@ -14,6 +14,7 @@
 #include "utils/utils.h"
 #include "utils/random.h"
 #include "neural_network.h"
+#include "painter.h"
 
 // enable windows visual theme style
 #pragma comment(linker,"\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
@@ -117,8 +118,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 //    Training & Logic of the program
 //-----------------------------------------------------
 
-Array<float> netowrk_input, network_label;
-NeuralNetwork drawer_network;
+PainterNetwork painter_network;
+Adam optimizer;
 
 float learn_rate = 0.008f;
 float momentum = 0.75f;
@@ -148,29 +149,21 @@ HDC win_hdc;
 
 void train_network_thread(void *args)
 {
-
+    img_1.draw(win_hdc, 32, 32, 256, 256);
 }
 
 void onCreate(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	drawer_network.init
-	(
-		Shape(2, 1, 1),
-		{
-			new FullLayer(15, 0.0001f),
-			new SineLayer(),
-			new FullLayer(10, 0.0001f),
-			new SineLayer(),
-			new FullLayer(10, 0.0001f),
-			new SineLayer(),
-			new FullLayer(1),
-			new SigmoidLayer()
-		},
-		new Adam(learn_rate, momentum, squared_grad)
-	);
+    painter_network = PainterNetwork(Shape(64, 64, 1));
+    painter_network.add(new DrawLineElement());
+    painter_network.forward(NULL);
 
-	netowrk_input.init(drawer_network.in_shape.size());
-	network_label.init(drawer_network.output_layer()->out_size);
+    img_1 = Image(64, 64);
+
+    denormalize(painter_network.map);
+    embed_one_channel_to_color(img_1.img.data, painter_network.map.data, painter_network.map.size);
+
+    img_1.draw(win_hdc, 32, 32, 256, 256);
 
 	win_hdc = GetDC(hwnd);
 
@@ -269,7 +262,7 @@ void onCommand(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 		if (GetSaveFileName(&of_save_amknn))
 		{
-			drawer_network.save(file_name);
+
 		}
 	}
 
@@ -277,16 +270,7 @@ void onCommand(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 		if (GetOpenFileName(&of_load_amknn))
 		{
-			drawer_network.load(file_name);
 
-			Adam* p = (Adam*)drawer_network.optimizer;
-			learn_rate = p->learning_rate;
-			momentum = p->beta1;
-			squared_grad = p->beta2;
-
-			treackbar_learn_rate.set_pos(learn_rate);
-			treackbar_momentum.set_pos(momentum);
-			treackbar_squared_grad.set_pos(squared_grad);
 		}
 	}
 }
@@ -301,10 +285,9 @@ void updateTrackbars(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	momentum = treackbar_momentum.get_pos();
 	squared_grad = treackbar_squared_grad.get_pos();
 
-	Adam* p = (Adam*)drawer_network.optimizer;
-	p->learning_rate = learn_rate;
-	p->beta1 = momentum;
-	p->beta2 = squared_grad;
+	optimizer.learning_rate = learn_rate;
+    optimizer.beta1 = momentum;
+    optimizer.beta2 = squared_grad;
 }
 
 void onDraw(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -315,8 +298,8 @@ void onDraw(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	FillRect(hdc, &ps.rcPaint, (HBRUSH)COLOR_WINDOW);
 
 	img_1.draw(hdc, 32, 32, 256, 256);
-	img_2.draw(hdc, 332, 32, 256, 256);
-	img_3.draw(hdc, 632, 32, 256, 256);
+	//img_2.draw(hdc, 332, 32, 256, 256);
+	//img_3.draw(hdc, 632, 32, 256, 256);
 
 	EndPaint(hwnd, &ps);
 	ReleaseDC(hwnd, hdc);
