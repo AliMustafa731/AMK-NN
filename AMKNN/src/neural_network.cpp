@@ -1,5 +1,5 @@
 
-#include "neural_network.h"
+#include <neural_network.h>
 
 //----------------------------------------------
 //  Mean Squared Error Loss Function
@@ -8,34 +8,34 @@
 //----------------------------------------------
 
 // evaluate the loss
-float MSELoss::evaluate(NeuralNetwork* network, DataSet* data, DataSet* labels)
+float MSELoss::evaluate(NeuralNetwork& network, DataSet& data, DataSet& labels)
 {
     float total_loss = 0;
 
-    for (int i = 0; i < data->samples_num; i++)
+    for (int i = 0; i < data.samples_num; i++)
     {
-        float* output = network->forward(data->ptr[i]);
-        for (int j = 0; j < labels->sample_size; j++)
+        Tensor<float>& output = network.forward(data[i]);
+        for (int j = 0 ; j < output.size() ; j++)
         {
-            float _loss = output[j] - labels->data[j + i * labels->sample_size];
+            float _loss = output[j] - labels[i][j];
             total_loss += _loss * _loss;
         }
     }
 
-    return (total_loss * 0.5f) / (float)data->samples_num;
+    return (total_loss * 0.5f) / (float)data.samples_num;
 }
 
 // calculate the loss gradients
-float* MSELoss::gradient(NeuralNetwork* network, float* label, int batch_size)
+Tensor<float>& MSELoss::gradient(NeuralNetwork& network, Tensor<float>& label, int batch_size)
 {
-    NeuralLayer* output_layer = network->output_layer();
+    NeuralLayer* output_layer = network.output_layer();
 
     for (int i = 0; i < output_layer->out_size; i++)
     {
         gradients[i] = (output_layer->Y[i] - label[i]) / (float)batch_size;
     }
 
-    return gradients.data;
+    return gradients;
 }
 
 void LossFunction::init(int _grad_size) { gradients.init(_grad_size); }
@@ -44,17 +44,15 @@ void LossFunction::release() { gradients.release(); }
 //-----------------------------------------
 //  Sequential Neural Network Structure
 //-----------------------------------------
-void NeuralNetwork::init(Shape _in_shape, std::vector<NeuralLayer*> _layers, Optimizer* _optimizer)
+void NeuralNetwork::init(Shape _in_shape, std::vector<NeuralLayer*> _layers)
 {
     release();
     in_shape = _in_shape;
-    optimizer = _optimizer;
-
     layers.reserve(_layers.size());
 
     for (int i = 0; i < _layers.size(); i++)
     {
-        add(_layers[i]);
+        NeuralNetwork::add(_layers[i]);
     }
 }
 
@@ -81,28 +79,28 @@ void NeuralNetwork::add(NeuralLayer* layer)
     }
 }
 
-float* NeuralNetwork::forward(float* input)
+Tensor<float>& NeuralNetwork::forward(Tensor<float>& input)
 {
-    float* X = input;
+    Tensor<float> X = input;
 
     for (int i = 0; i < layers.size(); i++)
     {
         X = layers[i]->forward(X);
     }
 
-    return output_layer()->Y.data;
+    return output_layer()->Y;
 }
 
-float* NeuralNetwork::backward(float* d_output)
+Tensor<float>& NeuralNetwork::backward(Tensor<float>& output_grad)
 {
-    float* dY = d_output;
+    Tensor<float> dY = output_grad;
 
     for (int i = layers.size() - 1; i >= 0; i--)
     {
         dY = layers[i]->backward(dY);
     }
 
-    return layers[0]->dX.data;
+    return input_layer()->dX;
 }
 
 void NeuralNetwork::set_trainable(bool option)
@@ -136,8 +134,6 @@ void NeuralNetwork::save(std::ofstream& file)
     file.write(AMK_FORMAT, AMK_FORMAT_SIZE);
     file.write((char*)&layers_count, sizeof(int));
     file.write((char*)&in_shape, sizeof(Shape));
-    file.write((char*)&optimizer->type, sizeof(int));
-    optimizer->save(file);
 
     for (int i = 0; i < layers.size(); i++)
     {
@@ -160,12 +156,6 @@ void NeuralNetwork::load(std::ifstream& file)
     file.read(text, AMK_FORMAT_SIZE);
     file.read((char*)&layers_count, sizeof(int));
     file.read((char*)&in_shape, sizeof(Shape));
-    file.read((char*)&optimizer_type, sizeof(int));
-
-    if (optimizer_type == GRADIENT_DESCENT) optimizer = new GradientDescent();
-    if (optimizer_type == RMS_PROPAGATION) optimizer = new RMSPropagation();
-    if (optimizer_type == ADAM) optimizer = new Adam();
-    optimizer->load(file);
 
     if (strcmp(text, AMK_FORMAT))
     {

@@ -1,7 +1,8 @@
 
-#include "layers/convolutional_transposed.h"
-#include "utils/utils.h"
-#include "utils/random.h"
+#include <cstring>
+#include <layers/convolutional_transposed.h>
+#include <utils/convolution.h>
+#include <utils/random.h>
 
 void ConvTLayer::init(Shape _in_shape)
 {
@@ -44,14 +45,14 @@ void ConvTLayer::init(Shape _in_shape)
     setTrainable(true);
 }
 
-float* ConvTLayer::forward(float* input)
+Tensor<float>& ConvTLayer::forward(Tensor<float>& input)
 {
-    X.data = input;
+    X = input;
 
     int channels_in = in_shape.d;
     int channels_out = out_shape.d;
 
-    copy(Y, B);
+    std::memcpy(Y.data, B.data, Y.size() * sizeof(float));
 
     int dim_x = in_shape.w*in_shape.h;
     int dim_y = out_shape.w*out_shape.h;
@@ -66,19 +67,19 @@ float* ConvTLayer::forward(float* input)
         for (int ch_in = 0; ch_in < channels_in; ch_in++)
         {
             convolution_transpose(_X, _K, _Y_padd, stride);
-            copy_matrix(_Y, _Y_padd, { 0, 0, 0, 0 }, { padd.w, padd.h, _Y.w, _Y.h });
+            Matrix::copy(_Y, _Y_padd, { 0, 0, 0, 0 }, { padd.w, padd.h, _Y.w, _Y.h });
 
             _X.data += dim_x;
             _K.data += dim_k[1];
         }
     }
 
-    return Y.data;
+    return Y;
 }
 
-float* ConvTLayer::backward(float* d_output)
+Tensor<float>& ConvTLayer::backward(Tensor<float>& output_grad)
 {
-    dY.data = d_output;
+    dY = output_grad;
 
     int channels_in = in_shape.d;
     int channels_out = out_shape.d;
@@ -86,9 +87,9 @@ float* ConvTLayer::backward(float* d_output)
 
     if (trainable)
     {
-        copy_add(dB, dY);
+        dB.add(dY);
     }
-    fill_array(dX, 0);
+    dX.fill(0);
 
     int dim_x = in_shape.w*in_shape.h;
     int dim_y = out_shape.w*out_shape.h;
@@ -118,7 +119,7 @@ float* ConvTLayer::backward(float* d_output)
         }
     }
 
-    return dX.data;
+    return dX;
 }
 
 void ConvTLayer::save(std::ofstream& file)

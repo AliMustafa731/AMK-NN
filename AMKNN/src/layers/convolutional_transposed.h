@@ -1,13 +1,13 @@
 #pragma once
 
-#include "layers/base_layer.h"
+#include <layers/base_layer.h>
 
 //----------------------------------------------
 //  Transposed Convolutional Layer
 //----------------------------------------------
 struct ConvTLayer : NeuralLayer
 {
-    Array<float> K, dK, B, dB;
+    Tensor<float> K, dK, B, dB;
     Matrix _X, _dX, _Y, _Y_padd, _dY, _K, _dK;
     Shape kernel, padd, stride;
     float weight_decay;
@@ -17,8 +17,8 @@ struct ConvTLayer : NeuralLayer
 
     void init(Shape _in_shape);
     void release() {}
-    float* forward(float* input);
-    float* backward(float* d_output);
+    Tensor<float>& forward(Tensor<float>& input);
+    Tensor<float>& backward(Tensor<float>& output_grad);
     void save(std::ofstream& file);
     void load(std::ifstream& file);
 };

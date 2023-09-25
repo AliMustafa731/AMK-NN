@@ -1,6 +1,6 @@
 #pragma once
 
-#include "data/array.h"
+#include <data/array.h>
 
 struct Color
 {

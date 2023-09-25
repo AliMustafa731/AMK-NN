@@ -1,44 +1,37 @@
 #pragma once
 
 #include <cassert>
-#include "common.h"
-#include "utils/geometry.h"
-#include "data/array.h"
+#include <common.h>
+#include <utils/geometry.h>
+#include <data/array.h>
+#include <data/tensor.h>
 
 
 struct DataSet
 {
+public:
     int sample_size, samples_num;
     Shape shape;
-    Array<float> data;
-    Array<float*> ptr; // pointers to smaples are stored here, making it easy to shuffle the dataset
+    Tensor<float> data;
 
     DataSet() {}
-    ~DataSet() { release(); }
 
     void init(Shape _shape, int _samples_num);
     void release();
 
-    inline float* operator[](int i) const
+    // accessors
+    inline Tensor<float> operator[](int i) const
     {
-        AMK_ASSERT(i < ptr.size());
-        return ptr[i];
+        AMK_ASSERT(i < samples_num);
+        return Tensor<float>(shape.w, shape.h, shape.d, &data.data[i * sample_size]);
     }
-    inline float* &operator[](int i)
+    inline Tensor<float>& operator[](int i)
     {
-        AMK_ASSERT(i < ptr.size());
-        return ptr[i];
+        AMK_ASSERT(i < samples_num);
+        ptr.data = &data.data[i * sample_size];
+        return ptr;
     }
+
+private:
+    Tensor<float> ptr;  // used to lockup samples
 };
-
-template<typename T> __forceinline void make_ptr_list(Array<T*> &dest, Array<T> &src, int element_size)
-{
-    int elements_num = src.size() / element_size;
-    dest.init(elements_num);
-
-    for (int i = 0; i < elements_num; i++)
-    {
-        dest[i] = &src[i * element_size];
-    }
-}
-

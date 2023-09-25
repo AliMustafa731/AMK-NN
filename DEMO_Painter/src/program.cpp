@@ -6,15 +6,14 @@
 #include <ctime>
 
 #include <process.h>
-#include "program.h"
-#include "loaders.h"
+#include <program.h>
+#include <loaders.h>
 
-#include "data/dataset.h"
-#include "utils/graphics.h"
-#include "utils/utils.h"
-#include "utils/random.h"
-#include "neural_network.h"
-#include "painter.h"
+#include <data/dataset.h>
+#include <utils/graphics.h>
+#include <utils/random.h>
+#include <neural_network.h>
+#include <painter.h>
 
 // enable windows visual theme style
 #pragma comment(linker,"\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
@@ -156,12 +155,13 @@ void onCreate(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     painter_network = PainterNetwork(Shape(64, 64, 1));
     painter_network.add(new DrawLineElement());
-    painter_network.forward(NULL);
+    Tensor<float> trash;
+    painter_network.forward(trash);
 
     img_1 = Image(64, 64);
 
     denormalize(painter_network.map);
-    embed_one_channel_to_color(img_1.img.data, painter_network.map.data, painter_network.map.size);
+    embed_one_channel_to_color(img_1.img.data, painter_network.map.data, painter_network.map.size());
 
     img_1.draw(win_hdc, 32, 32, 256, 256);
 

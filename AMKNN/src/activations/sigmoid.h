@@ -1,6 +1,6 @@
 #pragma once
 
-#include "layers/base_layer.h"
+#include <layers/base_layer.h>
 
 struct SigmoidLayer : NeuralLayer
 {
@@ -8,8 +8,8 @@ struct SigmoidLayer : NeuralLayer
 
     void init(Shape _in_shape);
     void release() {}
-    float* forward(float* input);
-    float* backward(float* d_output);
+    Tensor<float>& forward(Tensor<float>& input);
+    Tensor<float>& backward(Tensor<float>& output_grad);
     void save(std::ofstream& file) {}
     void load(std::ifstream& file) {}
 };

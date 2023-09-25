@@ -1,6 +1,6 @@
 
-#include "layers/element_wise_linear.h"
-#include "utils/random.h"
+#include <layers/element_wise_linear.h>
+#include <utils/random.h>
 
 void EltwiseLinear::init(Shape _in_shape)
 {
@@ -32,21 +32,21 @@ void EltwiseLinear::init(Shape _in_shape)
     setTrainable(true);
 }
 
-float* EltwiseLinear::forward(float* input)
+Tensor<float>& EltwiseLinear::forward(Tensor<float>& input)
 {
-    X.data = input;
+    X = input;
 
     for (int i = 0; i < out_size; i++)
     {
         Y[i] = X[i] * A[i] + B[i];
     }
 
-    return Y.data;
+    return Y;
 }
 
-float* EltwiseLinear::backward(float* d_output)
+Tensor<float>& EltwiseLinear::backward(Tensor<float>& output_grad)
 {
-    dY.data = d_output;
+    dY = output_grad;
 
     if (trainable)
     {
@@ -62,7 +62,7 @@ float* EltwiseLinear::backward(float* d_output)
         dX[i] = A[i] * dY[i];
     }
 
-    return dX.data;
+    return dX;
 }
 
 void EltwiseLinear::save(std::ofstream& file)

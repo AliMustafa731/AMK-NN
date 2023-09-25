@@ -1,6 +1,6 @@
 
-#include "layers/fully_connected.h"
-#include "utils/random.h"
+#include <layers/fully_connected.h>
+#include <utils/random.h>
 
 void FullLayer::init(Shape _in_shape)
 {
@@ -27,9 +27,9 @@ void FullLayer::init(Shape _in_shape)
     setTrainable(true);
 }
 
-float* FullLayer::forward(float* input)
+Tensor<float>& FullLayer::forward(Tensor<float>& input)
 {
-    X.data = input;
+    X = input;
 
     for (int i = 0; i < out_size; i++)
     {
@@ -40,12 +40,12 @@ float* FullLayer::forward(float* input)
         }
     }
 
-    return Y.data;
+    return Y;
 }
 
-float* FullLayer::backward(float* d_output)
+Tensor<float>& FullLayer::backward(Tensor<float>& output_grad)
 {
-    dY.data = d_output;
+    dY = output_grad;
 
     if (trainable)
     {
@@ -68,7 +68,7 @@ float* FullLayer::backward(float* d_output)
         }
     }
 
-    return dX.data;
+    return dX;
 }
 
 void FullLayer::save(std::ofstream& file)

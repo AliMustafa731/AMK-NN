@@ -6,14 +6,13 @@
 #include <ctime>
 
 #include <process.h>
-#include "program.h"
-#include "loaders.h"
+#include <program.h>
+#include <loaders.h>
 
-#include "data/dataset.h"
-#include "utils/graphics.h"
-#include "utils/utils.h"
-#include "utils/random.h"
-#include "neural_network.h"
+#include <data/dataset.h>
+#include <utils/graphics.h>
+#include <utils/random.h>
+#include <neural_network.h>
 
 // enable windows visual theme style
 #pragma comment(linker,"\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
@@ -117,18 +116,18 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 //    Training & Logic of the program
 //-----------------------------------------------------
 
-DataSet data, labels;
-Image img_1, img_2, img_3;
-Buffer<float> f_img_1;
-
-Array<float> netowrk_input, network_label;
-
 NeuralNetwork drawer_network;
 MSELoss loss_function;
+Adam optimizer;
 float learn_rate = 0.008f;
 float momentum = 0.75f;
 float squared_grad = 0.95f;
 bool training = false;
+
+DataSet data, labels;
+Image img_1, img_2, img_3;
+Tensor<float> f_img_1;
+Tensor<float> netowrk_input, network_label;
 
 const char* header_txt = "\nBy : Ali Mustafa Kamel\n2022-2023";
 
@@ -150,7 +149,7 @@ HDC win_hdc;
 #define LOAD_BAR 4
 #define RANDOM_SELECT_BUTTIN 5
 
-void DrawerNetworkDraw(Buffer<Color> &dest, int w, int h)
+void DrawerNetworkDraw(Tensor<Color> &dest, int w, int h)
 {
     float w_f = (float)w;
     float h_f = (float)h;
@@ -161,7 +160,7 @@ void DrawerNetworkDraw(Buffer<Color> &dest, int w, int h)
         {
             netowrk_input[0] = (float)x * 10.0f / w_f;
             netowrk_input[1] = (float)y * 10.0f / h_f;
-            float *o = drawer_network.forward(netowrk_input.data);
+            Tensor<float> o = drawer_network.forward(netowrk_input);
 
             int idx = x + y * w;
             dest[idx].r = (unsigned char)(55.0f + o[0] * 200.0f);
@@ -202,8 +201,8 @@ void train_network_thread(void *args)
                 netowrk_input[0] = (float)x * 10.0f / w_f;
                 netowrk_input[1] = (float)y * 10.0f / h_f;
 
-                float *o = drawer_network.forward(netowrk_input.data);
-                drawer_network.backward( loss_function.gradient(&drawer_network, network_label.data, size) );
+                Tensor<float> o = drawer_network.forward(netowrk_input);
+                drawer_network.backward( loss_function.gradient(drawer_network, network_label, size) );
 
                 float _loss = network_label[0] - o[0];
                 loss += _loss * _loss * 0.5f;
@@ -215,7 +214,7 @@ void train_network_thread(void *args)
             }
         }
 
-        drawer_network.optimizer->update(drawer_network.parameters);
+        optimizer.update(drawer_network.parameters);
         img_2.draw(win_hdc, 332, 32, 256, 256);
         SetWindowText(txt[0], std::to_string(loss).c_str());
     }
@@ -235,11 +234,16 @@ void onCreate(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             new SineLayer(),
             new FullLayer(1),
             new SigmoidLayer()
-        },
-        new Adam(learn_rate, momentum, squared_grad)
+        }
     );
 
-    netowrk_input.init(drawer_network.in_shape.size());
+    optimizer = Adam(learn_rate, momentum, squared_grad);
+
+    netowrk_input.init(
+        drawer_network.in_shape.w,
+        drawer_network.in_shape.h,
+        drawer_network.in_shape.d
+    );
     network_label.init(drawer_network.output_layer()->out_size);
     loss_function.init(drawer_network.output_layer()->out_size);
 
@@ -259,7 +263,7 @@ void onCreate(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     img_2 = Image(data.shape.w, data.shape.h);
     img_3 = Image(256, 256);
 
-    f_img_1.init(data.shape.w, data.shape.h, data[rand32() % data.samples_num]);
+    f_img_1.init(data.shape.w, data.shape.h, 1, data[rand32() % data.samples_num].data);
     embed_one_channel_to_color(img_1.img.data, f_img_1.data, data.sample_size);
 
     DrawerNetworkDraw(img_2.img, 28, 28);
@@ -376,7 +380,13 @@ void onCommand(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
         if (GetSaveFileName(&of_save_amknn))
         {
-            drawer_network.save(file_name);
+            std::ofstream file;
+            file.open(file_name, std::ios::out | std::ios::binary);
+
+            drawer_network.save(file);
+            optimizer.save(file);
+
+            file.close();
         }
     }
 
@@ -384,12 +394,13 @@ void onCommand(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
         if (GetOpenFileName(&of_load_amknn))
         {
-            drawer_network.load(file_name);
+            std::ifstream file;
+            file.open(file_name, std::ios::in | std::ios::binary);
 
-            Adam* p = (Adam*)drawer_network.optimizer;
-            learn_rate = p->learning_rate;
-            momentum = p->beta1;
-            squared_grad = p->beta2;
+            drawer_network.load(file);
+            optimizer.load(file);
+
+            file.close();
 
             treackbar_learn_rate.set_pos(learn_rate);
             treackbar_momentum.set_pos(momentum);
@@ -403,8 +414,8 @@ void onCommand(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     if (win_id == RANDOM_SELECT_BUTTIN)
     {
         int idx = rand32() % data.samples_num;
-        f_img_1.data = data[idx];
-        f_img_1.size = data.sample_size;
+        f_img_1.data = data[idx].data;
+        f_img_1.s = data.shape;
         embed_one_channel_to_color(img_1.img.data, f_img_1.data, data.sample_size);
 
         img_1.draw(win_hdc, 32, 32, 256, 256);
@@ -419,14 +430,9 @@ void updateTrackbars(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     treackbar_learn_rate.update();
     treackbar_momentum.update();
 
-    learn_rate = treackbar_learn_rate.get_pos();
-    momentum = treackbar_momentum.get_pos();
-    squared_grad = treackbar_squared_grad.get_pos();
-
-    Adam* p = (Adam*)drawer_network.optimizer;
-    p->learning_rate = learn_rate;
-    p->beta1 = momentum;
-    p->beta2 = squared_grad;
+    optimizer.learning_rate = treackbar_learn_rate.get_pos();
+    optimizer.beta1 = treackbar_momentum.get_pos();
+    optimizer.beta2 = treackbar_squared_grad.get_pos();
 }
 
 void onDraw(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)

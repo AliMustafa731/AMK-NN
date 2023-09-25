@@ -1,6 +1,6 @@
 #pragma once
 
-#include "optimizers/optimizer.h"
+#include <optimizers/optimizer.h>
 
 struct GradientDescent : Optimizer
 {

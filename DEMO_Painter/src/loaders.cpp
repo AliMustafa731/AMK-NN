@@ -1,9 +1,9 @@
 
-#include "loaders.h"
-#include "stb_image.h"
+#include <loaders.h>
+#include <stb_image.h>
 #include <fstream>
 
-int readImage(const char* filename, Buffer<Color> &target)
+int readImage(const char* filename, Tensor<Color> &target)
 {
     int _w, _h;
     unsigned char* _data = stbi_load(filename, &_w, &_h, NULL, 3);
@@ -13,12 +13,12 @@ int readImage(const char* filename, Buffer<Color> &target)
     target.init(_w, _h);
 
     // copy and flip vertically
-    for (int x = 0; x < target.w; x++)
+    for (int x = 0; x < target.s.w; x++)
     {
-        for (int y = 0; y < target.h; y++)
+        for (int y = 0; y < target.s.h; y++)
         {
-            int _idx = x + y * target.w;
-            int _idx_flip = x + ((target.h - 1) - y)*target.w;
+            int _idx = x + y * target.s.w;
+            int _idx_flip = x + ((target.s.h - 1) - y)*target.s.w;
             target[_idx].r = _data[((_idx_flip) * 3)];
             target[_idx].g = _data[((_idx_flip) * 3) + 1];
             target[_idx].b = _data[((_idx_flip) * 3) + 2];
@@ -29,7 +29,7 @@ int readImage(const char* filename, Buffer<Color> &target)
     return 1;
 }
 
-int readImage(const char* filename, Buffer<Colorf> &target)
+int readImage(const char* filename, Tensor<Colorf> &target)
 {
     int _w, _h;
     unsigned char* _data = stbi_load(filename, &_w, &_h, NULL, 3);
@@ -39,12 +39,12 @@ int readImage(const char* filename, Buffer<Colorf> &target)
     target.init(_w, _h);
 
     // copy and flip vertically
-    for (int x = 0; x < target.w; x++)
+    for (int x = 0; x < target.s.w; x++)
     {
-        for (int y = 0; y < target.h; y++)
+        for (int y = 0; y < target.s.h; y++)
         {
-            int _idx = x + y * target.w;
-            int _idx_flip = x + ((target.h - 1) - y)*target.w;
+            int _idx = x + y * target.s.w;
+            int _idx_flip = x + ((target.s.h - 1) - y)*target.s.w;
             target[_idx].r = (float)_data[((_idx_flip) * 3)];
             target[_idx].g = (float)_data[((_idx_flip) * 3) + 1];
             target[_idx].b = (float)_data[((_idx_flip) * 3) + 2];
@@ -55,9 +55,9 @@ int readImage(const char* filename, Buffer<Colorf> &target)
     return 1;
 }
 
-void normalize(Buffer<Colorf> &target)
+void normalize(Tensor<Colorf> &target)
 {
-    for (int i = 0; i < target.size; i++)
+    for (int i = 0; i < target.size(); i++)
     {
         target[i].r /= 255.0f;
         target[i].g /= 255.0f;
@@ -65,17 +65,17 @@ void normalize(Buffer<Colorf> &target)
     }
 }
 
-void normalize(Buffer<float> &target)
+void normalize(Tensor<float> &target)
 {
-    for (int i = 0; i < target.size; i++)
+    for (int i = 0; i < target.size(); i++)
     {
         target[i] /= 255.0f;
     }
 }
 
-void denormalize(Buffer<Colorf> &target)
+void denormalize(Tensor<Colorf> &target)
 {
-    for (int i = 0; i < target.size; i++)
+    for (int i = 0; i < target.size(); i++)
     {
         target[i].r *= 255.0f;
         target[i].g *= 255.0f;
@@ -83,9 +83,9 @@ void denormalize(Buffer<Colorf> &target)
     }
 }
 
-void denormalize(Buffer<float> &target)
+void denormalize(Tensor<float> &target)
 {
-    for (int i = 0; i < target.size; i++)
+    for (int i = 0; i < target.size(); i++)
     {
         target[i] *= 255.0f;
     }

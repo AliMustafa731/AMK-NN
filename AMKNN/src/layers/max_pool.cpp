@@ -1,6 +1,6 @@
 
-#include "layers/max_pool.h"
-#include "utils/utils.h"
+#include <layers/max_pool.h>
+#include <utils/convolution.h>
 
 void MaxPoolLayer::init(Shape _in_shape)
 {
@@ -16,9 +16,9 @@ void MaxPoolLayer::init(Shape _in_shape)
     window.d = 1;
 }
 
-float* MaxPoolLayer::forward(float* input)
+Tensor<float>& MaxPoolLayer::forward(Tensor<float>& input)
 {
-    X.data = input;
+    X = input;
 
     int dim_x = in_shape.w*in_shape.h;
     int dim_y = out_shape.w*out_shape.h;
@@ -58,21 +58,21 @@ float* MaxPoolLayer::forward(float* input)
         }
     }
 
-    return Y.data;
+    return Y;
 }
 
-float* MaxPoolLayer::backward(float* d_output)
+Tensor<float>& MaxPoolLayer::backward(Tensor<float>& output_grad)
 {
-    dY.data = d_output;
+    dY = output_grad;
 
-    fill_array(dX, 0);
+    dX.fill(0);
 
     for (int i = 0; i < out_size; i++)
     {
         dX[max_indices[i]] += dY[i];
     }
 
-    return dX.data;
+    return dX;
 }
 
 void MaxPoolLayer::release()

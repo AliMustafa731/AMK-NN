@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cassert>
-#include "common.h"
+#include <common.h>
 
 //----------------------------------
 //   Double Linked-List
@@ -15,14 +15,11 @@ template<typename T> struct List
 
         Node()
         {
-            next = NULL;
-            prev = NULL;
+            next = NULL;  prev = NULL;
         }
         Node(T val)
         {
-            value = val;
-            next = NULL;
-            prev = NULL;
+            value = val; next = NULL; prev = NULL;
         }
     };
     

@@ -1,5 +1,5 @@
 
-#include "layers/base_layer.h"
+#include <layers/base_layer.h>
 #include <cmath>
 
 void NeuralLayer::allocate(int _in_size, int _out_size)
@@ -8,8 +8,6 @@ void NeuralLayer::allocate(int _in_size, int _out_size)
     out_size = _out_size;
 
     Y.init(out_size);
-    dY.init(out_size, NULL);
-    X.init(in_size, NULL);
     dX.init(in_size);
 
     for (int j = 0; j < out_size; j++)

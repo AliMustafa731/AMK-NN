@@ -1,13 +1,14 @@
 #pragma once
 
-#include "data/array.h"
-#include "optimizers/parameter.h"
-#include "utils/geometry.h"
+#include <data/array.h>
+#include <data/tensor.h>
+#include <optimizers/parameter.h>
+#include <utils/geometry.h>
 #include <fstream>
 
 struct NeuralLayer
 {
-    Array<float> X, dX, Y, dY;
+    Tensor<float> X, dX, Y, dY;
     Array<Parameter> parameters;
     int in_size, out_size, type;
     Shape in_shape, out_shape;
@@ -23,8 +24,8 @@ struct NeuralLayer
 
     virtual void init(Shape _in_shape) = 0;
     virtual void release() = 0;
-    virtual float* forward(float* input) = 0;
-    virtual float* backward(float* d_output) = 0;
+    virtual Tensor<float>& forward(Tensor<float>& input) = 0;
+    virtual Tensor<float>& backward(Tensor<float>& output_grad) = 0;
     virtual void save(std::ofstream& file) = 0;
     virtual void load(std::ifstream& file) = 0;
 };

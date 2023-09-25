@@ -4,11 +4,11 @@
 #include <CommCtrl.h>
 #include <string>
 
-#include "data/array.h"
-#include "data/buffer.h"
-#include "data/dataset.h"
-#include "utils/graphics.h"
-#include "common.h"
+#include <data/array.h>
+#include <data/tensor.h>
+#include <data/dataset.h>
+#include <utils/graphics.h>
+#include <common.h>
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -28,7 +28,7 @@ struct Program
 struct Image
 {
     BITMAPINFO info;
-    Buffer<Color> img;
+    Tensor<Color> img;
 
     Image() {}
     Image(int w, int h, Color* _data = NULL)
@@ -40,14 +40,7 @@ struct Image
         info.bmiHeader.biBitCount = 32;
         info.bmiHeader.biCompression = BI_RGB;
 
-        if (_data == NULL)
-        {
-            img.init(w, h);
-        }
-        else
-        {
-            img.init(w, h, _data);
-        }
+        img.init(w, h, 1, _data);
     }
 
     void draw(HDC hdc, int x, int y, int w = 0, int h = 0)
@@ -58,7 +51,7 @@ struct Image
         StretchDIBits
         (
             hdc, x, y, w, h, 0, 0,
-            img.w, img.h, (void*)img.data,
+            img.s.w, img.s.h, (void*)img.data,
             &info, DIB_RGB_COLORS, SRCCOPY
         );
     }

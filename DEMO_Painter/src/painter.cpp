@@ -1,6 +1,6 @@
 
-#include "painter.h"
-#include "utils/random.h"
+#include <painter.h>
+#include <utils/random.h>
 
 template<typename T> T Max(T a, T b) { return a > b ? a : b; }
 template<typename T> T Min(T a, T b) { return a < b ? a : b; }
@@ -20,7 +20,7 @@ void PainterNetwork::add(PaintElement *_element)
     parameters.add(&_element->parameters);
 }
 
-float* PainterNetwork::forward(float* input)
+Tensor<float>& PainterNetwork::forward(Tensor<float>& input)
 {
     for (auto n = elements.base ; n != NULL ; n = n->next)
     {
@@ -28,16 +28,18 @@ float* PainterNetwork::forward(float* input)
         e->forward(map);
     }
 
-    return map.data;
+    return map;
 }
 
-void PainterNetwork::backward(Buffer<float> &d_map)
+Tensor<float>& PainterNetwork::backward(Tensor<float>& d_map)
 {
     for (auto n = elements.base; n != NULL; n = n->next)
     {
         PaintElement *e = n->value;
         e->backward(d_map);
     }
+
+    return dX;
 }
 
 
@@ -48,7 +50,7 @@ DrawLineElement::DrawLineElement()
     for (int i = 0 ; i < parameters.size ; i++) { parameters.values[i] = random(0.0f, 100.0f); }
 }
 
-void DrawLineElement::forward(Buffer<float> &map)
+void DrawLineElement::forward(Tensor<float>& map)
 {
     int x1 = (int)parameters.values[0];
     int y1 = (int)parameters.values[1];
@@ -56,10 +58,10 @@ void DrawLineElement::forward(Buffer<float> &map)
     int y2 = (int)parameters.values[3];
 
     // clip the coordinates
-    x1 = Max(0, Min(x1, map.w - 1));
-    x2 = Max(0, Min(x2, map.w - 1));
-    y1 = Max(0, Min(y1, map.h - 1));
-    y2 = Max(0, Min(y2, map.h - 1));
+    x1 = Max(0, Min(x1, map.s.w - 1));
+    x2 = Max(0, Min(x2, map.s.w - 1));
+    y1 = Max(0, Min(y1, map.s.h - 1));
+    y2 = Max(0, Min(y2, map.s.h - 1));
 
     parameters.values[0] = (float)x1;
     parameters.values[1] = (float)y1;
@@ -97,7 +99,7 @@ void DrawLineElement::forward(Buffer<float> &map)
     }
 }
 
-void DrawLineElement::backward(Buffer<float> &d_map)
+void DrawLineElement::backward(Tensor<float>& d_map)
 {
 
 }

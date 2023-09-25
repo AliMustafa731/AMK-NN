@@ -1,6 +1,6 @@
 
 #include <Windows.h>
-#include "program.h"
+#include <program.h>
 
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, int nCmdShow)

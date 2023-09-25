@@ -1,7 +1,8 @@
 
-#include "layers/convolutional.h"
-#include "utils/utils.h"
-#include "utils/random.h"
+#include <cstring>
+#include <layers/convolutional.h>
+#include <utils/convolution.h>
+#include <utils/random.h>
 
 void ConvLayer::init(Shape _in_shape)
 {
@@ -45,14 +46,14 @@ void ConvLayer::init(Shape _in_shape)
     setTrainable(true);
 }
 
-float* ConvLayer::forward(float* input)
+Tensor<float>& ConvLayer::forward(Tensor<float>& input)
 {
-    X.data = input;
+    X = input;
 
     int channels_in = in_shape.d;
     int channels_out = out_shape.d;
 
-    copy(Y, B);
+    std::memcpy(Y.data, B.data, Y.size() * sizeof(float));
 
     int dim_x = in_shape.w*in_shape.h;
     int dim_y = out_shape.w*out_shape.h;
@@ -66,20 +67,20 @@ float* ConvLayer::forward(float* input)
 
         for (int ch_in = 0; ch_in < channels_in; ch_in++)
         {
-            copy_matrix(_X_padd, _X, { padd.w, padd.h, 0, 0 }, _X.get_rect());
-            convolution(_X_padd, _K, _Y, stride);
+            Matrix::copy(_X_padd, _X, { padd.w, padd.h, 0, 0 }, _X.get_rect());
+            convolution_stride(_X_padd, _K, _Y, stride);
 
             _X.data += dim_x;
             _K.data += dim_k[1];
         }
     }
 
-    return Y.data;
+    return Y;
 }
 
-float* ConvLayer::backward(float* d_output)
+Tensor<float>& ConvLayer::backward(Tensor<float>& output_grad)
 {
-    dY.data = d_output;
+    dY = output_grad;
 
     int channels_in = in_shape.d;
     int channels_out = out_shape.d;
@@ -87,9 +88,9 @@ float* ConvLayer::backward(float* d_output)
 
     if (trainable)
     {
-        copy_add(dB, dY);
+        dB.add(dY);
     }
-    fill_array(dX, 0);
+    dX.fill(0);
 
     int dim_x = in_shape.w*in_shape.h;
     int dim_y = out_shape.w*out_shape.h;
@@ -106,15 +107,15 @@ float* ConvLayer::backward(float* d_output)
 
         for (int ch_in = 0; ch_in < channels_in; ch_in++)
         {
-            copy_matrix(_X_padd, _X, { padd.w, padd.h, 0, 0 }, _X.get_rect());
+            Matrix::copy(_X_padd, _X, { padd.w, padd.h, 0, 0 }, _X.get_rect());
 
             if (trainable)
             {
-                convolution_ex(_X_padd, _dY, _dK, stride);
+                convolution_dialate(_X_padd, _dY, _dK, stride);
             }
             convolution_transpose(_dY, _K, _dX_padd);
 
-            copy_matrix(_dX, _dX_padd, { 0, 0, 0, 0 }, { padd.w, padd.h, _dX.w, _dX.h });
+            Matrix::copy(_dX, _dX_padd, { 0, 0, 0, 0 }, { padd.w, padd.h, _dX.w, _dX.h });
 
             _K.data += dim_k[1];
             _dK.data += dim_k[1];
@@ -123,7 +124,7 @@ float* ConvLayer::backward(float* d_output)
         }
     }
 
-    return dX.data;
+    return dX;
 }
 
 void ConvLayer::save(std::ofstream& file)

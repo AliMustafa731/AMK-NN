@@ -1,7 +1,7 @@
 #pragma once
 
-#include "optimizers/parameter.h"
-#include "data/list.h"
+#include <optimizers/parameter.h>
+#include <data/list.h>
 #include <fstream>
 
 struct Optimizer

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "data/array.h"
+#include <data/tensor.h>
 
 struct Parameter
 {
-    Array<float> values, gradients, velocities, squared_gradients;
+    Tensor<float> values, gradients, velocities, squared_gradients;
     int size;
     float decay_rate;
     bool is_trainable;

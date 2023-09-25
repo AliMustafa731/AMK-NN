@@ -1,5 +1,5 @@
 
-#include "activations/sigmoid.h"
+#include <activations/sigmoid.h>
 #include <cmath>
 
 __forceinline float sigmoid(float x)
@@ -12,28 +12,28 @@ __forceinline float d_sigmoid_optimized(float x)
     return x * (1.0f - x); // assumes (x) must contain Sigmoid(input)
 }
 
-float* SigmoidLayer::forward(float* input)
+Tensor<float>& SigmoidLayer::forward(Tensor<float>& input)
 {
-    X.data = input;
+    X = input;
 
     for (int i = 0; i < out_size; i++)
     {
         Y[i] = sigmoid(X[i]);
     }
 
-    return Y.data;
+    return Y;
 }
 
-float* SigmoidLayer::backward(float* d_output)
+Tensor<float>& SigmoidLayer::backward(Tensor<float>& output_grad)
 {
-    dY.data = d_output;
+    dY = output_grad;
 
     for (int i = 0; i < in_size; i++)
     {
         dX[i] = d_sigmoid_optimized(Y[i]) * dY[i];
     }
 
-    return dX.data;
+    return dX;
 }
 
 SigmoidLayer::SigmoidLayer()

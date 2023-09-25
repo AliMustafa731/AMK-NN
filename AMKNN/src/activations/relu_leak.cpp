@@ -1,9 +1,9 @@
 
-#include "activations/relu_leak.h"
+#include <activations/relu_leak.h>
 
-float* RelULeakLayer::forward(float* input)
+Tensor<float>& RelULeakLayer::forward(Tensor<float>& input)
 {
-    X.data = input;
+    X = input;
 
     for (int i = 0; i < X.size(); i++)
     {
@@ -17,12 +17,12 @@ float* RelULeakLayer::forward(float* input)
         }
     }
 
-    return Y.data;
+    return Y;
 }
 
-float* RelULeakLayer::backward(float* d_output)
+Tensor<float>& RelULeakLayer::backward(Tensor<float>& output_grad)
 {
-    dY.data = d_output;
+    dY = output_grad;
 
     for (int i = 0; i < X.size(); i++)
     {
@@ -36,7 +36,7 @@ float* RelULeakLayer::backward(float* d_output)
         }
     }
 
-    return dX.data;
+    return dX;
 }
 
 void RelULeakLayer::save(std::ofstream& file)

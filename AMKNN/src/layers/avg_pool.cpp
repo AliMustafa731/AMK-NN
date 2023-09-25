@@ -1,6 +1,6 @@
 
-#include "layers/avg_pool.h"
-#include "utils/utils.h"
+#include <layers/avg_pool.h>
+#include <utils/convolution.h>
 
 void AvgPoolLayer::init(Shape _in_shape)
 {
@@ -15,9 +15,9 @@ void AvgPoolLayer::init(Shape _in_shape)
     window.d = 1;
 }
 
-float* AvgPoolLayer::forward(float* input)
+Tensor<float>& AvgPoolLayer::forward(Tensor<float>& input)
 {
-    X.data = input;
+    X = input;
 
     int dim_x = in_shape.w*in_shape.h;
     int dim_y = out_shape.w*out_shape.h;
@@ -50,19 +50,19 @@ float* AvgPoolLayer::forward(float* input)
         }
     }
 
-    return Y.data;
+    return Y;
 }
 
-float* AvgPoolLayer::backward(float* d_output)
+Tensor<float>& AvgPoolLayer::backward(Tensor<float>& output_grad)
 {
-    dY.data = d_output;
+    dY = output_grad;
 
     int dim_x = in_shape.w*in_shape.h;
     int dim_y = out_shape.w*out_shape.h;
 
     float win_size = (float)window.size();
 
-    fill_array(dX, 0);
+    dX.fill(0);
 
     for (int channel = 0; channel < in_shape.d; channel++)
     {
@@ -86,7 +86,7 @@ float* AvgPoolLayer::backward(float* d_output)
         }
     }
 
-    return dX.data;
+    return dX;
 }
 
 void AvgPoolLayer::save(std::ofstream& file)

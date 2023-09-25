@@ -1,6 +1,6 @@
 
-#include "activations/dropout.h"
-#include "utils/random.h"
+#include <activations/dropout.h>
+#include <utils/random.h>
 
 void DropoutLayer::init(Shape _in_shape)
 {
@@ -15,9 +15,9 @@ void DropoutLayer::release()
     mask.release();
 }
 
-float* DropoutLayer::forward(float* input)
+Tensor<float>& DropoutLayer::forward(Tensor<float>& input)
 {
-    X.data = input;
+    X = input;
 
     for (int i = 0; i < X.size(); i++)
     {
@@ -40,12 +40,12 @@ float* DropoutLayer::forward(float* input)
         }
     }
 
-    return Y.data;
+    return Y;
 }
 
-float* DropoutLayer::backward(float* d_output)
+Tensor<float>& DropoutLayer::backward(Tensor<float>& output_grad)
 {
-    dY.data = d_output;
+    dY = output_grad;
 
     for (int i = 0; i < X.size(); i++)
     {
@@ -59,7 +59,7 @@ float* DropoutLayer::backward(float* d_output)
         }
     }
 
-    return dX.data;
+    return dX;
 }
 
 void DropoutLayer::save(std::ofstream& file)

@@ -28,9 +28,9 @@
     <ClInclude Include="src\activations\tanh.h" />
     <ClInclude Include="src\common.h" />
     <ClInclude Include="src\data\array.h" />
-    <ClInclude Include="src\data\buffer.h" />
     <ClInclude Include="src\data\dataset.h" />
     <ClInclude Include="src\data\list.h" />
+    <ClInclude Include="src\data\tensor.h" />
     <ClInclude Include="src\layers\avg_pool.h" />
     <ClInclude Include="src\layers\base_layer.h" />
     <ClInclude Include="src\layers\convolutional.h" />

@@ -1,9 +1,12 @@
 
-#include "loaders.h"
+#include <loaders.h>
+#include <cstdint>
 #include <fstream>
 
+#include <data/tensor.h>
 
-void reverse_bytes(unsigned char* dest, unsigned char* src, int size)
+
+void reverse_bytes(uint8_t* dest, uint8_t* src, int size)
 {
     for (int i = 0; i < size; i++)
     {
@@ -11,7 +14,7 @@ void reverse_bytes(unsigned char* dest, unsigned char* src, int size)
     }
 }
 
-void encode_one_hot(Array<float> &dest, Array<int> &src, int num_class)
+void encode_one_hot(Tensor<float> &dest, Tensor<int> &src, int num_class)
 {
     for (int i = 0; i < src.size(); i++)
     {
@@ -19,7 +22,7 @@ void encode_one_hot(Array<float> &dest, Array<int> &src, int num_class)
     }
 }
 
-void encode_one_hot(Array<float> &dest, Array<unsigned char> &src, int num_class)
+void encode_one_hot(Tensor<float> &dest, Tensor<uint8_t> &src, int num_class)
 {
     for (int i = 0; i < src.size(); i++)
     {
@@ -41,12 +44,16 @@ bool load_mnist_images(const char* filename, DataSet &dest, int samples)
     file.read((char*)&_width, sizeof(int));
     file.read((char*)&_height, sizeof(int));
 
-    reverse_bytes((unsigned char*)&width, (unsigned char*)&_width, sizeof(int));
-    reverse_bytes((unsigned char*)&height, (unsigned char*)&_height, sizeof(int));
+    // mnsit dataset bytes is stored in big-endian
+    // so we must reverse the order
+    reverse_bytes((uint8_t*)&width, (uint8_t*)&_width, sizeof(int));
+    reverse_bytes((uint8_t*)&height, (uint8_t*)&_height, sizeof(int));
 
     if (samples == 0)
     {
-        reverse_bytes((unsigned char*)&samples_count, (unsigned char*)&_samples_count, sizeof(int));
+        // mnsit dataset bytes is stored in big-endian
+        // so we must reverse the order
+        reverse_bytes((uint8_t*)&samples_count, (uint8_t*)&_samples_count, sizeof(int));
     }
     else
     {
@@ -55,7 +62,7 @@ bool load_mnist_images(const char* filename, DataSet &dest, int samples)
 
     int size = samples_count * width * height;
 
-    Array<unsigned char> temp(size);
+    Array<uint8_t> temp(size);
 
     file.read((char*)temp.data, size * sizeof(char));
 
@@ -94,14 +101,16 @@ bool load_mnist_labels(const char* filename, DataSet &dest, int num_class, int s
 
     if (samples == 0)
     {
-        reverse_bytes((unsigned char*)&samples_count, (unsigned char*)&_samples_count, sizeof(int));
+        // mnsit dataset bytes is stored in big-endian
+        // so we must reverse the order
+        reverse_bytes((uint8_t*)&samples_count, (uint8_t*)&_samples_count, sizeof(int));
     }
     else
     {
         samples_count = samples;
     }
 
-    Array<unsigned char> temp(samples_count);
+    Tensor<uint8_t> temp(samples_count);
     file.read((char*)temp.data, samples_count * sizeof(char));
 
     dest.init(Shape(num_class, 1, 1), samples_count);
