@@ -1,5 +1,7 @@
 
 #include <layers/base_layer.h>
+#include <layers/neural_layers.h>
+#include <activations/activation_layers.h>
 #include <cmath>
 
 void NeuralLayer::allocate(int _in_size, int _out_size)
@@ -10,21 +12,13 @@ void NeuralLayer::allocate(int _in_size, int _out_size)
     Y.init(out_size);
     dX.init(in_size);
 
-    for (int j = 0; j < out_size; j++)
-    {
-        Y[j] = 0;
-    }
-    for (int j = 0; j < in_size; j++)
-    {
-        dX[j] = 0;
-    }
+    setTrainable(true);
 }
 
 void NeuralLayer::deallocate()
 {
     Y.release();
     dX.release();
-    this->release();
 
     for (int i = 0; i < parameters.size(); i++)
     {
@@ -34,51 +28,82 @@ void NeuralLayer::deallocate()
     parameters.release();
 }
 
-void NeuralLayer::save_parameters(std::ofstream& file)
+void NeuralLayer::release()
 {
+    deallocate();
+}
+
+void NeuralLayer::save(std::ofstream& file)
+{
+    // save layer info
+    file.write((char*)&type, sizeof(int));
+    file.write((char*)&in_size, sizeof(int));
+    file.write((char*)&out_size, sizeof(int));
+    file.write((char*)&in_shape, sizeof(Shape));
+    file.write((char*)&out_shape, sizeof(Shape));
+
+    // save parameters
     int params_num = parameters.size();
 
     file.write((char*)&trainable, sizeof(bool));
     file.write((char*)&params_num, sizeof(int));
 
-    if (parameters.size() < 1)
-    {
-        return;
-    }
-
     for (int i = 0; i < parameters.size(); i++)
     {
-        file.write((char*)&parameters[i].size, sizeof(int));
-        file.write((char*)&parameters[i].decay_rate, sizeof(float));
-        file.write((char*)&parameters[i].is_trainable, sizeof(bool));
-        file.write((char*)parameters[i].values.data, parameters[i].size * sizeof(float));
-        file.write((char*)parameters[i].velocities.data, parameters[i].size * sizeof(float));
-        file.write((char*)parameters[i].squared_gradients.data, parameters[i].size * sizeof(float));
+        parameters[i].save(file);
     }
 }
 
-void NeuralLayer::load_parameters(std::ifstream& file)
+void NeuralLayer::load(std::ifstream& file)
 {
+    release();
+
+    // load layer info
+    file.read((char*)&type, sizeof(int));
+    file.read((char*)&in_size, sizeof(int));
+    file.read((char*)&out_size, sizeof(int));
+    file.read((char*)&in_shape, sizeof(Shape));
+    file.read((char*)&out_shape, sizeof(Shape));
+
+    init(in_shape);
+
+    // load parameters
     int params_num = 0;
 
     file.read((char*)&trainable, sizeof(bool));
     file.read((char*)&params_num, sizeof(int));
 
-    if (params_num < 1)
-    {
-        return;
-    }
-
     for (int i = 0; i < parameters.size(); i++)
     {
-        int size = 0;
-        file.read((char*)&size, sizeof(int));
-        file.read((char*)&parameters[i].decay_rate, sizeof(float));
-        file.read((char*)&parameters[i].is_trainable, sizeof(bool));
-        file.read((char*)parameters[i].values.data, parameters[i].size * sizeof(float));
-        file.read((char*)parameters[i].velocities.data, parameters[i].size * sizeof(float));
-        file.read((char*)parameters[i].squared_gradients.data, parameters[i].size * sizeof(float));
+        parameters[i].load(file);
     }
+}
+
+NeuralLayer* NeuralLayer::loadFromFile(std::ifstream & file)
+{
+    NeuralLayer* layer = NULL;
+    int type;
+
+    file.read((char*)&type, sizeof(int));
+
+    if (type == FULL_LAYER) layer = new FullLayer();
+    if (type == CONV_LAYER) layer = new ConvLayer();
+    if (type == CONV_TRANSPOSE_LAYER) layer = new ConvTLayer();
+    if (type == MAX_POOL_LAYER) layer = new MaxPoolLayer();
+    if (type == AVG_POOL_LAYER) layer = new AvgPoolLayer();
+    if (type == RElU_LAYER) layer = new RelULayer();
+    if (type == RELU_LEAK_LAYER) layer = new RelULeakLayer();
+    if (type == SIGMOID_LAYER) layer = new SigmoidLayer();
+    if (type == TANH_LAYER) layer = new TanhLayer();
+    if (type == SINE_LAYER) layer = new SineLayer();
+    if (type == DROPOUT_LAYER) layer = new DropoutLayer();
+    if (type == ELTWISE_LINEAR_LAYER) layer = new EltwiseLinear();
+
+    file.seekg((int)file.tellg() - sizeof(int));
+
+    layer->load(file);
+
+    return layer;
 }
 
 void NeuralLayer::setTrainable(bool state)

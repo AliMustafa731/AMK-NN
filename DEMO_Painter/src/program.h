@@ -63,7 +63,8 @@ struct TrackBar
     float min_rng, max_rng;
 
     TrackBar(){}
-    TrackBar(HWND parent, int x, int y, int w, int h, const char* l_txt, const char* r_txt, float _min_rng = 0.0f, float _max_rng = 1.0f)
+    TrackBar(HWND parent, int x, int y, int w, int h, const char* l_txt,
+             const char* r_txt, float _min_rng = 0.0f, float _max_rng = 1.0f)
     {
         min_rng = _min_rng;
         max_rng = _max_rng;
@@ -100,35 +101,36 @@ struct TrackBar
 
     void update()
     {
-        SetWindowText(state_txt, std::to_string(get_pos()).c_str());
+        SetWindowText(state_txt, std::to_string(GetPos()).c_str());
     }
 
-    float get_pos()
+    float GetPos()
     {
         return min_rng + (max_rng - min_rng) * ((float)SendMessage(win_handle, TBM_GETPOS, 0, 0) / 10000.0f);
     }
 
-    void set_pos(float x)
+    void SetPos(float x)
     {
         SendMessage(win_handle, TBM_SETPOS, TRUE, (LPARAM) 10000.0f * (x - min_rng) / (max_rng - min_rng));
         update();
     }
 };
 
-inline void CreateOPENFILENAME(OPENFILENAME *ofn, HWND parent, char* buffer, int buffer_size, const char* filters, const char* default_ext, DWORD flags)
+inline void CreateOPENFILENAME(OPENFILENAME *ofn, HWND parent, char* buffer, int buffer_size,
+                               const char* filters, const char* default_ext, DWORD flags)
 {
-	ZeroMemory(ofn, sizeof(OPENFILENAME));
+    ZeroMemory(ofn, sizeof(OPENFILENAME));
 
-	ofn->lStructSize = sizeof(OPENFILENAME);
-	ofn->hwndOwner = parent;
-	ofn->lpstrFile = (LPSTR)buffer;
-	ofn->lpstrFile[0] = '\0';
-	ofn->nMaxFile = buffer_size;
-	ofn->lpstrFilter = (LPSTR)filters;
-	ofn->nFilterIndex = 1;
-	ofn->lpstrFileTitle = NULL;
-	ofn->nMaxFileTitle = 0;
-	ofn->lpstrInitialDir = NULL;
-	ofn->lpstrDefExt = (LPSTR)default_ext;
-	ofn->Flags = flags;
+    ofn->lStructSize = sizeof(OPENFILENAME);
+    ofn->hwndOwner = parent;
+    ofn->lpstrFile = (LPSTR)buffer;
+    ofn->lpstrFile[0] = '\0';
+    ofn->nMaxFile = buffer_size;
+    ofn->lpstrFilter = (LPSTR)filters;
+    ofn->nFilterIndex = 1;
+    ofn->lpstrFileTitle = NULL;
+    ofn->nMaxFileTitle = 0;
+    ofn->lpstrInitialDir = NULL;
+    ofn->lpstrDefExt = (LPSTR)default_ext;
+    ofn->Flags = flags;
 }

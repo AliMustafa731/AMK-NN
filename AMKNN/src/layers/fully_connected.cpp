@@ -4,6 +4,10 @@
 
 void FullLayer::init(Shape _in_shape)
 {
+    in_shape = _in_shape;
+    in_size = in_shape.size();
+    out_size = out_shape.size(); // "out_shape" is set-up from the constructor
+
     parameters.resize(2);
     parameters[0] = Parameter(in_size * out_size, weight_decay);
     parameters[1] = Parameter(out_size);
@@ -25,6 +29,30 @@ void FullLayer::init(Shape _in_shape)
     }
 
     setTrainable(true);
+
+    NeuralLayer::allocate(in_size, out_size);
+}
+
+FullLayer::FullLayer()
+{
+    setTrainable(true);
+    type = FULL_LAYER;
+}
+FullLayer::FullLayer(int _size, float _weight_decay, Shape _out_shape)
+{
+    setTrainable(true);
+    weight_decay = _weight_decay;
+    type = FULL_LAYER;
+    out_size = _size;
+
+    if (_out_shape.size() == 0)
+    {
+        out_shape = { out_size, 1, 1 };
+    }
+    else
+    {
+        out_shape = _out_shape;
+    }
 }
 
 Tensor<float>& FullLayer::forward(Tensor<float>& input)
@@ -73,31 +101,12 @@ Tensor<float>& FullLayer::backward(Tensor<float>& output_grad)
 
 void FullLayer::save(std::ofstream& file)
 {
+    NeuralLayer::save(file);
     file.write((char*)&weight_decay, sizeof(float));
 }
 
 void FullLayer::load(std::ifstream& file)
 {
+    NeuralLayer::load(file);
     file.read((char*)&weight_decay, sizeof(float));
-}
-
-FullLayer::FullLayer()
-{
-    type = FULL_LAYER;
-}
-FullLayer::FullLayer(int _size, float _weight_decay, Shape _out_shape)
-{
-    trainable = true;
-    weight_decay = _weight_decay;
-    type = FULL_LAYER;
-    out_size = _size;
-
-    if (_out_shape.size() == 0)
-    {
-        out_shape = { out_size, 1, 1 };
-    }
-    else
-    {
-        out_shape = _out_shape;
-    }
 }

@@ -135,9 +135,9 @@ OPENFILENAME of_load_amknn = { 0 };
 OPENFILENAME of_save_amknn = { 0 };
 char file_name[512];
 
-TrackBar treackbar_learn_rate;
-TrackBar treackbar_momentum;
-TrackBar treackbar_squared_grad;
+TrackBar TB_learn_rate;
+TrackBar TB_momentum;
+TrackBar TB_squared_grad;
 
 HWND txt[32];
 HDC win_hdc;
@@ -239,11 +239,7 @@ void onCreate(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
     optimizer = Adam(learn_rate, momentum, squared_grad);
 
-    netowrk_input.init(
-        drawer_network.in_shape.w,
-        drawer_network.in_shape.h,
-        drawer_network.in_shape.d
-    );
+    netowrk_input.init(drawer_network.in_shape.size());
     network_label.init(drawer_network.output_layer()->out_size);
     loss_function.init(drawer_network.output_layer()->out_size);
 
@@ -251,9 +247,7 @@ void onCreate(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
     // load data
 
-    bool result_1 = load_mnist_images("mnist_digits_images.bin", data, 0);
-
-    if (!result_1)
+    if (load_mnist_images("mnist_digits_images.bin", data, 0) == false)
     {
         MessageBox(NULL, "Error : can;t load \"mnist_digits_images.bin\", make sure the executable is in it's main directory", "Opss!", MB_OK);
         PostQuitMessage(0);
@@ -315,13 +309,13 @@ void onCreate(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         615, 525, 150, 100, hwnd, NULL, GetModuleHandle(NULL), NULL
     );
 
-    treackbar_learn_rate = TrackBar(hwnd, 75, 450, 300, 30, "0.0", "0.1  Learn Rate", 0.0f, 0.1f);
-    treackbar_momentum = TrackBar(hwnd, 75, 500, 300, 30, "0.0", "1.0  Momentum");
-    treackbar_squared_grad = TrackBar(hwnd, 75, 550, 300, 30, "0.0", "1.0  Squared Grad");
+    TB_learn_rate = TrackBar(hwnd, 75, 450, 300, 30, "0.0", "0.1  Learn Rate", 0.0f, 0.1f);
+    TB_momentum = TrackBar(hwnd, 75, 500, 300, 30, "0.0", "1.0  Momentum");
+    TB_squared_grad = TrackBar(hwnd, 75, 550, 300, 30, "0.0", "1.0  Squared Grad");
 
-    treackbar_learn_rate.set_pos(learn_rate);
-    treackbar_momentum.set_pos(momentum);
-    treackbar_squared_grad.set_pos(squared_grad);
+    TB_learn_rate.SetPos(learn_rate);
+    TB_momentum.SetPos(momentum);
+    TB_squared_grad.SetPos(squared_grad);
 
     // Initialize OPENFILENAME for loading and saving
 
@@ -402,9 +396,9 @@ void onCommand(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
             file.close();
 
-            treackbar_learn_rate.set_pos(learn_rate);
-            treackbar_momentum.set_pos(momentum);
-            treackbar_squared_grad.set_pos(squared_grad);
+            TB_learn_rate.SetPos(learn_rate);
+            TB_momentum.SetPos(momentum);
+            TB_squared_grad.SetPos(squared_grad);
 
             DrawerNetworkDraw(img_2.img, 28, 28);
             img_2.draw(win_hdc, 332, 32, 256, 256);
@@ -426,13 +420,13 @@ void onCommand(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 void updateTrackbars(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    treackbar_squared_grad.update();
-    treackbar_learn_rate.update();
-    treackbar_momentum.update();
+    TB_squared_grad.update();
+    TB_learn_rate.update();
+    TB_momentum.update();
 
-    optimizer.learning_rate = treackbar_learn_rate.get_pos();
-    optimizer.beta1 = treackbar_momentum.get_pos();
-    optimizer.beta2 = treackbar_squared_grad.get_pos();
+    optimizer.learning_rate = TB_learn_rate.GetPos();
+    optimizer.beta1 = TB_momentum.GetPos();
+    optimizer.beta2 = TB_squared_grad.GetPos();
 }
 
 void onDraw(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)

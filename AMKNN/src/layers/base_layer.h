@@ -18,14 +18,15 @@ struct NeuralLayer
 
     void allocate(int _in_size, int _out_size);
     void deallocate();
-    void save_parameters(std::ofstream& file);
-    void load_parameters(std::ifstream& file);
+    virtual void init(Shape _in_shape) = 0; // implemented by derrived classes
+    virtual void release();
+
     void setTrainable(bool state);
 
-    virtual void init(Shape _in_shape) = 0;
-    virtual void release() = 0;
+    virtual void save(std::ofstream& file);
+    virtual void load(std::ifstream& file);
     virtual Tensor<float>& forward(Tensor<float>& input) = 0;
     virtual Tensor<float>& backward(Tensor<float>& output_grad) = 0;
-    virtual void save(std::ofstream& file) = 0;
-    virtual void load(std::ifstream& file) = 0;
+
+    static NeuralLayer* loadFromFile(std::ifstream& file);
 };

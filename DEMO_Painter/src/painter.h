@@ -11,11 +11,11 @@ struct PaintElement
 {
     Parameter parameters;
 
-	PaintElement(){}
-	virtual ~PaintElement(){}
+    PaintElement(){}
+    virtual ~PaintElement(){}
 
-	virtual void forward(Tensor<float> &map) = 0;
-	virtual void backward(Tensor<float> &d_map) = 0;
+    virtual void forward(Tensor<float> &map) = 0;
+    virtual void backward(Tensor<float> &d_map) = 0;
 };
 
 struct DrawLineElement : PaintElement
@@ -30,12 +30,23 @@ struct PainterNetwork
 {
     List<PaintElement*> elements;
     List<Parameter*> parameters;
-    Tensor<float> map, dX;
+    Tensor<float> map, d_map;
 
     PainterNetwork(){}
     PainterNetwork(Shape map_shape);
 
-	void add(PaintElement *_element);
-    Tensor<float>& forward(Tensor<float>& input);
-    Tensor<float>& backward(Tensor<float>& d_map);
+    void add(PaintElement *_element);
+    void forward();
+    void backward();
 };
+
+// utilites
+template<typename T> T Max(T a, T b) { return a > b ? a : b; }
+template<typename T> T Min(T a, T b) { return a < b ? a : b; }
+template<typename T> T Abs(T a) { return a > 0 ? a : -a; }
+template<typename T> void Swap(T &a, T &b)
+{
+    T tmp = a;
+    a = b;
+    b = tmp;
+}

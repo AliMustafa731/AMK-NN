@@ -8,7 +8,6 @@ void DataSet::init(Shape _shape, int _samples_num)
     sample_size = shape.size();
 
     data.init(samples_num * sample_size);
-    ptr.s = shape;
 }
 
 void DataSet::release()

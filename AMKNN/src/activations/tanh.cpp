@@ -2,6 +2,21 @@
 #include <activations/tanh.h>
 #include <cmath>
 
+void TanhLayer::init(Shape _in_shape)
+{
+    in_shape = _in_shape;
+    in_size = in_shape.size();
+    out_shape = in_shape;
+    out_size = in_size;
+
+    NeuralLayer::allocate(in_size, out_size);
+}
+
+TanhLayer::TanhLayer()
+{
+    type = TANH_LAYER;
+}
+
 __forceinline float tanH(float x)
 {
     return (2.0f / (1.0f + exp(x *-2.0f))) - 1.0f;
@@ -33,15 +48,4 @@ Tensor<float>& TanhLayer::backward(Tensor<float>& output_grad)
     }
 
     return dX;
-}
-
-TanhLayer::TanhLayer()
-{
-    type = TANH_LAYER;
-}
-
-void TanhLayer::init(Shape _in_shape)
-{
-    out_size = in_size;
-    out_shape = in_shape;
 }

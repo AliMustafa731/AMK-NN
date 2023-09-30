@@ -1,5 +1,6 @@
 
 #include <neural_network.h>
+#include <string>
 
 //----------------------------------------------
 //  Mean Squared Error Loss Function
@@ -58,20 +59,18 @@ void NeuralNetwork::init(Shape _in_shape, std::vector<NeuralLayer*> _layers)
 
 void NeuralNetwork::add(NeuralLayer* layer)
 {
-    if (layers.size() > 0)
+    if (layers.size() < 1) // the first layer
     {
-        NeuralLayer* prev = layers[layers.size() - 1];
-        layers.add(layer);
-        layer->in_shape = prev->out_shape;
+        layer->in_shape = this->in_shape;
     }
     else
     {
-        layers.add(layer);
-        layer->in_shape = this->in_shape;
+        NeuralLayer* prev = layers[layers.size() - 1];
+        layer->in_shape = prev->out_shape;
     }
-    layer->in_size = layer->in_shape.size();
+
     layer->init(layer->in_shape);
-    layer->allocate(layer->in_shape.size(), layer->out_shape.size());
+    layers.add(layer);
 
     for (int j = 0; j < layer->parameters.size(); j++)
     {
@@ -103,7 +102,7 @@ Tensor<float>& NeuralNetwork::backward(Tensor<float>& output_grad)
     return input_layer()->dX;
 }
 
-void NeuralNetwork::set_trainable(bool option)
+void NeuralNetwork::setTrainable(bool option)
 {
     for (int i = 0; i < layers.size(); i++)
     {
@@ -117,7 +116,7 @@ void NeuralNetwork::release()
     {
         if (layers[i] != NULL)
         {
-            layers[i]->deallocate();
+            layers[i]->release();
             delete layers[i];
         }
     }
@@ -137,13 +136,7 @@ void NeuralNetwork::save(std::ofstream& file)
 
     for (int i = 0; i < layers.size(); i++)
     {
-        file.write((char*)&layers[i]->type, sizeof(int));
-        file.write((char*)&layers[i]->in_size, sizeof(int));
-        file.write((char*)&layers[i]->out_size, sizeof(int));
-        file.write((char*)&layers[i]->in_shape, sizeof(Shape));
-        file.write((char*)&layers[i]->out_shape, sizeof(Shape));
         layers[i]->save(file);
-        layers[i]->save_parameters(file);
     }
 }
 
@@ -151,53 +144,19 @@ void NeuralNetwork::load(std::ifstream& file)
 {
     release();
 
-    int layers_count, optimizer_type;
+    int layers_count;
     char text[AMK_FORMAT_SIZE];
     file.read(text, AMK_FORMAT_SIZE);
     file.read((char*)&layers_count, sizeof(int));
     file.read((char*)&in_shape, sizeof(Shape));
 
-    if (strcmp(text, AMK_FORMAT))
-    {
-        return;
-    }
+    if (std::string(text) != std::string(AMK_FORMAT)) return;
 
     layers.resize(layers_count);
-    int in_size, out_size, type;
-    Shape _in_shape, _out_shape;
 
     for (int i = 0; i < layers_count; i++)
     {
-        file.read((char*)&type, sizeof(int));
-        file.read((char*)&in_size, sizeof(int));
-        file.read((char*)&out_size, sizeof(int));
-        file.read((char*)&_in_shape, sizeof(Shape));
-        file.read((char*)&_out_shape, sizeof(Shape));
-
-        if (type == FULL_LAYER) layers[i] = new FullLayer();
-        if (type == CONV_LAYER) layers[i] = new ConvLayer();
-        if (type == CONV_TRANSPOSE_LAYER) layers[i] = new ConvTLayer();
-        if (type == MAX_POOL_LAYER) layers[i] = new MaxPoolLayer();
-        if (type == AVG_POOL_LAYER) layers[i] = new AvgPoolLayer();
-        if (type == RElU_LAYER) layers[i] = new RelULayer();
-        if (type == RELU_LEAK_LAYER) layers[i] = new RelULeakLayer();
-        if (type == SIGMOID_LAYER) layers[i] = new SigmoidLayer();
-        if (type == TANH_LAYER) layers[i] = new TanhLayer();
-        if (type == SINE_LAYER) layers[i] = new SineLayer();
-        if (type == DROPOUT_LAYER) layers[i] = new DropoutLayer();
-        if (type == ELTWISE_LINEAR_LAYER) layers[i] = new EltwiseLinear();
-
-        layers[i]->load(file);
-
-        layers[i]->type = type;
-        layers[i]->in_size = in_size;
-        layers[i]->out_size = out_size;
-        layers[i]->in_shape = _in_shape;
-        layers[i]->out_shape = _out_shape;
-        layers[i]->init(layers[i]->in_shape);
-        layers[i]->allocate(in_size, out_size);
-
-        layers[i]->load_parameters(file);
+        layers[i] = NeuralLayer::loadFromFile(file);
 
         for (int j = 0; j < layers[i]->parameters.size(); j++)
         {
@@ -210,13 +169,10 @@ bool NeuralNetwork::save(std::string filename)
 {
     std::ofstream file;
     file.open(filename, std::ios::out | std::ios::binary);
+    if (file.fail()) return false;
 
-    if (file.fail())
-    {
-        return false;
-    }
+    NeuralNetwork::save(file);
 
-    save(file);
     file.close();
     return true;
 }
@@ -225,13 +181,10 @@ bool NeuralNetwork::load(std::string filename)
 {
     std::ifstream file;
     file.open(filename, std::ios::in | std::ios::binary);
+    if (file.fail()) return false;
 
-    if (file.fail())
-    {
-        return false;
-    }
+    NeuralNetwork::load(file);
 
-    load(file);
     file.close();
     return true;
 }

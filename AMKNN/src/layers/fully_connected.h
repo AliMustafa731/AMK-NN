@@ -14,7 +14,6 @@ struct FullLayer : NeuralLayer
     FullLayer(int _size, float _weight_decay = 0, Shape _out_shape = Shape(0, 0, 0));
 
     void init(Shape _in_shape);
-    void release() {}
     Tensor<float>& forward(Tensor<float>& input);
     Tensor<float>& backward(Tensor<float>& output_grad);
     void save(std::ofstream& file);

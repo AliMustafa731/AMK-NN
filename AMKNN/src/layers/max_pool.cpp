@@ -14,6 +14,21 @@ void MaxPoolLayer::init(Shape _in_shape)
 
     max_indices.init(out_size);
     window.d = 1;
+
+    NeuralLayer::allocate(in_size, out_size);
+}
+
+MaxPoolLayer::MaxPoolLayer()
+{
+    setTrainable(true);
+    type = MAX_POOL_LAYER;
+}
+MaxPoolLayer::MaxPoolLayer(Shape _window, Shape _stride)
+{
+    setTrainable(true);
+    type = MAX_POOL_LAYER;
+    window = _window;
+    stride = _stride;
 }
 
 Tensor<float>& MaxPoolLayer::forward(Tensor<float>& input)
@@ -78,27 +93,19 @@ Tensor<float>& MaxPoolLayer::backward(Tensor<float>& output_grad)
 void MaxPoolLayer::release()
 {
     max_indices.release();
+    NeuralLayer::release();
 }
 
 void MaxPoolLayer::save(std::ofstream& file)
 {
+    NeuralLayer::save(file);
     file.write((char*)&window, sizeof(Shape));
     file.write((char*)&stride, sizeof(Shape));
 }
 
 void MaxPoolLayer::load(std::ifstream& file)
 {
+    NeuralLayer::load(file);
     file.read((char*)&window, sizeof(Shape));
     file.read((char*)&stride, sizeof(Shape));
-}
-
-MaxPoolLayer::MaxPoolLayer()
-{
-    type = MAX_POOL_LAYER;
-}
-MaxPoolLayer::MaxPoolLayer(Shape _window, Shape _stride)
-{
-    type = MAX_POOL_LAYER;
-    window = _window;
-    stride = _stride;
 }

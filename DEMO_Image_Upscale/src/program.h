@@ -100,15 +100,15 @@ struct TrackBar
 
     void update()
     {
-        SetWindowText(state_txt, std::to_string(get_pos()).c_str());
+        SetWindowText(state_txt, std::to_string(GetPos()).c_str());
     }
 
-    float get_pos()
+    float GetPos()
     {
         return min_rng + (max_rng - min_rng) * ((float)SendMessage(win_handle, TBM_GETPOS, 0, 0) / 10000.0f);
     }
 
-    void set_pos(float x)
+    void SetPos(float x)
     {
         SendMessage(win_handle, TBM_SETPOS, TRUE, (LPARAM) 10000.0f * (x - min_rng) / (max_rng - min_rng));
         update();

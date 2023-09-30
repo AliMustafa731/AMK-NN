@@ -30,6 +30,21 @@ void EltwiseLinear::init(Shape _in_shape)
     }
 
     setTrainable(true);
+
+    NeuralLayer::allocate(in_size, out_size);
+}
+
+EltwiseLinear::EltwiseLinear()
+{
+    setTrainable(true);
+    weight_decay = 0;
+    type = ELTWISE_LINEAR_LAYER;
+}
+EltwiseLinear::EltwiseLinear(float _weight_decay)
+{
+    setTrainable(true);
+    weight_decay = _weight_decay;
+    type = ELTWISE_LINEAR_LAYER;
 }
 
 Tensor<float>& EltwiseLinear::forward(Tensor<float>& input)
@@ -67,23 +82,12 @@ Tensor<float>& EltwiseLinear::backward(Tensor<float>& output_grad)
 
 void EltwiseLinear::save(std::ofstream& file)
 {
+    NeuralLayer::save(file);
     file.write((char*)&weight_decay, sizeof(float));
 }
 
 void EltwiseLinear::load(std::ifstream& file)
 {
+    NeuralLayer::load(file);
     file.read((char*)&weight_decay, sizeof(float));
-}
-
-EltwiseLinear::EltwiseLinear()
-{
-    trainable = true;
-    weight_decay = 0;
-    type = ELTWISE_LINEAR_LAYER;
-}
-EltwiseLinear::EltwiseLinear(float _weight_decay)
-{
-    trainable = true;
-    weight_decay = _weight_decay;
-    type = ELTWISE_LINEAR_LAYER;
 }

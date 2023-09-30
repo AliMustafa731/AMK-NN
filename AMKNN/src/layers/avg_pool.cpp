@@ -13,6 +13,21 @@ void AvgPoolLayer::init(Shape _in_shape)
     out_size = out_shape.size();
 
     window.d = 1;
+
+    NeuralLayer::allocate(in_size, out_size);
+}
+
+AvgPoolLayer::AvgPoolLayer()
+{
+    setTrainable(true);
+    type = AVG_POOL_LAYER;
+}
+AvgPoolLayer::AvgPoolLayer(Shape _window, Shape _stride)
+{
+    setTrainable(true);
+    type = AVG_POOL_LAYER;
+    window = _window;
+    stride = _stride;
 }
 
 Tensor<float>& AvgPoolLayer::forward(Tensor<float>& input)
@@ -91,24 +106,14 @@ Tensor<float>& AvgPoolLayer::backward(Tensor<float>& output_grad)
 
 void AvgPoolLayer::save(std::ofstream& file)
 {
+    NeuralLayer::save(file);
     file.write((char*)&window, sizeof(Shape));
     file.write((char*)&stride, sizeof(Shape));
 }
 
 void AvgPoolLayer::load(std::ifstream& file)
 {
+    NeuralLayer::load(file);
     file.read((char*)&window, sizeof(Shape));
     file.read((char*)&stride, sizeof(Shape));
 }
-
-AvgPoolLayer::AvgPoolLayer()
-{
-    type = AVG_POOL_LAYER;
-}
-AvgPoolLayer::AvgPoolLayer(Shape _window, Shape _stride)
-{
-    type = AVG_POOL_LAYER;
-    window = _window;
-    stride = _stride;
-}
-

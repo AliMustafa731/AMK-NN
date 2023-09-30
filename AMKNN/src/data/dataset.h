@@ -28,10 +28,10 @@ public:
     inline Tensor<float>& operator[](int i)
     {
         AMK_ASSERT(i < samples_num);
-        ptr.data = &data.data[i * sample_size];
+        ptr = Tensor<float>(shape.w, shape.h, shape.d, &data.data[i * sample_size]);
         return ptr;
     }
 
 private:
-    Tensor<float> ptr;  // used to lockup samples
+    Tensor<float> ptr;  // used to lookup samples
 };

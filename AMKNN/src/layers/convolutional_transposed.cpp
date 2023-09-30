@@ -43,6 +43,23 @@ void ConvTLayer::init(Shape _in_shape)
     _Y_padd.init(out_shape.w + 2 * padd.w, out_shape.h + 2 * padd.h);
 
     setTrainable(true);
+
+    NeuralLayer::allocate(in_size, out_size);
+}
+
+ConvTLayer::ConvTLayer()
+{
+    setTrainable(true);
+    type = CONV_TRANSPOSE_LAYER;
+}
+ConvTLayer::ConvTLayer(Shape _kernel, Shape _stride, Shape _padd, float _weight_decay)
+{
+    setTrainable(true);
+    type = CONV_TRANSPOSE_LAYER;
+    kernel = _kernel;
+    stride = _stride;
+    padd = _padd;
+    weight_decay = _weight_decay;
 }
 
 Tensor<float>& ConvTLayer::forward(Tensor<float>& input)
@@ -124,6 +141,7 @@ Tensor<float>& ConvTLayer::backward(Tensor<float>& output_grad)
 
 void ConvTLayer::save(std::ofstream& file)
 {
+    NeuralLayer::save(file);
     file.write((char*)&kernel, sizeof(Shape));
     file.write((char*)&padd, sizeof(Shape));
     file.write((char*)&stride, sizeof(Shape));
@@ -132,22 +150,9 @@ void ConvTLayer::save(std::ofstream& file)
 
 void ConvTLayer::load(std::ifstream& file)
 {
+    NeuralLayer::load(file);
     file.read((char*)&kernel, sizeof(Shape));
     file.read((char*)&padd, sizeof(Shape));
     file.read((char*)&stride, sizeof(Shape));
     file.read((char*)&weight_decay, sizeof(float));
-}
-
-ConvTLayer::ConvTLayer()
-{
-    type = CONV_TRANSPOSE_LAYER;
-}
-ConvTLayer::ConvTLayer(Shape _kernel, Shape _stride, Shape _padd, float _weight_decay)
-{
-    trainable = true;
-    type = CONV_TRANSPOSE_LAYER;
-    kernel = _kernel;
-    stride = _stride;
-    padd = _padd;
-    weight_decay = _weight_decay;
 }

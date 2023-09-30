@@ -34,7 +34,7 @@ struct NeuralNetwork
     Tensor<float>& forward(Tensor<float>& input);
     Tensor<float>& backward(Tensor<float>& output_grad);
 
-    void set_trainable(bool option);
+    void setTrainable(bool option);
 
     void release();
     bool save(std::string filename);

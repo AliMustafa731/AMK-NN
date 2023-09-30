@@ -16,7 +16,6 @@ struct ConvLayer : NeuralLayer
     ConvLayer(Shape _kernel, Shape _stride = Shape(1, 1, 0), Shape _padd = Shape(0, 0, 0), float _weight_decay = 0);
 
     void init(Shape _in_shape);
-    void release() {}
     Tensor<float>& forward(Tensor<float>& input);
     Tensor<float>& backward(Tensor<float>& output_grad);
     void save(std::ofstream& file);

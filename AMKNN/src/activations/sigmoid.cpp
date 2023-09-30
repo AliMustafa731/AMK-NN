@@ -2,6 +2,21 @@
 #include <activations/sigmoid.h>
 #include <cmath>
 
+void SigmoidLayer::init(Shape _in_shape)
+{
+    in_shape = _in_shape;
+    in_size = in_shape.size();
+    out_shape = in_shape;
+    out_size = in_size;
+
+    NeuralLayer::allocate(in_size, out_size);
+}
+
+SigmoidLayer::SigmoidLayer()
+{
+    type = SIGMOID_LAYER;
+}
+
 __forceinline float sigmoid(float x)
 {
     return 1.0f / (1.0f + exp(-x));
@@ -34,15 +49,4 @@ Tensor<float>& SigmoidLayer::backward(Tensor<float>& output_grad)
     }
 
     return dX;
-}
-
-SigmoidLayer::SigmoidLayer()
-{
-    type = SIGMOID_LAYER;
-}
-
-void SigmoidLayer::init(Shape _in_shape)
-{
-    out_size = in_size;
-    out_shape = in_shape;
 }

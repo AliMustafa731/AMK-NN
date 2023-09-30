@@ -2,17 +2,11 @@
 #include <painter.h>
 #include <utils/random.h>
 
-template<typename T> T Max(T a, T b) { return a > b ? a : b; }
-template<typename T> T Min(T a, T b) { return a < b ? a : b; }
-template<typename T> T Abs(T a) { return a > 0 ? a : -a; }
-template<typename T> void Swap(T &a, T &b)
-{
-    T tmp = a;
-    a = b;
-    b = tmp;
-}
 
-PainterNetwork::PainterNetwork(Shape map_shape) { map.init(map_shape.w, map_shape.h); }
+PainterNetwork::PainterNetwork(Shape map_shape)
+{
+    map.init(map_shape.w, map_shape.h, map_shape.d);
+}
 
 void PainterNetwork::add(PaintElement *_element)
 {
@@ -20,26 +14,22 @@ void PainterNetwork::add(PaintElement *_element)
     parameters.add(&_element->parameters);
 }
 
-Tensor<float>& PainterNetwork::forward(Tensor<float>& input)
+void PainterNetwork::forward()
 {
     for (auto n = elements.base ; n != NULL ; n = n->next)
     {
         PaintElement *e = n->value;
         e->forward(map);
     }
-
-    return map;
 }
 
-Tensor<float>& PainterNetwork::backward(Tensor<float>& d_map)
+void PainterNetwork::backward()
 {
     for (auto n = elements.base; n != NULL; n = n->next)
     {
         PaintElement *e = n->value;
         e->backward(d_map);
     }
-
-    return dX;
 }
 
 

@@ -1,6 +1,21 @@
 
 #include <activations/relu.h>
 
+void RelULayer::init(Shape _in_shape)
+{
+    in_shape = _in_shape;
+    in_size = in_shape.size();
+    out_shape = in_shape;
+    out_size = in_size;
+
+    NeuralLayer::allocate(in_size, out_size);
+}
+
+RelULayer::RelULayer()
+{
+    type = RElU_LAYER;
+}
+
 Tensor<float>& RelULayer::forward(Tensor<float>& input)
 {
     X = input;
@@ -37,15 +52,4 @@ Tensor<float>& RelULayer::backward(Tensor<float>& output_grad)
     }
 
     return dX;
-}
-
-RelULayer::RelULayer()
-{
-    type = RElU_LAYER;
-}
-
-void RelULayer::init(Shape _in_shape)
-{
-    out_size = in_size;
-    out_shape = in_shape;
 }
