@@ -1,27 +1,28 @@
 
 #include <optimizers/gradient_descent.h>
 
+//----------------------------------
+//   Optimize The Parameters
+//----------------------------------
 void GradientDescent::update(List<Parameter*> &parameters)
 {
     for (auto n = parameters.base; n != NULL; n = n->next)
     {
         Parameter *p = n->value;
 
-        if (!(p->is_trainable))
+        if (p->is_trainable == false) continue;
+
+        for (int j = 0; j < p->size(); j++)
         {
-            continue;
-        }
+            float& value = p->values[j];
+            float& gradient = p->gradients[j];
+            float& velocity = p->velocities[j];
 
-        for (int j = 0; j < p->size; j++)
-        {
-            float gradient = p->gradients[j];
+            velocity = momentum * velocity + (1.0f - momentum) * gradient;
 
-            p->velocities[j] = momentum * p->velocities[j] + (1.0f - momentum) * gradient;
-
-            p->values[j] -= learning_rate * p->velocities[j];
-            p->gradients[j] = 0;
-
-            p->values[j] -= p->decay_rate * p->values[j];
+            value -= learning_rate * velocity;
+            value -= p->decay_rate * value;
+            gradient = 0;
         }
     }
 }

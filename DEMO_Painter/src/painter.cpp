@@ -37,7 +37,7 @@ DrawLineElement::DrawLineElement()
 {
     parameters = Parameter(4);
 
-    for (int i = 0 ; i < parameters.size ; i++) { parameters.values[i] = random(0.0f, 100.0f); }
+    for (int i = 0 ; i < parameters.size() ; i++) { parameters.values[i] = random(0.0f, 100.0f); }
 }
 
 void DrawLineElement::forward(Tensor<float>& map)

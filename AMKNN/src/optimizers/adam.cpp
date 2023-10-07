@@ -1,31 +1,33 @@
 
 #include <optimizers/adam.h>
 
+//----------------------------------
+//   Optimize The Parameters
+//----------------------------------
 void Adam::update(List<Parameter*> &parameters)
 {
     for (auto n = parameters.base; n != NULL; n = n->next)
     {
         Parameter *p = n->value;
 
-        if (!(p->is_trainable))
+        if (p->is_trainable == false) continue;
+
+        for (int j = 0; j < p->size(); j++)
         {
-            continue;
-        }
+            float& value = p->values[j];
+            float& gradient = p->gradients[j];
+            float& velocity = p->velocities[j];
+            float& squared_grad = p->squared_gradients[j];
 
-        for (int j = 0; j < p->size; j++)
-        {
-            float gradient = p->gradients[j];
+            velocity = beta1 * velocity + (1.0f - beta1) * gradient;
+            squared_grad = beta2 * squared_grad + (1.0f - beta2) * gradient*gradient;
 
-            p->velocities[j] = beta1 * p->velocities[j] + (1.0f - beta1) * gradient;
-            p->squared_gradients[j] = beta2 * p->squared_gradients[j] + ((1.0f - beta2) * gradient*gradient);
+            float velocity_corr = velocity / (1.0f - beta1 + 1e-8f);
+            float squared_corr = squared_grad / (1.0f - beta2 + 1e-8f);
 
-            float velocity_corr = p->velocities[j] / (1.0f - beta1 + 1e-8f);
-            float squared_corr = p->squared_gradients[j] / (1.0f - beta2 + 1e-8f);
-
-            p->values[j] -= learning_rate * velocity_corr / (sqrt(squared_corr) + 1e-8f);
-            p->gradients[j] = 0;
-
-            p->values[j] -= p->decay_rate * p->values[j];
+            value -= learning_rate * velocity_corr / (sqrt(squared_corr) + 1e-8f);
+            value -= p->decay_rate * value;
+            gradient = 0;
         }
     }
 }

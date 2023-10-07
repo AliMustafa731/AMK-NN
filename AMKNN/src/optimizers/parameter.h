@@ -7,7 +7,7 @@
 struct Parameter
 {
     Tensor<float> values, gradients, velocities, squared_gradients;
-    size_t size;
+    size_t _size;
     float decay_rate;
     bool is_trainable;
 
@@ -18,18 +18,20 @@ struct Parameter
     Parameter()
     {
         is_trainable = true;
-        size = 0;
+        _size = 0;
     }
+
+    inline size_t size() { return _size; }
 
     void init(size_t _size, float _decay_rate = 0)
     {
         is_trainable = true;
-        size = _size;
+        this->_size = _size;
         decay_rate = _decay_rate;
-        values.init(size);
-        gradients.init(size);
-        velocities.init(size);
-        squared_gradients.init(size);
+        values.init(_size);
+        gradients.init(_size);
+        velocities.init(_size);
+        squared_gradients.init(_size);
     }
 
     void release()
@@ -42,7 +44,7 @@ struct Parameter
 
     void save(std::ofstream& file)
     {
-        file.write((char*)&size, sizeof(size_t));
+        file.write((char*)&_size, sizeof(size_t));
         file.write((char*)&decay_rate, sizeof(float));
         file.write((char*)&is_trainable, sizeof(bool));
 
@@ -54,7 +56,7 @@ struct Parameter
 
     void load(std::ifstream& file)
     {
-        file.read((char*)&size, sizeof(size_t));
+        file.read((char*)&_size, sizeof(size_t));
         file.read((char*)&decay_rate, sizeof(float));
         file.read((char*)&is_trainable, sizeof(bool));
 

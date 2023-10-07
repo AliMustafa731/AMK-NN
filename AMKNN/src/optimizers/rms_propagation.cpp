@@ -1,27 +1,28 @@
 
 #include <optimizers/rms_propagation.h>
 
+//----------------------------------
+//   Optimize The Parameters
+//----------------------------------
 void RMSPropagation::update(List<Parameter*> &parameters)
 {
     for (auto n = parameters.base; n != NULL; n = n->next)
     {
         Parameter *p = n->value;
 
-        if (!(p->is_trainable))
+        if (p->is_trainable == false) continue;
+
+        for (int j = 0; j < p->size(); j++)
         {
-            continue;
-        }
+            float& value = p->values[j];
+            float& gradient = p->gradients[j];
+            float& squared_grad = p->squared_gradients[j];
 
-        for (int j = 0; j < p->size; j++)
-        {
-            float gradient = p->gradients[j];
+            squared_grad = beta * squared_grad + (1.0f - beta) * gradient*gradient;
 
-            p->squared_gradients[j] = beta * p->squared_gradients[j] + ((1.0f - beta) * gradient*gradient);
-
-            p->values[j] -= learning_rate * gradient / (sqrt(p->squared_gradients[j]) + 1e-8f);
-            p->gradients[j] = 0;
-
-            p->values[j] -= p->decay_rate * p->values[j];
+            value -= learning_rate * gradient / (sqrt(squared_grad) + 1e-8f);
+            value -= p->decay_rate * value;
+            gradient = 0;
         }
     }
 }

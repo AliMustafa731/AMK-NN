@@ -14,6 +14,7 @@ The Neural Network is composed of cascaded layers, that do the following :
 - Each layer computes the gradients of the loss with respect to it's **Learned Parameters** (if it has, e.g. : wieghts, biases, ...).  
   
 Optimization of parameters is done by using **Gradient Descent** algorithm.  
+  
 ![Sequential Neural Network](./sequential_network.jpg)
 
 ## Demo 1 : Image Upscale
