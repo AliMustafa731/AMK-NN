@@ -1,4 +1,7 @@
 
+// enable windows visual theme style
+#pragma comment(linker,"\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
+
 #include <Windows.h>
 #include <CommCtrl.h>
 #include <fstream>
@@ -15,11 +18,8 @@
 #include <neural_network.h>
 #include <painter.h>
 
-// enable windows visual theme style
-#pragma comment(linker,"\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
-
 //-----------------------------------------------------
-//    All code that controls and manage the window
+//    Initilize The Program
 //-----------------------------------------------------
 
 void Program::init(const char* name, int _w, int _h)
@@ -120,13 +120,9 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 PainterNetwork painter_network;
 Adam optimizer;
 
-float learn_rate = 0.008f;
-float momentum = 0.75f;
-float squared_grad = 0.95f;
-bool training = false;
-
 Image img_1, img_2, img_3;
 
+bool training = false;
 const char* header_txt = "\nBy : Ali Mustafa Kamel\n2022-2023";
 
 OPENFILENAME of_load_amknn = { 0 };
@@ -204,9 +200,9 @@ void onCreate(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     TB_momentum = TrackBar(hwnd, 75, 500, 300, 30, "0.0", "1.0  Momentum");
     TB_squared_grad = TrackBar(hwnd, 75, 550, 300, 30, "0.0", "1.0  Squared Grad");
 
-    TB_learn_rate.SetPos(learn_rate);
-    TB_momentum.SetPos(momentum);
-    TB_squared_grad.SetPos(squared_grad);
+    TB_learn_rate.SetPos( optimizer.learning_rate);
+    TB_momentum.SetPos( optimizer.beta1);
+    TB_squared_grad.SetPos( optimizer.beta2);
 
     // Initialize OPENFILENAME for loading and saving
 
@@ -281,13 +277,9 @@ void updateTrackbars(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     TB_learn_rate.update();
     TB_momentum.update();
 
-    learn_rate = TB_learn_rate.GetPos();
-    momentum = TB_momentum.GetPos();
-    squared_grad = TB_squared_grad.GetPos();
-
-    optimizer.learning_rate = learn_rate;
-    optimizer.beta1 = momentum;
-    optimizer.beta2 = squared_grad;
+    optimizer.learning_rate = TB_learn_rate.GetPos();
+    optimizer.beta1 = TB_momentum.GetPos();
+    optimizer.beta2 = TB_squared_grad.GetPos();
 }
 
 void onDraw(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
