@@ -22,10 +22,7 @@ void Adam::update(List<Parameter*> &parameters)
             velocity = beta1 * velocity + (1.0f - beta1) * gradient;
             squared_grad = beta2 * squared_grad + (1.0f - beta2) * gradient*gradient;
 
-            float velocity_corr = velocity / (1.0f - beta1 + 1e-8f);
-            float squared_corr = squared_grad / (1.0f - beta2 + 1e-8f);
-
-            value -= learning_rate * velocity_corr / (sqrt(squared_corr) + 1e-8f);
+            value -= learning_rate * velocity / (sqrt(squared_grad) + 1e-8f);
             value -= p->decay_rate * value;
             gradient = 0;
         }

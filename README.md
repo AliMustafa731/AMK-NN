@@ -5,15 +5,18 @@ The goal was to do everything from scratch without using any external libraries.
 ## About
 This Implementation is limited to **Sequential Neural Networks** only.  
   
-First we need to define an **Objective Function** where one of it's arguments is the **Learned Parameters** of the neural network, and then we optimize this **Objective** (minimize/maximize it).  
-Also called the **Loss Function**, The **Mean Squared Error (MSE)** Loss Function is used here.  
+Let **W** be a vector conatning the **Learned Parameters** of the neural network.  
+Let **X** be the input vector.  
+Let **Y(X, W)** be the output of the neural network.  
+Then we need to define an Objective Function **E(Y, Y`)**, and then we optimize **W** to (minimize/maximize the Objective).  
+A.K.A **Loss Function** - **Error Function**, The **Mean Squared Error (MSE)** Loss Function is used here.  
   
 The Neural Network is composed of cascaded layers, that do the following :  
 - Each layer takes the input (**X**) from the previous layer, And computes & passes the output (**Y**) to the next layer.  
 - Each layer takes the gradients of the loss_wrt_output (**dE/dY**) from the next layer, And computes & passes the gradients of the loss_wrt_input (**dE/dX**) to the previous layer.  
-- Each layer computes the gradients of the loss with respect to it's **Learned Parameters** (if it has, e.g. : wieghts, biases, ...).  
+- Each layer computes the gradients of the loss with respect to it's **Learned Parameters** (if it has, eg: wieghts, biases, ...) to later optimize them.  
   
-Optimization of parameters is done by using **Gradient Descent** algorithm.  
+Optimization of parameters is done by using **Gradient Descent** algorithm.   
   
 ![Sequential Neural Network](./sequential_network.jpg)
 
