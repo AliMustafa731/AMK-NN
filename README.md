@@ -1,8 +1,8 @@
-## AMK-NN
+# AMK-NN
 Neural Networks Implementation in pure C++.  
 The goal was to do everything from scratch without using any external libraries.  
 
-## Demo 1 : Image Upscale
+### Demo 1 : Image Upscale
 **Status : Completed**  
 **About :**  
   
@@ -16,15 +16,16 @@ The periodic **Sine** function is used as a **non-linearity** (aka. Activation).
 
 download from [here](https://mega.nz/file/pM0UnBxZ#bbUbsSVTP682dloHIIiZceuk7KeqJ2vdmD0oJAcH7Ys).  
 
+### Preview
 ![Demo Screenshot](./screenshot.jpg)
 
-## Demo 2 : Painter
+### Demo 2 : Painter
 **Status : In Progress**  
 **About :**  
   
 Applying optimization on **parameterized** primative drawing functions (Vector Graphics) such as **( drawLine(), drawCurve(), fillPolygon() )** to generate images.  
 
-## How Does It Work ?
+### How Does It Work ?
 This Implementation is limited to **Sequential Neural Networks** only.  
   
 Let **W** be a vector conatning the **Learned Parameters** of the neural network.  
