@@ -12,7 +12,7 @@ Image::Image(int w, int h, Color* _data)
     info.bmiHeader.biBitCount = 32;
     info.bmiHeader.biCompression = BI_RGB;
 
-    img.init(w, h, 1, _data);
+    img.init(Shape(w, h), _data);
 }
 
 void Image::draw(HDC hdc, int x, int y, int w, int h)
@@ -23,7 +23,7 @@ void Image::draw(HDC hdc, int x, int y, int w, int h)
     StretchDIBits
     (
         hdc, x, y, w, h, 0, 0,
-        img.s.w, img.s.h, (void*)img.data,
+        img.shape[0], img.shape[1], (void*)img.data,
         &info, DIB_RGB_COLORS, SRCCOPY
     );
 }

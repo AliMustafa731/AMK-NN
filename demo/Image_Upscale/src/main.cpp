@@ -95,12 +95,12 @@ struct MyApp : Program
             PostQuitMessage(0);
         }
 
-        img_1 = Image(dataset.shape.w, dataset.shape.h);
-        img_2 = Image(dataset.shape.w, dataset.shape.h);
+        img_1 = Image(dataset.shape[0], dataset.shape[1]);
+        img_2 = Image(dataset.shape[0], dataset.shape[1]);
         img_3 = Image(256, 256);
 
         f_img_1.init(
-            dataset.shape.w, dataset.shape.h, 1,
+            Shape(dataset.shape[0], dataset.shape[1]),
             dataset[rand32() % dataset.samples_num].data
         );
         embed_one_channel_to_color(
@@ -258,7 +258,7 @@ struct MyApp : Program
             // from the loaded dataset
             int idx = rand32() % dataset.samples_num;
             f_img_1.data = dataset[idx].data;
-            f_img_1.s = dataset.shape;
+            f_img_1.shape = dataset.shape;
 
             embed_one_channel_to_color(
                 img_1.img.data, f_img_1.data, dataset.sample_size
@@ -305,8 +305,8 @@ struct MyApp : Program
 // thread used to train the neural netwrok
 void train_network_thread(void *args)
 {
-    int w = dataset.shape.w;
-    int h = dataset.shape.h;
+    int w = dataset.shape[0];
+    int h = dataset.shape[1];
     float w_f = (float)w;
     float h_f = (float)h;
     int size = w * h;

@@ -34,8 +34,8 @@ __forceinline void convolution(Matrix a, Matrix b, Matrix c)
 
 __forceinline void convolution_stride(Matrix a, Matrix b, Matrix c, Shape stride)
 {
-    int w = _min((a.w - b.w) / stride.w + 1, c.w);
-    int h = _min((a.h - b.h) / stride.h + 1, c.h);
+    int w = _min((a.w - b.w) / stride[0] + 1, c.w);
+    int h = _min((a.h - b.h) / stride[1] + 1, c.h);
 
     for (int y = 0; y < h; y++)
     {
@@ -47,7 +47,7 @@ __forceinline void convolution_stride(Matrix a, Matrix b, Matrix c, Shape stride
             {
                 for (int _x = 0; _x < b.w; _x++)
                 {
-                    z += b(_x, _y) * a(_x + x * stride.w, _y + y * stride.h);
+                    z += b(_x, _y) * a(_x + x * stride[0], _y + y * stride[1]);
                 }
             }
 
@@ -58,8 +58,8 @@ __forceinline void convolution_stride(Matrix a, Matrix b, Matrix c, Shape stride
 
 __forceinline void convolution_dialate(Matrix a, Matrix b, Matrix c, Shape dialation)
 {
-    int w = _min(a.w - ((b.w - 1) * dialation.w + 1) + 1, c.w);
-    int h = _min(a.h - ((b.h - 1) * dialation.h + 1) + 1, c.h);
+    int w = _min(a.w - ((b.w - 1) * dialation[0] + 1) + 1, c.w);
+    int h = _min(a.h - ((b.h - 1) * dialation[1] + 1) + 1, c.h);
 
     for (int y = 0; y < h; y++)
     {
@@ -71,7 +71,7 @@ __forceinline void convolution_dialate(Matrix a, Matrix b, Matrix c, Shape diala
             {
                 for (int _x = 0; _x < b.w; _x++)
                 {
-                    z += b(_x, _y) * a(x + _x * dialation.w, y + _y * dialation.h);
+                    z += b(_x, _y) * a(x + _x * dialation[0], y + _y * dialation[1]);
                 }
             }
 
@@ -107,7 +107,7 @@ __forceinline void convolution_transpose(Matrix a, Matrix b, Matrix c, Shape str
             {
                 for (int _x = 0; _x < b.w; _x++)
                 {
-                    c(x * stride.w + _x, y * stride.h + _y) += a(x, y) * b(_x, _y);
+                    c(x * stride[0] + _x, y * stride[1] + _y) += a(x, y) * b(_x, _y);
                 }
             }
         }

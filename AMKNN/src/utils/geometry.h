@@ -3,6 +3,7 @@
 #include <cstring>
 #include <cassert>
 #include <common.h>
+#include "./data/shape.h"
 
 struct Rect
 {
@@ -12,19 +13,6 @@ struct Rect
     Rect(int _x, int _y, int _w, int _h)
     {
         x = _x;  y = _y;  w = _w; h = _h;
-    }
-};
-
-struct Shape
-{
-    int w, h, d;
-
-    inline int size() { return w * h * d; }
-
-    Shape() {}
-    Shape(int _w, int _h, int _d)
-    {
-        w = _w;  h = _h;  d = _d;
     }
 };
 
@@ -75,7 +63,7 @@ struct Matrix
         {
             for (int x = src_rect.x; x < src_rect.w + src_rect.x; x++)
             {
-                dest(x*(stride.w) + dest_rect.x - src_rect.x, y*(stride.h) + dest_rect.y - src_rect.y) = src(x, y);
+                dest(x*(stride[0]) + dest_rect.x - src_rect.x, y*(stride[1]) + dest_rect.y - src_rect.y) = src(x, y);
             }
         }
     }

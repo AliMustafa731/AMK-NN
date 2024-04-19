@@ -114,6 +114,9 @@
     <ClInclude Include="src\gui\trackbar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\data\shape.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\activations\dropout.cpp">
@@ -177,6 +180,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\gui\trackbar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\data\shape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

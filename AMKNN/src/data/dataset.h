@@ -2,7 +2,7 @@
 
 #include <cassert>
 #include <common.h>
-#include <utils/geometry.h>
+#include <data/shape.h>
 #include <data/array.h>
 #include <data/tensor.h>
 
@@ -23,12 +23,12 @@ public:
     inline Tensor<float> operator[](int i) const
     {
         AMK_ASSERT(i < samples_num);
-        return Tensor<float>(shape.w, shape.h, shape.d, &data.data[i * sample_size]);
+        return Tensor<float>(shape[0], shape[1], shape[2], &data.data[i * sample_size]);
     }
     inline Tensor<float>& operator[](int i)
     {
         AMK_ASSERT(i < samples_num);
-        ptr = Tensor<float>(shape.w, shape.h, shape.d, &data.data[i * sample_size]);
+        ptr = Tensor<float>(shape[0], shape[1], shape[2], &data.data[i * sample_size]);
         return ptr;
     }
 

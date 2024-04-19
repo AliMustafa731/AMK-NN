@@ -8,13 +8,13 @@ void ConvLayer::init(Shape _in_shape)
 {
     in_shape = _in_shape;
     in_size = in_shape.size();
-    out_shape.w = (in_shape.w + 2*padd.w - kernel.w) / stride.w + 1;
-    out_shape.h = (in_shape.h + 2*padd.h - kernel.h) / stride.h + 1;
-    out_shape.d = kernel.d;
+    out_shape[0] = (in_shape[0] + 2*padd[0] - kernel[0]) / stride[0] + 1;
+    out_shape[1] = (in_shape[1] + 2*padd[1] - kernel[1]) / stride[1] + 1;
+    out_shape[2] = kernel[2];
     out_size = out_shape.size();
 
     parameters.resize(2);
-    parameters[0] = Parameter(kernel.size() * in_shape.d, weight_decay);
+    parameters[0] = Parameter(kernel.size() * in_shape[2], weight_decay);
     parameters[1] = Parameter(out_size);
 
     K = parameters[0].values;
@@ -27,21 +27,21 @@ void ConvLayer::init(Shape _in_shape)
         B[i] = random(-1.0f, 1.0f);
         dB[i] = 0;
     }
-    for (int j = 0; j < kernel.size() * in_shape.d; j++)
+    for (int j = 0; j < kernel.size() * in_shape[2]; j++)
     {
         K[j] = random(-1.0f, 1.0f);
         dK[j] = 0;
     }
 
-    _X = Matrix(in_shape.w, in_shape.h, NULL);
-    _dX = Matrix(in_shape.w, in_shape.h, NULL);
-    _K = Matrix(kernel.w, kernel.h, NULL);
-    _dK = Matrix(kernel.w, kernel.h, NULL);
-    _Y = Matrix(out_shape.w, out_shape.h, NULL);
-    _dY = Matrix(out_shape.w, out_shape.h, NULL);
+    _X = Matrix(in_shape[0], in_shape[1], NULL);
+    _dX = Matrix(in_shape[0], in_shape[1], NULL);
+    _K = Matrix(kernel[0], kernel[1], NULL);
+    _dK = Matrix(kernel[0], kernel[1], NULL);
+    _Y = Matrix(out_shape[0], out_shape[1], NULL);
+    _dY = Matrix(out_shape[0], out_shape[1], NULL);
 
-    _X_padd.init( in_shape.w + 2*padd.w, in_shape.h + 2*padd.h );
-    _dX_padd.init( in_shape.w + 2*padd.w, in_shape.h + 2*padd.h );
+    _X_padd.init( in_shape[0] + 2*padd[0], in_shape[1] + 2*padd[1] );
+    _dX_padd.init( in_shape[0] + 2*padd[0], in_shape[1] + 2*padd[1] );
 
     setTrainable(true);
 
@@ -67,14 +67,14 @@ Tensor<float>& ConvLayer::forward(Tensor<float>& input)
 {
     X = input;
 
-    int channels_in = in_shape.d;
-    int channels_out = out_shape.d;
+    int channels_in = in_shape[2];
+    int channels_out = out_shape[2];
 
     std::memcpy(Y.data, B.data, Y.size() * sizeof(float));
 
-    int dim_x = in_shape.w*in_shape.h;
-    int dim_y = out_shape.w*out_shape.h;
-    int dim_k[] = { kernel.w*kernel.h, kernel.w*kernel.h*kernel.d };
+    int dim_x = in_shape[0]*in_shape[1];
+    int dim_y = out_shape[0]*out_shape[1];
+    int dim_k[] = { kernel[0]*kernel[1], kernel[0]*kernel[1]*kernel[2] };
 
     for (int ch_out = 0; ch_out < channels_out; ch_out++)
     {
@@ -84,7 +84,7 @@ Tensor<float>& ConvLayer::forward(Tensor<float>& input)
 
         for (int ch_in = 0; ch_in < channels_in; ch_in++)
         {
-            Matrix::copy(_X_padd, _X, { padd.w, padd.h, 0, 0 }, _X.get_rect());
+            Matrix::copy(_X_padd, _X, { padd[0], padd[1], 0, 0 }, _X.get_rect());
             convolution_stride(_X_padd, _K, _Y, stride);
 
             _X.data += dim_x;
@@ -99,9 +99,9 @@ Tensor<float>& ConvLayer::backward(Tensor<float>& output_grad)
 {
     dY = output_grad;
 
-    int channels_in = in_shape.d;
-    int channels_out = out_shape.d;
-    Shape padd_out(kernel.w - 1, kernel.h - 1, 0);
+    int channels_in = in_shape[2];
+    int channels_out = out_shape[2];
+    Shape padd_out(kernel[0] - 1, kernel[1] - 1, 0);
 
     if (trainable)
     {
@@ -109,9 +109,9 @@ Tensor<float>& ConvLayer::backward(Tensor<float>& output_grad)
     }
     dX.fill(0);
 
-    int dim_x = in_shape.w*in_shape.h;
-    int dim_y = out_shape.w*out_shape.h;
-    int dim_k[] = { kernel.w*kernel.h, kernel.w*kernel.h*kernel.d };
+    int dim_x = in_shape[0]*in_shape[1];
+    int dim_y = out_shape[0]*out_shape[1];
+    int dim_k[] = { kernel[0]*kernel[1], kernel[0]*kernel[1]*kernel[2] };
 
     for (int ch_out = 0; ch_out < channels_out; ch_out++)
     {
@@ -124,7 +124,7 @@ Tensor<float>& ConvLayer::backward(Tensor<float>& output_grad)
 
         for (int ch_in = 0; ch_in < channels_in; ch_in++)
         {
-            Matrix::copy(_X_padd, _X, { padd.w, padd.h, 0, 0 }, _X.get_rect());
+            Matrix::copy(_X_padd, _X, { padd[0], padd[1], 0, 0 }, _X.get_rect());
 
             if (trainable)
             {
@@ -132,7 +132,7 @@ Tensor<float>& ConvLayer::backward(Tensor<float>& output_grad)
             }
             convolution_transpose(_dY, _K, _dX_padd);
 
-            Matrix::copy(_dX, _dX_padd, { 0, 0, 0, 0 }, { padd.w, padd.h, _dX.w, _dX.h });
+            Matrix::copy(_dX, _dX_padd, { 0, 0, 0, 0 }, { padd[0], padd[1], _dX.w, _dX.h });
 
             _K.data += dim_k[1];
             _dK.data += dim_k[1];

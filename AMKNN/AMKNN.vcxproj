@@ -30,6 +30,7 @@
     <ClInclude Include="src\data\array.h" />
     <ClInclude Include="src\data\dataset.h" />
     <ClInclude Include="src\data\list.h" />
+    <ClInclude Include="src\data\shape.h" />
     <ClInclude Include="src\data\tensor.h" />
     <ClInclude Include="src\gui\image.h" />
     <ClInclude Include="src\gui\program.h" />
@@ -61,6 +62,7 @@
     <ClCompile Include="src\activations\sine.cpp" />
     <ClCompile Include="src\activations\tanh.cpp" />
     <ClCompile Include="src\data\dataset.cpp" />
+    <ClCompile Include="src\data\shape.cpp" />
     <ClCompile Include="src\gui\image.cpp" />
     <ClCompile Include="src\gui\program.cpp" />
     <ClCompile Include="src\gui\trackbar.cpp" />

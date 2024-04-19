@@ -5,7 +5,7 @@
 #include <fstream>
 #include <cstdint>
 #include "common.h"
-#include "utils/geometry.h"
+#include "data/shape.h"
 
 //----------------------------------------------------
 //   Array, with Arithmetic functions & 2D accesors
@@ -13,42 +13,37 @@
 template<typename T> struct Tensor
 {
     T *data;
-    Shape s;
+    Shape shape;
 
-    Tensor()
+    Tensor() : shape(0, 0, 0, 0), data(NULL) {};
+    Tensor(int w, int h = 1, int d = 1, T* _data = NULL)
     {
-        s = Shape(0, 0, 0); data = NULL;
+        init({w, h, d, 1}, _data);
     }
-    Tensor(size_t w, size_t h = 1, size_t d = 1, T* _data = NULL)
+    Tensor(Shape s, T* _data = NULL)
     {
-        init(w, h, d, _data);
-    }
-    Tensor(Shape _s, T* _data = NULL)
-    {
-        init(_s.w, _s.h, _s.d, _data);
+        init(s, _data);
     }
 
     // arithmetic
-    inline void add(Tensor<T>& rhs) { for (int i = 0; i < s.size(); i++) data[i] += rhs.data[i]; };
-    inline void sub(Tensor<T>& rhs) { for (int i = 0; i < s.size(); i++) data[i] -= rhs.data[i]; };
-    inline void mul(T factor)       { for (int i = 0; i < s.size(); i++) data[i] *= factor; };
+    inline void add(Tensor<T>& rhs) { for (int i = 0; i < shape.size(); i++) data[i] += rhs.data[i]; };
+    inline void sub(Tensor<T>& rhs) { for (int i = 0; i < shape.size(); i++) data[i] -= rhs.data[i]; };
+    inline void mul(T factor)       { for (int i = 0; i < shape.size(); i++) data[i] *= factor; };
 
-    inline void fill(T val) { for (int i = 0; i < s.size(); i++) data[i] = val; }
+    inline void fill(T val) { for (int i = 0; i < shape.size(); i++) data[i] = val; }
 
     // accessors
-    inline size_t size() const { return s.w * s.h * s.d; }
+    inline int size() { return shape.size(); }
 
-    inline T  operator()(size_t x, size_t y) const { AMK_ASSERT(x < s.w && y < s.h);  return data[x + y * s.w]; }
-    inline T& operator()(size_t x, size_t y)       { AMK_ASSERT(x < s.w && y < s.h);  return data[x + y * s.w]; }
+    inline T  operator()(size_t x, size_t y) const { AMK_ASSERT(x < shape[0] && y < shape[1]);  return data[x + y * shape[0]]; }
+    inline T& operator()(size_t x, size_t y)       { AMK_ASSERT(x < shape[0] && y < shape[1]);  return data[x + y * shape[1]]; }
     inline T  operator[](size_t i) const        { AMK_ASSERT(i < size());  return data[i]; }
     inline T& operator[](size_t i)              { AMK_ASSERT(i < size());  return data[i]; }
 
     // utilites
-    void init(size_t w, size_t h = 1, size_t d = 1, T* _data = NULL)
+    void init(Shape s, T* _data = NULL)
     {
-        s.w = w;
-        s.h = h;
-        s.d = d;
+        shape = s;
 
         if (_data != NULL)
         {
@@ -56,14 +51,9 @@ template<typename T> struct Tensor
         }
         else
         {
-            data = new T[s.size()];
+            data = new T[shape.size()];
             std::memset(data, 0, size() * sizeof(T));
         }
-    }
-
-    void init(Shape _s, T* _data = NULL)
-    {
-        init(_s.w, _s.h, _s.d, _data);
     }
 
     void release()
@@ -72,7 +62,7 @@ template<typename T> struct Tensor
         {
             delete[] data;
             data = NULL;
-            s = Shape(0, 0, 0);
+            shape = Shape(0, 0, 0, 0);
         }
     }
 
@@ -80,8 +70,8 @@ template<typename T> struct Tensor
     {
         if (data != NULL)
         {
-            file.write((char*)&s, sizeof(Shape));
-            file.write((char*)data, s.size() * sizeof(T));
+            file.write((char*)&shape, sizeof(Shape));
+            file.write((char*)data, shape.size() * sizeof(T));
         }
     }
 
@@ -89,8 +79,8 @@ template<typename T> struct Tensor
     {
         if (data != NULL)
         {
-            file.read((char*)&s, sizeof(Shape));
-            file.read((char*)data, s.size() * sizeof(T));
+            file.read((char*)&shape, sizeof(Shape));
+            file.read((char*)data, shape.size() * sizeof(T));
         }
     }
 };
