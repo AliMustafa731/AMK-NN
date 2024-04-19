@@ -31,6 +31,9 @@
     <ClInclude Include="src\data\dataset.h" />
     <ClInclude Include="src\data\list.h" />
     <ClInclude Include="src\data\tensor.h" />
+    <ClInclude Include="src\gui\image.h" />
+    <ClInclude Include="src\gui\program.h" />
+    <ClInclude Include="src\gui\trackbar.h" />
     <ClInclude Include="src\layers\avg_pool.h" />
     <ClInclude Include="src\layers\base_layer.h" />
     <ClInclude Include="src\layers\convolutional.h" />
@@ -58,6 +61,9 @@
     <ClCompile Include="src\activations\sine.cpp" />
     <ClCompile Include="src\activations\tanh.cpp" />
     <ClCompile Include="src\data\dataset.cpp" />
+    <ClCompile Include="src\gui\image.cpp" />
+    <ClCompile Include="src\gui\program.cpp" />
+    <ClCompile Include="src\gui\trackbar.cpp" />
     <ClCompile Include="src\layers\avg_pool.cpp" />
     <ClCompile Include="src\layers\convolutional.cpp" />
     <ClCompile Include="src\layers\convolutional_transposed.cpp" />
