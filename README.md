@@ -3,6 +3,7 @@ Neural Networks Implementation in pure C++.
 The goal was to do everything from scratch without using any external libraries.  
 
 ### Demo 1 : Image Upscale
+  
 **Status : Completed**  
 **About :**  
   
@@ -18,13 +19,7 @@ download from [here](https://mega.nz/file/pM0UnBxZ#bbUbsSVTP682dloHIIiZceuk7KeqJ
 
 ### Preview
 ![Demo Screenshot](./screenshot.jpg)
-
-### Demo 2 : Painter
-**Status : In Progress**  
-**About :**  
   
-Applying optimization on **parameterized** primative drawing functions (Vector Graphics) such as **( drawLine(), drawCurve(), fillPolygon() )** to generate images.  
-
 ### How Does It Work ?
 This Implementation is limited to **Sequential Neural Networks** only.  
   

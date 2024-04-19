@@ -5,12 +5,10 @@ VisualStudioVersion = 15.0.33801.198
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AMKNN", "AMKNN\AMKNN.vcxproj", "{9E5F0DB4-3B64-4DCF-8B34-C4F1A59E6857}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "demo\Image_Upscale", "demo\Image_Upscale\DEMO_Image_Upscale.vcxproj", "{437B20DC-507F-4353-9DCA-9879CD86609E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Image_Upscale", "demo\Image_Upscale\DEMO_Image_Upscale.vcxproj", "{437B20DC-507F-4353-9DCA-9879CD86609E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9E5F0DB4-3B64-4DCF-8B34-C4F1A59E6857} = {9E5F0DB4-3B64-4DCF-8B34-C4F1A59E6857}
 	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "demo\Painter", "demo\Painter\DEMO_Painter.vcxproj", "{10419088-2692-4682-83C7-ED8B8BEF9E89}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,14 +34,6 @@ Global
 		{437B20DC-507F-4353-9DCA-9879CD86609E}.Release|x64.Build.0 = Release|x64
 		{437B20DC-507F-4353-9DCA-9879CD86609E}.Release|x86.ActiveCfg = Release|Win32
 		{437B20DC-507F-4353-9DCA-9879CD86609E}.Release|x86.Build.0 = Release|Win32
-		{10419088-2692-4682-83C7-ED8B8BEF9E89}.Debug|x64.ActiveCfg = Debug|x64
-		{10419088-2692-4682-83C7-ED8B8BEF9E89}.Debug|x64.Build.0 = Debug|x64
-		{10419088-2692-4682-83C7-ED8B8BEF9E89}.Debug|x86.ActiveCfg = Debug|Win32
-		{10419088-2692-4682-83C7-ED8B8BEF9E89}.Debug|x86.Build.0 = Debug|Win32
-		{10419088-2692-4682-83C7-ED8B8BEF9E89}.Release|x64.ActiveCfg = Release|x64
-		{10419088-2692-4682-83C7-ED8B8BEF9E89}.Release|x64.Build.0 = Release|x64
-		{10419088-2692-4682-83C7-ED8B8BEF9E89}.Release|x86.ActiveCfg = Release|Win32
-		{10419088-2692-4682-83C7-ED8B8BEF9E89}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
