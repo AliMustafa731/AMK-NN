@@ -23,16 +23,16 @@ download from [here](https://mega.nz/file/pM0UnBxZ#bbUbsSVTP682dloHIIiZceuk7KeqJ
 ### How Does It Work ?
 This Implementation is limited to **Sequential Neural Networks** only.  
   
-Let **W** be a vector conatning the **Learned Parameters** of the neural network.  
-Let **X** be the input vector.  
-Let **Y = f(X, W)** be the output of the neural network.  
-We need to define an Objective Function **E = g(Y, Y`)** (aka. Loss Function/Cost Function).  
-We optimize **W** to (minimize/maximize the Objective).  
+Let **$`W`$** be a vector conatning the **Learned Parameters** of the neural network.  
+Let **$`X`$** be the input vector.  
+Let **$`Y=f(X, W)`$** be the output of the neural network.  
+We need to define an Objective Function **$`E = g(Y, Y_{hat})`$** (aka. Loss Function/Cost Function).  
+We optimize **$`W`$** to (minimize/maximize the Objective).  
   
 The Neural Network is made of sequential layers, that do the following :  
-- Each layer takes the input (**X**) from the previous layer, then computes & passes the output (**Y**) to the next layer.  
-- Each layer takes the gradients of the "loss with respect to output" (**dE/dY**) from the next layer,  
-  then computes & passes the gradients of the "loss with respect to input" (**dE/dX**) to the previous layer.  
+- Each layer takes the input **$`X`$** from the previous layer, then computes & passes the output **$`Y`$** to the next layer.  
+- Each layer takes the gradients of the "loss with respect to output" **$`dE/dY`$** from the next layer,  
+  then computes & passes the gradients of the "loss with respect to input" **$`dE/dX`$** to the previous layer.  
 - Each layer computes the gradients of the loss with respect to it's **Learned Parameters** (if it has, eg: wieghts, biases, ...) to later optimize them.  
   
 Optimization of parameters is done by using **Gradient Descent** algorithm.   
