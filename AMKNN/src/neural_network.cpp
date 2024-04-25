@@ -49,7 +49,7 @@ void NeuralNetwork::init(Shape _in_shape, std::vector<NeuralLayer*> _layers)
 {
     release();
     in_shape = _in_shape;
-    layers.reserve(_layers.size());
+    layers.reserve(_layers.size() + 1);
 
     for (int i = 0; i < _layers.size(); i++)
     {
