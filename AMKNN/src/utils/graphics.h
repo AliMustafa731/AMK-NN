@@ -11,6 +11,10 @@ struct Color
     {
         r = _r;  g = _g;  b = _b;  a = 0;
     }
+
+    Color& operator+=(const Color& rhs) {}
+    Color& operator-=(const Color& rhs) {}
+    Color& operator*=(const Color& rhs) {}
 };
 
 struct Colorf

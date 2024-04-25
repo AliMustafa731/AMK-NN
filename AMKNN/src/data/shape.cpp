@@ -13,7 +13,7 @@ Shape::Shape(int a, int b, int c, int d)
     dim[3] = d;
 }
 
-int Shape::size() { return dim[0] * dim[1] * dim[2] * dim[3]; }
+int Shape::size() const { return dim[0] * dim[1] * dim[2] * dim[3]; }
 
 int Shape::operator[](int idx) const
 {

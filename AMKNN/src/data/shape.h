@@ -9,7 +9,7 @@ public:
     Shape();
     Shape(int a, int b = 1, int c = 1, int d = 1);
 
-    int size();
+    int size() const;
     int operator[](int idx) const;
     int& operator[](int idx);
 };
