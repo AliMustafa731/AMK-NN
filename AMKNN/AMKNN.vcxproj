@@ -63,6 +63,7 @@
     <ClCompile Include="src\activations\tanh.cpp" />
     <ClCompile Include="src\data\dataset.cpp" />
     <ClCompile Include="src\data\shape.cpp" />
+    <ClCompile Include="src\data\tensor.cpp" />
     <ClCompile Include="src\gui\image.cpp" />
     <ClCompile Include="src\gui\program.cpp" />
     <ClCompile Include="src\gui\trackbar.cpp" />
