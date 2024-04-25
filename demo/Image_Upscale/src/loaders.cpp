@@ -1,10 +1,8 @@
 
-#include <loaders.h>
+#include "loaders.h"
+#include <data/array.h>
 #include <cstdint>
 #include <fstream>
-
-#include <data/tensor.h>
-
 
 void reverse_bytes(uint8_t* dest, uint8_t* src, int size)
 {
@@ -30,7 +28,7 @@ void encode_one_hot(Tensor<float> &dest, Tensor<uint8_t> &src, int num_class)
     }
 }
 
-bool load_mnist_images(const char* filename, DataSet &dest, int samples)
+bool load_mnist_images(const char* filename, Tensor<float> &dest, int samples)
 {
     int samples_count, _samples_count, width, _width, height, _height;
 
@@ -66,10 +64,10 @@ bool load_mnist_images(const char* filename, DataSet &dest, int samples)
 
     file.read((char*)temp.data, size * sizeof(char));
 
-    dest.init(Shape(width, height, 1), samples_count);
+    dest.init(Shape(width, height, 1, samples_count));
 
     // copy and flipp vertically
-    for (int i = 0; i < dest.samples_num; i++)
+    for (int i = 0; i < dest.shape[3]; i++)
     {
         for (int x = 0; x < width; x++)
         {
@@ -87,7 +85,7 @@ bool load_mnist_images(const char* filename, DataSet &dest, int samples)
     return true;
 }
 
-bool load_mnist_labels(const char* filename, DataSet &dest, int num_class, int samples)
+bool load_mnist_labels(const char* filename, Tensor<float> &dest, int num_class, int samples)
 {
     int samples_count, _samples_count;
 
@@ -113,9 +111,9 @@ bool load_mnist_labels(const char* filename, DataSet &dest, int num_class, int s
     Tensor<uint8_t> temp(samples_count);
     file.read((char*)temp.data, samples_count * sizeof(char));
 
-    dest.init(Shape(num_class, 1, 1), samples_count);
+    dest.init(Shape(num_class, 1, 1, samples_count));
 
-    encode_one_hot(dest.data, temp, num_class);
+    encode_one_hot(dest, temp, num_class);
 
     temp.release();
 

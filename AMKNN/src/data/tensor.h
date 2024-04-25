@@ -45,6 +45,7 @@ template<typename T> struct Tensor
     void release();
 
     void reshape(Shape s);
+    Tensor<T> slice(Shape s, Shape offset);
 
     void save(std::ofstream& file);
     void load(std::ifstream& file);

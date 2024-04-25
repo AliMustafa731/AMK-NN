@@ -152,7 +152,17 @@ void Tensor<T>::reshape(Shape s)
 {
     shape = s;
 
-    dim_mul[0] = shape[1];
-    dim_mul[1] = shape[1] * shape[2];
-    dim_mul[2] = shape[1] * shape[2] * shape[3];
+    dim_mul[0] = shape[0];
+    dim_mul[1] = shape[0] * shape[1];
+    dim_mul[2] = shape[0] * shape[1] * shape[2];
+}
+
+template<typename T>
+Tensor<T> Tensor<T>::slice(Shape s, Shape offset)
+{
+    int x = offset[0];
+    int y = offset[1];
+    int w = offset[2];
+    int h = offset[3];
+    return Tensor<T>(s, &data[x + y * dim_mul[0] + w * dim_mul[1] + h * dim_mul[2]]);
 }

@@ -28,7 +28,6 @@
     <ClInclude Include="src\activations\tanh.h" />
     <ClInclude Include="src\common.h" />
     <ClInclude Include="src\data\array.h" />
-    <ClInclude Include="src\data\dataset.h" />
     <ClInclude Include="src\data\list.h" />
     <ClInclude Include="src\data\shape.h" />
     <ClInclude Include="src\data\tensor.h" />
@@ -61,7 +60,6 @@
     <ClCompile Include="src\activations\sigmoid.cpp" />
     <ClCompile Include="src\activations\sine.cpp" />
     <ClCompile Include="src\activations\tanh.cpp" />
-    <ClCompile Include="src\data\dataset.cpp" />
     <ClCompile Include="src\data\shape.cpp" />
     <ClCompile Include="src\data\tensor.cpp" />
     <ClCompile Include="src\gui\image.cpp" />

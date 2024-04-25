@@ -8,7 +8,6 @@
 #include <activations/activation_layers.h>
 #include <optimizers/optimizers.h>
 #include <utils/convolution.h>
-#include <data/dataset.h>
 #include <data/list.h>
 #include <data/array.h>
 #include <common.h>
@@ -55,7 +54,7 @@ struct LossFunction
 
     void init(int _grad_size);
     void release();
-    virtual float evaluate(NeuralNetwork& network, DataSet& data, DataSet& labels) = 0;
+    virtual float evaluate(NeuralNetwork& network, Tensor<float>& data, Tensor<float>& labels) = 0;
     virtual Tensor<float>& gradient(NeuralNetwork& network, Tensor<float>& label, int batch_size) = 0;
 };
 
@@ -63,6 +62,6 @@ struct MSELoss : LossFunction
 {
     MSELoss() {};
 
-    float evaluate(NeuralNetwork& network, DataSet& data, DataSet& labels);
+    float evaluate(NeuralNetwork& network, Tensor<float>& data, Tensor<float>& labels);
     Tensor<float>& gradient(NeuralNetwork& network, Tensor<float>& label, int batch_size);
 };

@@ -9,21 +9,25 @@
 //----------------------------------------------
 
 // evaluate the loss
-float MSELoss::evaluate(NeuralNetwork& network, DataSet& data, DataSet& labels)
+float MSELoss::evaluate(NeuralNetwork& network, Tensor<float>& data, Tensor<float>& labels)
 {
     float total_loss = 0;
 
-    for (int i = 0; i < data.samples_num; i++)
+    for (int i = 0; i < data.shape[3]; i++)
     {
-        Tensor<float>& output = network.forward(data[i]);
+        Tensor<float> sample = data.slice({ data.shape[0], data.shape[1] }, { 0, 0, 0, i });
+        Tensor<float> label = data.slice({ data.shape[0], data.shape[1] }, { 0, 0, 0, i });
+
+        Tensor<float>& output = network.forward(sample);
+
         for (int j = 0 ; j < output.size() ; j++)
         {
-            float _loss = output[j] - labels[i][j];
+            float _loss = output[j] - label[j];
             total_loss += _loss * _loss;
         }
     }
 
-    return (total_loss * 0.5f) / (float)data.samples_num;
+    return (total_loss * 0.5f) / (float)data.shape[3];
 }
 
 // calculate the loss gradients

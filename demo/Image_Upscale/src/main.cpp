@@ -5,7 +5,6 @@
 #include <Windows.h>
 #include <process.h>
 
-#include <data/dataset.h>
 #include <utils/graphics.h>
 #include <utils/random.h>
 #include <neural_network.h>
@@ -16,6 +15,9 @@
 //    Declarations
 //-----------------------------------------------------
 
+const float PI = 3.1415926535897;
+const float PI_2 = 6.28318530717;
+
 // the nueral network structure
 NeuralNetwork drawer_network;
 MSELoss loss_function;
@@ -23,7 +25,7 @@ Adam optimizer;
 
 // data
 Tensor<float> netowrk_input, network_label;
-DataSet dataset, labels;
+Tensor<float> dataset, labels;
 
 Image img_1, img_2, img_3;
 Tensor<float> f_img_1;
@@ -58,6 +60,57 @@ void train_network_thread(void *args);
 void up_scale_thread(void *args);
 void DrawerNetworkDraw(Tensor<Color> &dest, int w, int h);
 
+struct FourierFeatures : NeuralLayer
+{
+    int features_num;
+
+    FourierFeatures(){}
+
+    FourierFeatures(int _features_num)
+    {
+        features_num = _features_num;
+    }
+
+    void init(Shape _in_shape)
+    {
+        in_shape = _in_shape;
+        out_shape = {(features_num * 2 + 1) * in_shape.size()};
+        in_size = in_shape.size();
+        out_size = out_shape.size();
+
+        setTrainable(true);
+        NeuralLayer::allocate(in_size, out_size);
+    }
+
+    Tensor<float>& forward(Tensor<float>& input)
+    {
+        X = input;
+
+        for (int i = 0; i < in_size; i++)
+        {
+            Y[i] = X[i];
+        }
+
+        for (int i = in_size; i < features_num * 2; i += 2)
+        {
+            for (int j = 0; j < in_size; j++)
+            {
+                Y[i     + j * features_num * 2] = std::sin(X[j] * float(i / 2));
+                Y[i + 1 + j * features_num * 2] = std::cos(X[j] * float(i / 2));
+            }
+        }
+
+        return Y;
+    }
+
+    Tensor<float>& backward(Tensor<float>& output_grad)
+    {
+        dY = output_grad;
+
+        return dX;
+    }
+};
+
 struct MyApp : Program
 {
     MyApp(){}
@@ -65,19 +118,19 @@ struct MyApp : Program
     void onCreate(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
         // initilize the neural network
-        drawer_network.init(
-            Shape(2, 1, 1),
-            {
-                new FullLayer(15, 0.0001f),
-                new SineLayer(),
-                new FullLayer(10, 0.0001f),
-                new SineLayer(),
-                new FullLayer(10, 0.0001f),
-                new SineLayer(),
-                new FullLayer(1),
-                new SigmoidLayer()
-            }
-        );
+        drawer_network.init(Shape(2), {});
+
+        //drawer_network.add(new FourierFeatures(15));
+        drawer_network.add(new FullLayer(10));
+        drawer_network.add(new SineLayer());
+
+        drawer_network.add(new FullLayer(10));
+        drawer_network.add(new RelULayer());
+        drawer_network.add(new FullLayer(10));
+        drawer_network.add(new RelULayer());
+
+        drawer_network.add(new FullLayer(1));
+        drawer_network.add(new SigmoidLayer());
 
         optimizer = Adam(0.008f, 0.75f, 0.95f);
 
@@ -99,13 +152,9 @@ struct MyApp : Program
         img_2 = Image(dataset.shape[0], dataset.shape[1]);
         img_3 = Image(256, 256);
 
-        f_img_1.init(
-            Shape(dataset.shape[0], dataset.shape[1]),
-            dataset[rand32() % dataset.samples_num].data
-        );
-        embed_one_channel_to_color(
-            img_1.img.data, f_img_1.data, dataset.sample_size
-        );
+        f_img_1 = dataset.slice({ dataset.shape[0], dataset.shape[1] }, { 0, 0, 0, rand32() % dataset.shape[3] });
+
+        embed_one_channel_to_color(img_1.img.data, f_img_1.data, f_img_1.size());
 
         DrawerNetworkDraw(img_2.img, 28, 28);
         img_2.draw(win_hdc, 332, 32, 256, 256);
@@ -254,15 +303,10 @@ struct MyApp : Program
 
         if (win_id == RANDOM_SELECT_BUTTIN)
         {
-            // select a random sample image
-            // from the loaded dataset
-            int idx = rand32() % dataset.samples_num;
-            f_img_1.data = dataset[idx].data;
-            f_img_1.shape = dataset.shape;
+            // select a random sample image from the loaded dataset
+            f_img_1 = dataset.slice({ dataset.shape[0], dataset.shape[1] }, { 0, 0, 0, rand32() % dataset.shape[3] });
 
-            embed_one_channel_to_color(
-                img_1.img.data, f_img_1.data, dataset.sample_size
-            );
+            embed_one_channel_to_color(img_1.img.data, f_img_1.data, f_img_1.size());
 
             img_1.draw(win_hdc, 32, 32, 256, 256);
             img_2.draw(win_hdc, 332, 32, 256, 256);
@@ -320,8 +364,9 @@ void train_network_thread(void *args)
             for (int y = 0; y < h; y++)
             {
                 network_label[0] = f_img_1[x + y * w] / 255.0f;
-                netowrk_input[0] = (float)x * 10.0f / w_f;
-                netowrk_input[1] = (float)y * 10.0f / h_f;
+                // (x, y) are normalized in range (-PI, PI)
+                netowrk_input[0] = ((float)x / w_f) * PI_2 - PI;
+                netowrk_input[1] = ((float)y / h_f) * PI_2 - PI;
 
                 Tensor<float>& network_out = drawer_network.forward(netowrk_input);
                 drawer_network.backward(loss_function.gradient(drawer_network, network_label, size));
@@ -370,9 +415,9 @@ void DrawerNetworkDraw(Tensor<Color> &dest, int w, int h)
     {
         for (int y = 0; y < h; y++)
         {
-            // (x, y) are normalized in range (0, 10)
-            netowrk_input[0] = (float)x * 10.0f / w_f;
-            netowrk_input[1] = (float)y * 10.0f / h_f;
+            // (x, y) are normalized in range (-PI, PI)
+            netowrk_input[0] = ((float)x / w_f) * PI_2 - PI;
+            netowrk_input[1] = ((float)y / h_f) * PI_2 - PI;
             Tensor<float>& network_out = drawer_network.forward(netowrk_input);
 
             int idx = x + y * w;
