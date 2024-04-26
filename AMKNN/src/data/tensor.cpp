@@ -1,6 +1,6 @@
 
 #include "tensor.h"
-#include "../utils/graphics.h"
+#include <gui/image.h>
 #include <cstring>
 #include <cassert>
 

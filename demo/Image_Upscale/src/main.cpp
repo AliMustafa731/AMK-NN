@@ -5,7 +5,6 @@
 #include <Windows.h>
 #include <process.h>
 
-#include <utils/graphics.h>
 #include <utils/random.h>
 #include <neural_network.h>
 #include <gui/program.h>
@@ -154,7 +153,7 @@ struct MyApp : Program
 
         f_img_1 = dataset.slice({ dataset.shape[0], dataset.shape[1] }, { 0, 0, 0, rand32() % dataset.shape[3] });
 
-        embed_one_channel_to_color(img_1.img.data, f_img_1.data, f_img_1.size());
+        img_1.inti_from_float(f_img_1);
 
         DrawerNetworkDraw(img_2.img, 28, 28);
         img_2.draw(win_hdc, 332, 32, 256, 256);
@@ -306,7 +305,7 @@ struct MyApp : Program
             // select a random sample image from the loaded dataset
             f_img_1 = dataset.slice({ dataset.shape[0], dataset.shape[1] }, { 0, 0, 0, rand32() % dataset.shape[3] });
 
-            embed_one_channel_to_color(img_1.img.data, f_img_1.data, f_img_1.size());
+            img_1.inti_from_float(f_img_1);
 
             img_1.draw(win_hdc, 32, 32, 256, 256);
             img_2.draw(win_hdc, 332, 32, 256, 256);

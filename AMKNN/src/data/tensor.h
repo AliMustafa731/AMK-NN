@@ -49,4 +49,16 @@ template<typename T> struct Tensor
 
     void save(std::ofstream& file);
     void load(std::ifstream& file);
+
+    template<typename T_to>
+    static void cast(Tensor<T>& from, Tensor<T_to>& to)
+    {
+        AMK_ASSERT(from.size() == to.size());
+
+        for (int i = 0; i < from.size(); i++)
+        {
+            to[i] = T_to(from[i]);
+        }
+    }
 };
+
