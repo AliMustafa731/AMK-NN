@@ -50,6 +50,7 @@
     <ClInclude Include="src\optimizers\parameter.h" />
     <ClInclude Include="src\optimizers\rms_propagation.h" />
     <ClInclude Include="src\utils\geometry.h" />
+    <ClInclude Include="src\utils\random.h" />
     <ClInclude Include="src\utils\utils.h" />
   </ItemGroup>
   <ItemGroup>

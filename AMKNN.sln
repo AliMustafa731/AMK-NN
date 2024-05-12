@@ -10,6 +10,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Image_Upscale", "demo\Image
 		{9E5F0DB4-3B64-4DCF-8B34-C4F1A59E6857} = {9E5F0DB4-3B64-4DCF-8B34-C4F1A59E6857}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Conv_Network", "demo\Conv_Network\Conv_Network.vcxproj", "{15AD7506-F37D-43C4-9019-69DC9846D795}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9E5F0DB4-3B64-4DCF-8B34-C4F1A59E6857} = {9E5F0DB4-3B64-4DCF-8B34-C4F1A59E6857}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -34,6 +39,14 @@ Global
 		{437B20DC-507F-4353-9DCA-9879CD86609E}.Release|x64.Build.0 = Release|x64
 		{437B20DC-507F-4353-9DCA-9879CD86609E}.Release|x86.ActiveCfg = Release|Win32
 		{437B20DC-507F-4353-9DCA-9879CD86609E}.Release|x86.Build.0 = Release|Win32
+		{15AD7506-F37D-43C4-9019-69DC9846D795}.Debug|x64.ActiveCfg = Debug|x64
+		{15AD7506-F37D-43C4-9019-69DC9846D795}.Debug|x64.Build.0 = Debug|x64
+		{15AD7506-F37D-43C4-9019-69DC9846D795}.Debug|x86.ActiveCfg = Debug|Win32
+		{15AD7506-F37D-43C4-9019-69DC9846D795}.Debug|x86.Build.0 = Debug|Win32
+		{15AD7506-F37D-43C4-9019-69DC9846D795}.Release|x64.ActiveCfg = Release|x64
+		{15AD7506-F37D-43C4-9019-69DC9846D795}.Release|x64.Build.0 = Release|x64
+		{15AD7506-F37D-43C4-9019-69DC9846D795}.Release|x86.ActiveCfg = Release|Win32
+		{15AD7506-F37D-43C4-9019-69DC9846D795}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
