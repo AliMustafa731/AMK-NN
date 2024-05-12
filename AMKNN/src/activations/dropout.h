@@ -2,7 +2,7 @@
 
 #include <layers/base_layer.h>
 
-struct DropoutLayer : NeuralLayer
+struct DropoutLayer : BaseLayer
 {
     Array<float> mask;  // contains values that can have either (0) or (1)
     float P;            // the probability of nodes being kept working

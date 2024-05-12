@@ -2,7 +2,7 @@
 
 #include <layers/base_layer.h>
 
-struct RelULayer : NeuralLayer
+struct RelULayer : BaseLayer
 {
     RelULayer();
 

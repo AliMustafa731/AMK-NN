@@ -11,7 +11,7 @@ void DropoutLayer::init(Shape _in_shape)
 
     mask.init(in_size);
 
-    NeuralLayer::allocate(in_size, out_size);
+    BaseLayer::allocate(in_size, out_size);
 }
 
 DropoutLayer::DropoutLayer(float _P)
@@ -28,7 +28,7 @@ DropoutLayer::DropoutLayer()
 void DropoutLayer::release()
 {
     mask.release();
-    NeuralLayer::release();
+    BaseLayer::release();
 }
 
 Tensor<float>& DropoutLayer::forward(Tensor<float>& input)
@@ -80,12 +80,12 @@ Tensor<float>& DropoutLayer::backward(Tensor<float>& output_grad)
 
 void DropoutLayer::save(std::ofstream& file)
 {
-    NeuralLayer::save(file);
+    BaseLayer::save(file);
     file.write((char*)&P, sizeof(float));
 }
 
 void DropoutLayer::load(std::ifstream& file)
 {
-    NeuralLayer::load(file);
+    BaseLayer::load(file);
     file.read((char*)&P, sizeof(float));
 }

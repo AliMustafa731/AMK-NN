@@ -2,7 +2,7 @@
 
 #include <layers/base_layer.h>
 
-struct SigmoidLayer : NeuralLayer
+struct SigmoidLayer : BaseLayer
 {
     SigmoidLayer();
 

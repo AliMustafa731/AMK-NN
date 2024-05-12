@@ -8,7 +8,7 @@ void RelULeakLayer::init(Shape _in_shape)
     out_shape = in_shape;
     out_size = in_size;
 
-    NeuralLayer::allocate(in_size, out_size);
+    BaseLayer::allocate(in_size, out_size);
 }
 
 RelULeakLayer::RelULeakLayer(float _alpha)
@@ -62,12 +62,12 @@ Tensor<float>& RelULeakLayer::backward(Tensor<float>& output_grad)
 
 void RelULeakLayer::save(std::ofstream& file)
 {
-    NeuralLayer::save(file);
+    BaseLayer::save(file);
     file.write((char*)&alpha, sizeof(float));
 }
 
 void RelULeakLayer::load(std::ifstream& file)
 {
-    NeuralLayer::load(file);
+    BaseLayer::load(file);
     file.read((char*)&alpha, sizeof(float));
 }

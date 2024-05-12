@@ -6,7 +6,7 @@
 #include <utils/geometry.h>
 #include <fstream>
 
-struct NeuralLayer
+struct BaseLayer
 {
     Tensor<float> X, dX, Y, dY;
     Array<Parameter> parameters;
@@ -14,7 +14,7 @@ struct NeuralLayer
     Shape in_shape, out_shape;
     bool trainable;
 
-    NeuralLayer() {}
+    BaseLayer() {}
 
     void allocate(int _in_size, int _out_size);
     void deallocate();
@@ -28,5 +28,5 @@ struct NeuralLayer
     virtual Tensor<float>& forward(Tensor<float>& input) = 0;
     virtual Tensor<float>& backward(Tensor<float>& output_grad) = 0;
 
-    static NeuralLayer* loadFromFile(std::ifstream& file);
+    static BaseLayer* loadFromFile(std::ifstream& file);
 };

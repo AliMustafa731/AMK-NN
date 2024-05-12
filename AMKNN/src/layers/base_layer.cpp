@@ -4,7 +4,7 @@
 #include <activations/activation_layers.h>
 #include <cmath>
 
-void NeuralLayer::allocate(int _in_size, int _out_size)
+void BaseLayer::allocate(int _in_size, int _out_size)
 {
     in_size = _in_size;
     out_size = _out_size;
@@ -15,7 +15,7 @@ void NeuralLayer::allocate(int _in_size, int _out_size)
     setTrainable(true);
 }
 
-void NeuralLayer::deallocate()
+void BaseLayer::deallocate()
 {
     Y.release();
     dX.release();
@@ -28,12 +28,12 @@ void NeuralLayer::deallocate()
     parameters.release();
 }
 
-void NeuralLayer::release()
+void BaseLayer::release()
 {
     deallocate();
 }
 
-void NeuralLayer::save(std::ofstream& file)
+void BaseLayer::save(std::ofstream& file)
 {
     // save layer info
     file.write((char*)&type, sizeof(int));
@@ -54,7 +54,7 @@ void NeuralLayer::save(std::ofstream& file)
     }
 }
 
-void NeuralLayer::load(std::ifstream& file)
+void BaseLayer::load(std::ifstream& file)
 {
     release();
 
@@ -79,9 +79,9 @@ void NeuralLayer::load(std::ifstream& file)
     }
 }
 
-NeuralLayer* NeuralLayer::loadFromFile(std::ifstream & file)
+BaseLayer* BaseLayer::loadFromFile(std::ifstream & file)
 {
-    NeuralLayer* layer = NULL;
+    BaseLayer* layer = NULL;
     int type;
 
     file.read((char*)&type, sizeof(int));
@@ -106,7 +106,7 @@ NeuralLayer* NeuralLayer::loadFromFile(std::ifstream & file)
     return layer;
 }
 
-void NeuralLayer::setTrainable(bool state)
+void BaseLayer::setTrainable(bool state)
 {
     trainable = state;
 

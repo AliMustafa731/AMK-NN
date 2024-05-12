@@ -5,7 +5,7 @@
 //----------------------------------------------
 //  Fully Connected Layer
 //----------------------------------------------
-struct FullLayer : NeuralLayer
+struct FullLayer : BaseLayer
 {
     Tensor<float> W, dW, B, dB;
     float weight_decay;

@@ -5,7 +5,7 @@
 //----------------------------------------------
 //  Element-wise linear sacle & offset
 //----------------------------------------------
-struct EltwiseLinear : NeuralLayer
+struct EltwiseLinear : BaseLayer
 {
     Tensor<float> A, dA, B, dB;
     float weight_decay;

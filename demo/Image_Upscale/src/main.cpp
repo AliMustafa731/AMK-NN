@@ -5,8 +5,7 @@
 #include <Windows.h>
 #include <process.h>
 
-#include <utils/random.h>
-#include <neural_network.h>
+#include <amknn.h>
 #include <gui/program.h>
 #include "loaders.h"
 
@@ -59,7 +58,7 @@ void train_network_thread(void *args);
 void up_scale_thread(void *args);
 void DrawerNetworkDraw(Tensor<Color> &dest, int w, int h);
 
-struct FourierFeatures : NeuralLayer
+struct FourierFeatures : BaseLayer
 {
     int features_num;
 
@@ -78,7 +77,7 @@ struct FourierFeatures : NeuralLayer
         out_size = out_shape.size();
 
         setTrainable(true);
-        NeuralLayer::allocate(in_size, out_size);
+        BaseLayer::allocate(in_size, out_size);
     }
 
     Tensor<float>& forward(Tensor<float>& input)
@@ -117,16 +116,12 @@ struct MyApp : Program
     void onCreate(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
         // initilize the neural network
-        drawer_network.init(Shape(2), {});
+        drawer_network = NeuralNetwork(Shape(2));
 
-        //drawer_network.add(new FourierFeatures(15));
         drawer_network.add(new FullLayer(10));
         drawer_network.add(new SineLayer());
-
         drawer_network.add(new FullLayer(10));
-        drawer_network.add(new RelULayer());
-        drawer_network.add(new FullLayer(10));
-        drawer_network.add(new RelULayer());
+        drawer_network.add(new SineLayer());
 
         drawer_network.add(new FullLayer(1));
         drawer_network.add(new SigmoidLayer());
@@ -368,7 +363,7 @@ void train_network_thread(void *args)
                 netowrk_input[1] = ((float)y / h_f) * PI_2 - PI;
 
                 Tensor<float>& network_out = drawer_network.forward(netowrk_input);
-                drawer_network.backward(loss_function.gradient(drawer_network, network_label, size));
+                drawer_network.backward(loss_function.gradient(network_out, network_label, size));
 
                 float _loss = network_label[0] - network_out[0];
                 loss += _loss * _loss * 0.5f;

@@ -14,7 +14,7 @@ void AvgPoolLayer::init(Shape _in_shape)
 
     window[2] = 1;
 
-    NeuralLayer::allocate(in_size, out_size);
+    BaseLayer::allocate(in_size, out_size);
 }
 
 AvgPoolLayer::AvgPoolLayer()
@@ -106,14 +106,14 @@ Tensor<float>& AvgPoolLayer::backward(Tensor<float>& output_grad)
 
 void AvgPoolLayer::save(std::ofstream& file)
 {
-    NeuralLayer::save(file);
+    BaseLayer::save(file);
     file.write((char*)&window, sizeof(Shape));
     file.write((char*)&stride, sizeof(Shape));
 }
 
 void AvgPoolLayer::load(std::ifstream& file)
 {
-    NeuralLayer::load(file);
+    BaseLayer::load(file);
     file.read((char*)&window, sizeof(Shape));
     file.read((char*)&stride, sizeof(Shape));
 }

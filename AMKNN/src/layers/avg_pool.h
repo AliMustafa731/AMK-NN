@@ -5,7 +5,7 @@
 //----------------------------------------------
 //  Average Pooling Layer
 //----------------------------------------------
-struct AvgPoolLayer : NeuralLayer
+struct AvgPoolLayer : BaseLayer
 {
     Shape window, stride;
 

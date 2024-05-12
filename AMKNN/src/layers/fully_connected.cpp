@@ -30,7 +30,7 @@ void FullLayer::init(Shape _in_shape)
 
     setTrainable(true);
 
-    NeuralLayer::allocate(in_size, out_size);
+    BaseLayer::allocate(in_size, out_size);
 }
 
 FullLayer::FullLayer()
@@ -101,12 +101,12 @@ Tensor<float>& FullLayer::backward(Tensor<float>& output_grad)
 
 void FullLayer::save(std::ofstream& file)
 {
-    NeuralLayer::save(file);
+    BaseLayer::save(file);
     file.write((char*)&weight_decay, sizeof(float));
 }
 
 void FullLayer::load(std::ifstream& file)
 {
-    NeuralLayer::load(file);
+    BaseLayer::load(file);
     file.read((char*)&weight_decay, sizeof(float));
 }

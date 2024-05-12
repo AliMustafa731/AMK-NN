@@ -5,7 +5,7 @@
 //----------------------------------------------
 //  Convolutional Layer
 //----------------------------------------------
-struct ConvLayer : NeuralLayer
+struct ConvLayer : BaseLayer
 {
     Tensor<float> K, dK, B, dB;
     Matrix _X, _X_padd, _dX, _dX_padd, _Y, _dY, _K, _dK;

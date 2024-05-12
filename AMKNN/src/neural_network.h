@@ -1,18 +1,14 @@
 #pragma once
 
-#include <iostream>
+#include <fstream>
 #include <string>
 
-#include <layers/neural_layers.h>
-#include <activations/activation_layers.h>
-#include <optimizers/optimizers.h>
-#include <utils/convolution.h>
+#include <layers/base_layer.h>
 #include <data/array.h>
-#include <common.h>
 
-struct NeuralNetwork : NeuralLayer
+struct NeuralNetwork : BaseLayer
 {
-    Array<NeuralLayer*> layers;
+    Array<BaseLayer*> layers;
 
     NeuralNetwork(Shape _in_shape)
     {
@@ -20,11 +16,11 @@ struct NeuralNetwork : NeuralLayer
     }
     NeuralNetwork() {}
 
-    inline NeuralLayer* output_layer() { return layers[layers.size() - 1]; }
-    inline NeuralLayer* input_layer() { return layers[0]; }
+    inline BaseLayer* output_layer() { return layers[layers.size() - 1]; }
+    inline BaseLayer* input_layer() { return layers[0]; }
 
     void init(Shape _in_shape);
-    void add(NeuralLayer* layer);
+    void add(BaseLayer* layer);
 
     Tensor<float>& forward(Tensor<float>& input);
     Tensor<float>& backward(Tensor<float>& output_grad);
@@ -36,28 +32,4 @@ struct NeuralNetwork : NeuralLayer
     bool load(std::string filename);
     void save(std::ofstream& file);
     void load(std::ifstream& file);
-};
-
-//----------------------------------------------
-//  Loss Function
-//----------------------------------------------
-struct LossFunction
-{
-    Tensor<float> gradients;
-
-    LossFunction(){}
-    ~LossFunction(){}
-
-    void init(int _grad_size);
-    void release();
-    virtual float evaluate(NeuralNetwork& network, Tensor<float>& data, Tensor<float>& labels) = 0;
-    virtual Tensor<float>& gradient(NeuralNetwork& network, Tensor<float>& label, int batch_size) = 0;
-};
-
-struct MSELoss : LossFunction
-{
-    MSELoss() {};
-
-    float evaluate(NeuralNetwork& network, Tensor<float>& data, Tensor<float>& labels);
-    Tensor<float>& gradient(NeuralNetwork& network, Tensor<float>& label, int batch_size);
 };

@@ -15,7 +15,7 @@ void MaxPoolLayer::init(Shape _in_shape)
     max_indices.init(out_size);
     window[2] = 1;
 
-    NeuralLayer::allocate(in_size, out_size);
+    BaseLayer::allocate(in_size, out_size);
 }
 
 MaxPoolLayer::MaxPoolLayer()
@@ -93,19 +93,19 @@ Tensor<float>& MaxPoolLayer::backward(Tensor<float>& output_grad)
 void MaxPoolLayer::release()
 {
     max_indices.release();
-    NeuralLayer::release();
+    BaseLayer::release();
 }
 
 void MaxPoolLayer::save(std::ofstream& file)
 {
-    NeuralLayer::save(file);
+    BaseLayer::save(file);
     file.write((char*)&window, sizeof(Shape));
     file.write((char*)&stride, sizeof(Shape));
 }
 
 void MaxPoolLayer::load(std::ifstream& file)
 {
-    NeuralLayer::load(file);
+    BaseLayer::load(file);
     file.read((char*)&window, sizeof(Shape));
     file.read((char*)&stride, sizeof(Shape));
 }

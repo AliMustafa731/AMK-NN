@@ -5,7 +5,7 @@
 //----------------------------------------------
 //  Transposed Convolutional Layer
 //----------------------------------------------
-struct ConvTLayer : NeuralLayer
+struct ConvTLayer : BaseLayer
 {
     Tensor<float> K, dK, B, dB;
     Matrix _X, _dX, _Y, _Y_padd, _dY, _K, _dK;

@@ -8,7 +8,7 @@ void RelULayer::init(Shape _in_shape)
     out_shape = in_shape;
     out_size = in_size;
 
-    NeuralLayer::allocate(in_size, out_size);
+    BaseLayer::allocate(in_size, out_size);
 }
 
 RelULayer::RelULayer()

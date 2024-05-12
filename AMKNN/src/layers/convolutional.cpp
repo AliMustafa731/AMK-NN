@@ -45,7 +45,7 @@ void ConvLayer::init(Shape _in_shape)
 
     setTrainable(true);
 
-    NeuralLayer::allocate(in_size, out_size);
+    BaseLayer::allocate(in_size, out_size);
 }
 
 ConvLayer::ConvLayer()
@@ -146,7 +146,7 @@ Tensor<float>& ConvLayer::backward(Tensor<float>& output_grad)
 
 void ConvLayer::save(std::ofstream& file)
 {
-    NeuralLayer::save(file);
+    BaseLayer::save(file);
     file.write((char*)&kernel, sizeof(Shape));
     file.write((char*)&padd, sizeof(Shape));
     file.write((char*)&stride, sizeof(Shape));
@@ -155,7 +155,7 @@ void ConvLayer::save(std::ofstream& file)
 
 void ConvLayer::load(std::ifstream& file)
 {
-    NeuralLayer::load(file);
+    BaseLayer::load(file);
     file.read((char*)&kernel, sizeof(Shape));
     file.read((char*)&padd, sizeof(Shape));
     file.read((char*)&stride, sizeof(Shape));

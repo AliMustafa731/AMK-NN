@@ -1,50 +1,5 @@
 
 #include <neural_network.h>
-#include <string>
-
-//----------------------------------------------
-//  Mean Squared Error Loss Function
-//  forward :  loss = 0.5 * (Y - Y`)^2
-//  backward : d_loss_wrt_Y = (Y - Y`)
-//----------------------------------------------
-
-// evaluate the loss
-float MSELoss::evaluate(NeuralNetwork& network, Tensor<float>& data, Tensor<float>& labels)
-{
-    float total_loss = 0;
-
-    for (int i = 0; i < data.shape[3]; i++)
-    {
-        Tensor<float> sample = data.slice({ data.shape[0], data.shape[1] }, { 0, 0, 0, i });
-        Tensor<float> label = data.slice({ data.shape[0], data.shape[1] }, { 0, 0, 0, i });
-
-        Tensor<float>& output = network.forward(sample);
-
-        for (int j = 0 ; j < output.size() ; j++)
-        {
-            float _loss = output[j] - label[j];
-            total_loss += _loss * _loss;
-        }
-    }
-
-    return (total_loss * 0.5f) / (float)data.shape[3];
-}
-
-// calculate the loss gradients
-Tensor<float>& MSELoss::gradient(NeuralNetwork& network, Tensor<float>& label, int batch_size)
-{
-    NeuralLayer* output_layer = network.output_layer();
-
-    for (int i = 0; i < output_layer->out_size; i++)
-    {
-        gradients[i] = (output_layer->Y[i] - label[i]) / (float)batch_size;
-    }
-
-    return gradients;
-}
-
-void LossFunction::init(int _grad_size) { gradients.init(_grad_size); }
-void LossFunction::release() { gradients.release(); }
 
 //-----------------------------------------
 //  Sequential Neural Network Structure
@@ -55,7 +10,7 @@ void NeuralNetwork::init(Shape _in_shape)
     in_shape = _in_shape;
 }
 
-void NeuralNetwork::add(NeuralLayer* layer)
+void NeuralNetwork::add(BaseLayer* layer)
 {
     if (layers.size() < 1) // the first layer
     {
@@ -63,7 +18,7 @@ void NeuralNetwork::add(NeuralLayer* layer)
     }
     else
     {
-        NeuralLayer* prev = layers[layers.size() - 1];
+        BaseLayer* prev = layers[layers.size() - 1];
         layer->in_shape = prev->out_shape;
     }
 
@@ -157,7 +112,7 @@ void NeuralNetwork::load(std::ifstream& file)
 
     for (int i = 0; i < layers_count; i++)
     {
-        layers[i] = NeuralLayer::loadFromFile(file);
+        layers[i] = BaseLayer::loadFromFile(file);
 
         for (int j = 0; j < layers[i]->parameters.size(); j++)
         {

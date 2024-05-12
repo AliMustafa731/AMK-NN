@@ -31,7 +31,7 @@ void EltwiseLinear::init(Shape _in_shape)
 
     setTrainable(true);
 
-    NeuralLayer::allocate(in_size, out_size);
+    BaseLayer::allocate(in_size, out_size);
 }
 
 EltwiseLinear::EltwiseLinear()
@@ -82,12 +82,12 @@ Tensor<float>& EltwiseLinear::backward(Tensor<float>& output_grad)
 
 void EltwiseLinear::save(std::ofstream& file)
 {
-    NeuralLayer::save(file);
+    BaseLayer::save(file);
     file.write((char*)&weight_decay, sizeof(float));
 }
 
 void EltwiseLinear::load(std::ifstream& file)
 {
-    NeuralLayer::load(file);
+    BaseLayer::load(file);
     file.read((char*)&weight_decay, sizeof(float));
 }

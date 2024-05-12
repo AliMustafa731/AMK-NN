@@ -5,7 +5,7 @@
 //-----------------------------------
 //  Max Pooling Layer
 //-----------------------------------
-struct MaxPoolLayer : NeuralLayer
+struct MaxPoolLayer : BaseLayer
 {
     Shape window, stride;
     Array<int> max_indices;

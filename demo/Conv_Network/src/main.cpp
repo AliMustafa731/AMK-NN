@@ -64,7 +64,7 @@ struct MyApp : Program
     void onCreate(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
         // initilize the neural network
-        network.init(Shape(2, 2), {});
+        network.init(Shape(2, 2));
         network.add(new FullLayer(10));
         network.add(new SineLayer());
 

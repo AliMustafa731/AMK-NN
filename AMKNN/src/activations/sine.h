@@ -2,7 +2,7 @@
 
 #include <layers/base_layer.h>
 
-struct SineLayer : NeuralLayer
+struct SineLayer : BaseLayer
 {
     SineLayer();
 

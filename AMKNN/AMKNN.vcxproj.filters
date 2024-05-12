@@ -114,6 +114,15 @@
     <ClInclude Include="src\utils\random.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\losses\loss_function.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\losses\mse_loss.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\amknn.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\activations\dropout.cpp">
@@ -180,6 +189,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\data\tensor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\losses\loss_function.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\losses\mse_loss.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -2,7 +2,7 @@
 
 #include <layers/base_layer.h>
 
-struct TanhLayer : NeuralLayer
+struct TanhLayer : BaseLayer
 {
     TanhLayer();
 

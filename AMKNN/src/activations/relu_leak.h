@@ -2,7 +2,7 @@
 
 #include <layers/base_layer.h>
 
-struct RelULeakLayer : NeuralLayer
+struct RelULeakLayer : BaseLayer
 {
     float alpha;
 
