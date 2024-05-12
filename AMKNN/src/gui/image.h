@@ -12,9 +12,9 @@ struct Color
     Color() {}
     Color(uint8_t _r, uint8_t _g, uint8_t _b) : r(_r), g(_g), b(_b), a(0) {}
 
-    Color& operator+=(const Color& rhs) {}
-    Color& operator-=(const Color& rhs) {}
-    Color& operator*=(const Color& rhs) {}
+    Color& operator+=(const Color& rhs) { return *this; }
+    Color& operator-=(const Color& rhs) { return *this; }
+    Color& operator*=(const Color& rhs) { return *this; }
 };
 
 struct Image

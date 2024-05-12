@@ -4,24 +4,24 @@
 //----------------------------------
 //   Optimize The Parameters
 //----------------------------------
-void RMSPropagation::update(List<Parameter*> &parameters)
+void RMSPropagation::update(Array<Parameter> &parameters)
 {
-    for (auto n = parameters.base; n != NULL; n = n->next)
+    for (int i = 0; i < parameters.size(); i++)
     {
-        Parameter *p = n->value;
+        Parameter& p = parameters[i];
 
-        if (p->is_trainable == false) continue;
+        if (p.is_trainable == false) continue;
 
-        for (int j = 0; j < p->size(); j++)
+        for (int j = 0; j < p.size(); j++)
         {
-            float& value = p->values[j];
-            float& gradient = p->gradients[j];
-            float& squared_grad = p->squared_gradients[j];
+            float& value = p.values[j];
+            float& gradient = p.gradients[j];
+            float& squared_grad = p.squared_gradients[j];
 
             squared_grad = beta * squared_grad + (1.0f - beta) * gradient*gradient;
 
             value -= learning_rate * gradient / (sqrt(squared_grad) + 1e-8f);
-            value -= p->decay_rate * value;
+            value -= p.decay_rate * value;
             gradient = 0;
         }
     }

@@ -1,39 +1,35 @@
 #pragma once
 
 #include <iostream>
-#include <vector>
 #include <string>
 
 #include <layers/neural_layers.h>
 #include <activations/activation_layers.h>
 #include <optimizers/optimizers.h>
 #include <utils/convolution.h>
-#include <data/list.h>
 #include <data/array.h>
 #include <common.h>
 
-struct NeuralNetwork
+struct NeuralNetwork : NeuralLayer
 {
-    List<Parameter*> parameters;
     Array<NeuralLayer*> layers;
-    Shape in_shape;
 
-    NeuralNetwork(Shape _in_shape, std::vector<NeuralLayer*> _layers)
+    NeuralNetwork(Shape _in_shape)
     {
-        init(_in_shape, _layers);
+        init(_in_shape);
     }
     NeuralNetwork() {}
 
     inline NeuralLayer* output_layer() { return layers[layers.size() - 1]; }
     inline NeuralLayer* input_layer() { return layers[0]; }
 
-    void init(Shape _in_shape, std::vector<NeuralLayer*> _layers);
+    void init(Shape _in_shape);
     void add(NeuralLayer* layer);
 
     Tensor<float>& forward(Tensor<float>& input);
     Tensor<float>& backward(Tensor<float>& output_grad);
 
-    void setTrainable(bool option);
+    void setTrainable(bool state);
 
     void release();
     bool save(std::string filename);

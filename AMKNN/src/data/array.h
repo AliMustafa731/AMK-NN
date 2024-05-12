@@ -12,24 +12,24 @@
 template<typename T> struct Array
 {
 private:
-    int _size, _length;
+    int _capacity, _length;
 
 public:
     T* data;
 
-    Array() { _size = 0;  _length = 0;  data = NULL; }
-    Array(int __size, T* _data = NULL) { init(__size, _data); }
+    Array() : _capacity(0), _length(0), data(NULL) {}
+    Array(int __capacity, T* _data = NULL) { init(__capacity, _data); }
 
-    inline int capacity() const { return _size; }
+    inline int capacity() const { return _capacity; }
     inline int size() const { return _length; }
 
-    inline T operator[](int i) const { AMK_ASSERT(i < _size);  return data[i]; }
-    inline T &operator[](int i)      { AMK_ASSERT(i < _size);  return data[i]; }
+    inline T operator[](int i) const { AMK_ASSERT(i < _capacity);  return data[i]; }
+    inline T &operator[](int i)      { AMK_ASSERT(i < _capacity);  return data[i]; }
 
-    void init(int __size, T* _data = NULL)
+    void init(int __capacity, T* _data = NULL)
     {
-        _size = __size;
-        _length = _size;
+        _capacity = __capacity;
+        _length = _capacity;
 
         if (_data != NULL)
         {
@@ -37,8 +37,8 @@ public:
         }
         else
         {
-            data = new T[_size];
-            std::memset(data, 0, _size * sizeof(T));
+            data = new T[_capacity];
+            std::memset(data, 0, _capacity * sizeof(T));
         }
     }
 
@@ -48,7 +48,7 @@ public:
         {
             delete[] data;
             data = NULL;
-            _size = 0;
+            _capacity = 0;
             _length = 0;
         }
     }
@@ -68,16 +68,19 @@ public:
 
     void add(T val)
     {
-        if (data == NULL) { return; }
+        if (data == NULL)
+        {
+            reserve(5);
+        }
 
         // if length eceeds the capacity
-        // realloctate double the amount of memory
-        if (_length >= _size)
+            // realloctate double the amount of memory
+        if (_length >= _capacity)
         {
-            _size *= 2;
-
             // initialize & copy new buffer
-            T* tmp = new T[_size];
+            _capacity *= 2;
+            T* tmp = new T[_capacity];
+
             for (int i = 0; i < _length; i++) { tmp[i] = data[i]; }
 
             delete[] data;

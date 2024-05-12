@@ -49,16 +49,10 @@ void LossFunction::release() { gradients.release(); }
 //-----------------------------------------
 //  Sequential Neural Network Structure
 //-----------------------------------------
-void NeuralNetwork::init(Shape _in_shape, std::vector<NeuralLayer*> _layers)
+void NeuralNetwork::init(Shape _in_shape)
 {
     release();
     in_shape = _in_shape;
-    layers.reserve(_layers.size() + 1);
-
-    for (int i = 0; i < _layers.size(); i++)
-    {
-        NeuralNetwork::add(_layers[i]);
-    }
 }
 
 void NeuralNetwork::add(NeuralLayer* layer)
@@ -76,41 +70,44 @@ void NeuralNetwork::add(NeuralLayer* layer)
     layer->init(layer->in_shape);
     layers.add(layer);
 
+    Y = output_layer()->Y;
+    dX = input_layer()->dX;
+
     for (int j = 0; j < layer->parameters.size(); j++)
     {
-        parameters.add(&layer->parameters[j]);
+        parameters.add(layer->parameters[j]);
     }
 }
 
 Tensor<float>& NeuralNetwork::forward(Tensor<float>& input)
 {
-    Tensor<float> X = input;
+    X = input;
 
     for (int i = 0; i < layers.size(); i++)
     {
         X = layers[i]->forward(X);
     }
 
-    return output_layer()->Y;
+    return Y;
 }
 
 Tensor<float>& NeuralNetwork::backward(Tensor<float>& output_grad)
 {
-    Tensor<float> dY = output_grad;
+    dY = output_grad;
 
     for (int i = layers.size() - 1; i >= 0; i--)
     {
         dY = layers[i]->backward(dY);
     }
 
-    return input_layer()->dX;
+    return dX;
 }
 
-void NeuralNetwork::setTrainable(bool option)
+void NeuralNetwork::setTrainable(bool state)
 {
     for (int i = 0; i < layers.size(); i++)
     {
-        layers[i]->setTrainable(option);
+        layers[i]->setTrainable(state);
     }
 }
 
@@ -164,7 +161,7 @@ void NeuralNetwork::load(std::ifstream& file)
 
         for (int j = 0; j < layers[i]->parameters.size(); j++)
         {
-            parameters.add(&layers[i]->parameters[j]);
+            parameters.add(layers[i]->parameters[j]);
         }
     }
 }

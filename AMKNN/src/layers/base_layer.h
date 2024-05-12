@@ -21,7 +21,7 @@ struct NeuralLayer
     virtual void init(Shape _in_shape) = 0; // implemented by derrived classes
     virtual void release();
 
-    void setTrainable(bool state);
+    virtual void setTrainable(bool state);
 
     virtual void save(std::ofstream& file);
     virtual void load(std::ifstream& file);

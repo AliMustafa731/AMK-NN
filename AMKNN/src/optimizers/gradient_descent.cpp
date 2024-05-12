@@ -4,24 +4,24 @@
 //----------------------------------
 //   Optimize The Parameters
 //----------------------------------
-void GradientDescent::update(List<Parameter*> &parameters)
+void GradientDescent::update(Array<Parameter> &parameters)
 {
-    for (auto n = parameters.base; n != NULL; n = n->next)
+    for (int i = 0 ; i < parameters.size() ; i++)
     {
-        Parameter *p = n->value;
+        Parameter& p = parameters[i];
 
-        if (p->is_trainable == false) continue;
+        if (p.is_trainable == false) continue;
 
-        for (int j = 0; j < p->size(); j++)
+        for (int j = 0; j < p.size(); j++)
         {
-            float& value = p->values[j];
-            float& gradient = p->gradients[j];
-            float& velocity = p->velocities[j];
+            float& value = p.values[j];
+            float& gradient = p.gradients[j];
+            float& velocity = p.velocities[j];
 
             velocity = momentum * velocity + (1.0f - momentum) * gradient;
 
             value -= learning_rate * velocity;
-            value -= p->decay_rate * value;
+            value -= p.decay_rate * value;
             gradient = 0;
         }
     }

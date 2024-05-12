@@ -1,7 +1,7 @@
 #pragma once
 
 #include <optimizers/parameter.h>
-#include <data/list.h>
+#include <data/array.h>
 #include <fstream>
 
 struct Optimizer
@@ -11,7 +11,7 @@ struct Optimizer
     Optimizer() {}
     virtual ~Optimizer() {}
 
-    virtual void update(List<Parameter*> &parameters) = 0;
+    virtual void update(Array<Parameter> &parameters) = 0;
     virtual void save(std::ofstream& file) = 0;
     virtual void load(std::ifstream& file) = 0;
 };

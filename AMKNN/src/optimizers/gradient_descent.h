@@ -9,7 +9,7 @@ struct GradientDescent : Optimizer
     GradientDescent();
     GradientDescent(float _learning_rate, float _momentum);
 
-    void update(List<Parameter*> &parameters);
+    void update(Array<Parameter> &parameters);
     void save(std::ofstream& file);
     void load(std::ifstream& file);
 };

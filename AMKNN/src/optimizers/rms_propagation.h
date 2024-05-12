@@ -9,7 +9,7 @@ struct RMSPropagation : Optimizer
     RMSPropagation();
     RMSPropagation(float _learning_rate, float _beta);
 
-    void update(List<Parameter*> &parameters);
+    void update(Array<Parameter> &parameters);
     void save(std::ofstream& file);
     void load(std::ifstream& file);
 };

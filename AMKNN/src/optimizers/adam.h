@@ -9,7 +9,7 @@ struct Adam : Optimizer
     Adam();
     Adam(float _learning_rate, float _beta1, float _beta2);
 
-    void update(List<Parameter*> &parameters);
+    void update(Array<Parameter> &parameters);
     void save(std::ofstream& file);
     void load(std::ifstream& file);
 };

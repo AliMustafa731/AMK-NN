@@ -4,26 +4,26 @@
 //----------------------------------
 //   Optimize The Parameters
 //----------------------------------
-void Adam::update(List<Parameter*> &parameters)
+void Adam::update(Array<Parameter> &parameters)
 {
-    for (auto n = parameters.base; n != NULL; n = n->next)
+    for (int i = 0; i < parameters.size(); i++)
     {
-        Parameter *p = n->value;
+        Parameter& p = parameters[i];
 
-        if (p->is_trainable == false) continue;
+        if (p.is_trainable == false) continue;
 
-        for (int j = 0; j < p->size(); j++)
+        for (int j = 0; j < p.size(); j++)
         {
-            float& value = p->values[j];
-            float& gradient = p->gradients[j];
-            float& velocity = p->velocities[j];
-            float& squared_grad = p->squared_gradients[j];
+            float& value = p.values[j];
+            float& gradient = p.gradients[j];
+            float& velocity = p.velocities[j];
+            float& squared_grad = p.squared_gradients[j];
 
             velocity = beta1 * velocity + (1.0f - beta1) * gradient;
             squared_grad = beta2 * squared_grad + (1.0f - beta2) * gradient*gradient;
 
             value -= learning_rate * velocity / (sqrt(squared_grad) + 1e-8f);
-            value -= p->decay_rate * value;
+            value -= p.decay_rate * value;
             gradient = 0;
         }
     }

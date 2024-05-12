@@ -10,6 +10,11 @@ template class Tensor<int>;
 template class Tensor<uint8_t>;
 template class Tensor<Color>;
 
+Tensor<float> _tensor_float_;
+Tensor<int> _tensor_int_;
+Tensor<uint8_t> _tensor_uint8t_;
+Tensor<Color> _tensor_color_;
+
 // constructors
 template<typename T>
 Tensor<T>::Tensor() : shape(0, 0, 0, 0), data(NULL) {}
