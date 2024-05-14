@@ -171,3 +171,28 @@ Tensor<T> Tensor<T>::slice(Shape s, Shape offset)
     int h = offset[3];
     return Tensor<T>(s, &data[x + y * dim_mul[0] + w * dim_mul[1] + h * dim_mul[2]]);
 }
+
+template<typename T>
+void Tensor<T>::copyFrom(Tensor<T> &src, Shape rect, Shape src_offset, Shape dest_offset)
+{
+    AMK_ASSERT(
+        rect[0] + src_offset[0] <= src.shape[0] &&
+        rect[1] + src_offset[1] <= src.shape[1] &&
+        rect[2] + src_offset[2] <= src.shape[2] &&
+        rect[3] + src_offset[3] <= src.shape[3] &&
+
+        rect[0] + dest_offset[0] <= this->shape[0] &&
+        rect[1] + dest_offset[1] <= this->shape[1] &&
+        rect[2] + dest_offset[2] <= this->shape[2] &&
+        rect[3] + dest_offset[3] <= this->shape[3]
+    );
+
+    for (int w = 0; w < rect[3]; w++)
+     for (int z = 0; z < rect[2]; z++)
+      for (int y = 0; y < rect[1]; y++)
+       for (int x = 0; x < rect[0]; x++)
+       {
+           (*this)(x + dest_offset[0], y + dest_offset[1], z + dest_offset[2], w + dest_offset[3])
+           = src(x + src_offset[0], y + src_offset[1], z + src_offset[2], w + src_offset[3]);
+       }
+}
