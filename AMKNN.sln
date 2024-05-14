@@ -15,6 +15,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Conv_Network", "demo\Conv_N
 		{9E5F0DB4-3B64-4DCF-8B34-C4F1A59E6857} = {9E5F0DB4-3B64-4DCF-8B34-C4F1A59E6857}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Console_Tests", "demo\Console_Tests\Console_Tests.vcxproj", "{5E1AF53B-56AE-4E64-B5FA-48812273E570}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9E5F0DB4-3B64-4DCF-8B34-C4F1A59E6857} = {9E5F0DB4-3B64-4DCF-8B34-C4F1A59E6857}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -47,6 +52,14 @@ Global
 		{15AD7506-F37D-43C4-9019-69DC9846D795}.Release|x64.Build.0 = Release|x64
 		{15AD7506-F37D-43C4-9019-69DC9846D795}.Release|x86.ActiveCfg = Release|Win32
 		{15AD7506-F37D-43C4-9019-69DC9846D795}.Release|x86.Build.0 = Release|Win32
+		{5E1AF53B-56AE-4E64-B5FA-48812273E570}.Debug|x64.ActiveCfg = Debug|x64
+		{5E1AF53B-56AE-4E64-B5FA-48812273E570}.Debug|x64.Build.0 = Debug|x64
+		{5E1AF53B-56AE-4E64-B5FA-48812273E570}.Debug|x86.ActiveCfg = Debug|Win32
+		{5E1AF53B-56AE-4E64-B5FA-48812273E570}.Debug|x86.Build.0 = Debug|Win32
+		{5E1AF53B-56AE-4E64-B5FA-48812273E570}.Release|x64.ActiveCfg = Release|x64
+		{5E1AF53B-56AE-4E64-B5FA-48812273E570}.Release|x64.Build.0 = Release|x64
+		{5E1AF53B-56AE-4E64-B5FA-48812273E570}.Release|x86.ActiveCfg = Release|Win32
+		{5E1AF53B-56AE-4E64-B5FA-48812273E570}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
