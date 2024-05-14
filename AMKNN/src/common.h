@@ -25,6 +25,8 @@ enum LayerType
     ELTWISE_LINEAR_LAYER
 };
 
+#include <cassert>
+
 #define AMK_ASSERT(x) assert(x)
 
 #ifndef NULL

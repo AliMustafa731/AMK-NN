@@ -1,6 +1,6 @@
 
 #include "image.h"
-#include <cassert>
+#include <common.h>
 
 Image::Image() {}
 
