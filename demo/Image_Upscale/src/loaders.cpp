@@ -62,7 +62,7 @@ bool load_mnist_images(const char* filename, Tensor<float> &dest, int samples)
 
     Array<uint8_t> temp(size);
 
-    file.read((char*)temp.data, size * sizeof(char));
+    file.read((char*)temp.data(), size * sizeof(char));
 
     dest.init(Shape(width, height, 1, samples_count));
 

@@ -1,15 +1,21 @@
 
 #include <neural_network.h>
 
-//-----------------------------------------
-//  Sequential Neural Network Structure
-//-----------------------------------------
+/*
+ * A Sequential Neural Netowrk Structure
+ * that can cascade many types of layers
+ */
+
+/// @brief construct a neural network with a given input shape
+/// @param _in_shape : input shape
 void NeuralNetwork::init(Shape _in_shape)
 {
     release();
     in_shape = _in_shape;
 }
 
+/// @brief Add a layer to the end of the network
+/// @param layer : pointer of the added layer
 void NeuralNetwork::add(BaseLayer* layer)
 {
     if (layers.size() < 1) // the first layer
@@ -34,6 +40,17 @@ void NeuralNetwork::add(BaseLayer* layer)
     }
 }
 
+/*
+ * Forward Pass :
+ * forward propagates the input from the first layer to the last
+ *
+ * @param input
+ * The Tensor containing the input (X),
+ * which is fed to the first layer
+ *
+ * @return
+ * The output Tensor (Y), which is last layer's output
+ */
 Tensor<float>& NeuralNetwork::forward(Tensor<float>& input)
 {
     X = input;
@@ -46,6 +63,18 @@ Tensor<float>& NeuralNetwork::forward(Tensor<float>& input)
     return Y;
 }
 
+/*
+ * Backward Pass :
+ * backward propagates the gradients from the last layer to the first
+ *
+ * @param output_grad
+ * The Tensor containing the Gradients of the
+ * objective function with respect to the output (dE/dY)
+ *
+ * @return
+ * The Tensor (dY/dX) of the input layer, containing the gradients of the objective
+ * function with respect to first layer's input (X)
+ */
 Tensor<float>& NeuralNetwork::backward(Tensor<float>& output_grad)
 {
     dY = output_grad;
@@ -58,6 +87,18 @@ Tensor<float>& NeuralNetwork::backward(Tensor<float>& output_grad)
     return dX;
 }
 
+/*
+ * Toggle the network to accumulate the gradients during the backward pass
+ * 
+ * if the neural network is toggled "Trainable", then
+ * it will accumulate the gradients of the objective
+ * with respect to it's parameters after ecah call to "backward",
+ * 
+ * else, no gradients are accumulated
+ *
+ * @param state
+ * The required state to be applied to all layers
+ */
 void NeuralNetwork::setTrainable(bool state)
 {
     for (int i = 0; i < layers.size(); i++)
@@ -66,6 +107,7 @@ void NeuralNetwork::setTrainable(bool state)
     }
 }
 
+/// @brief release the memory allocated by the layers of the network
 void NeuralNetwork::release()
 {
     for (int i = 0; i < layers.size(); i++)
@@ -83,6 +125,9 @@ void NeuralNetwork::release()
 const char* AMK_FORMAT = "AMKNN";
 const int AMK_FORMAT_SIZE = 6;
 
+/// @brief save the whole network (along with it's parameters) into a binary file (custom format)
+/// @param filename : The name of the file to save the network into
+/// @return : true on succes, false on failure
 void NeuralNetwork::save(std::ofstream& file)
 {
     int layers_count = layers.size();
@@ -96,6 +141,9 @@ void NeuralNetwork::save(std::ofstream& file)
     }
 }
 
+/// @brief load the newtork (along with it's parameters) from a binary file (custom format)
+/// @param filename :  The name of the file to load the network from
+/// @return : true on succes, false on failure
 void NeuralNetwork::load(std::ifstream& file)
 {
     release();
@@ -121,6 +169,8 @@ void NeuralNetwork::load(std::ifstream& file)
     }
 }
 
+/// @brief save the whole network (along with it's parameters) into a binary file (custom format)
+/// @param file : a handle to a previously openned file
 bool NeuralNetwork::save(std::string filename)
 {
     std::ofstream file;
@@ -133,6 +183,8 @@ bool NeuralNetwork::save(std::string filename)
     return true;
 }
 
+/// @brief : load the newtork (along with it's parameters) from a binary file (custom format)
+/// @param file : a handle to a previously openned file
 bool NeuralNetwork::load(std::string filename)
 {
     std::ifstream file;

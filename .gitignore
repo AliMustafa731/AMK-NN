@@ -5,7 +5,6 @@
 !*.vcxproj
 !*.vcxproj.user
 !*.vcxproj.filters
-!DEMO_Image_Upscale/mnist_digits_images.bin
 !README.md
 !screenshot.jpg
 !sequential_network.jpg

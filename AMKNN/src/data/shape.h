@@ -1,15 +1,29 @@
 #pragma once
 
-struct Shape
+#include <cstdint>
+
+/*
+ * A Structure used to hold Multi-Dimensional shape information
+ */
+class Shape
 {
-private:
-    int dim[4];
 public:
 
     Shape();
-    Shape(int a, int b = 1, int c = 1, int d = 1);
+    Shape(size_t a, size_t b = 1, size_t c = 1, size_t d = 1);
 
-    int size() const;
-    int operator[](int idx) const;
-    int& operator[](int idx);
+    /*
+     * @return size of the Multi-Dimensional shape,
+     * which is just the multipication of all it's dimensions.
+     */
+    size_t size() const;
+
+    /// setters and getters for the variable "dim"
+    size_t operator[](size_t idx) const;
+    size_t& operator[](size_t idx);
+
+private:
+
+    /// variable used to store the dimensions
+    size_t dim[4];
 };

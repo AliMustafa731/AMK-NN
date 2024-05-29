@@ -29,7 +29,6 @@
     <ClInclude Include="src\amknn.h" />
     <ClInclude Include="src\common.h" />
     <ClInclude Include="src\data\array.h" />
-    <ClInclude Include="src\data\list.h" />
     <ClInclude Include="src\data\shape.h" />
     <ClInclude Include="src\data\tensor.h" />
     <ClInclude Include="src\gui\image.h" />

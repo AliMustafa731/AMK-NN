@@ -1,9 +1,14 @@
 
 #include <optimizers/gradient_descent.h>
 
-//----------------------------------
-//   Optimize The Parameters
-//----------------------------------
+//
+// The "Gradient Descent" Optimizer
+// for more info, see : https://machinelearningmastery.com/a-gentle-introduction-to-gradient-descent-procedure/
+//
+
+//
+// tweak the parameters & zero thier gradients
+//
 void GradientDescent::update(Array<Parameter> &parameters)
 {
     for (int i = 0 ; i < parameters.size() ; i++)
@@ -38,11 +43,14 @@ GradientDescent::GradientDescent(float _learning_rate, float _momentum)
     momentum = _momentum;
 }
 
+// save hyper parameters to a file
 void GradientDescent::save(std::ofstream& file)
 {
     file.write((char*)&learning_rate, sizeof(float));
     file.write((char*)&momentum, sizeof(float));
 }
+
+// load hyper parameters from a file
 void GradientDescent::load(std::ifstream& file)
 {
     file.read((char*)&learning_rate, sizeof(float));

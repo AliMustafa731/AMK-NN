@@ -1,9 +1,14 @@
 
 #include <optimizers/adam.h>
 
-//----------------------------------
-//   Optimize The Parameters
-//----------------------------------
+//
+// The "Adaptive Moment" (Adam) Optimizer
+// for more info, see : https://machinelearningmastery.com/adam-optimization-algorithm-for-deep-learning/
+//
+
+//
+// tweak the parameters & zero thier gradients
+//
 void Adam::update(Array<Parameter> &parameters)
 {
     for (int i = 0; i < parameters.size(); i++)
@@ -41,12 +46,15 @@ Adam::Adam(float _learning_rate, float _beta1, float _beta2)
     beta2 = _beta2;
 }
 
+// save hyper parameters to a file
 void Adam::save(std::ofstream& file)
 {
     file.write((char*)&learning_rate, sizeof(float));
     file.write((char*)&beta1, sizeof(float));
     file.write((char*)&beta2, sizeof(float));
 }
+
+// load hyper parameters from a file
 void Adam::load(std::ifstream& file)
 {
     file.read((char*)&learning_rate, sizeof(float));

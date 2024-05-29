@@ -4,7 +4,8 @@
 #include <activations/activation_layers.h>
 #include <cmath>
 
-void BaseLayer::allocate(int _in_size, int _out_size)
+// allocate "Input & Output" Tensors
+void BaseLayer::allocate(size_t _in_size, size_t _out_size)
 {
     in_size = _in_size;
     out_size = _out_size;
@@ -28,11 +29,13 @@ void BaseLayer::deallocate()
     parameters.release();
 }
 
+// release the memory allocated by the "Input & Output & Learned Parameters"
 void BaseLayer::release()
 {
     deallocate();
 }
 
+// save the layer along with the "Learned Parameters" to a file
 void BaseLayer::save(std::ofstream& file)
 {
     // save layer info
@@ -54,6 +57,7 @@ void BaseLayer::save(std::ofstream& file)
     }
 }
 
+// load the layer along with the "Learned Parameters" from a file
 void BaseLayer::load(std::ifstream& file)
 {
     release();
@@ -79,6 +83,9 @@ void BaseLayer::load(std::ifstream& file)
     }
 }
 
+// construct a new layer from a file along with "Learned Parameters"
+// choose the suitable data type based on the flag "type",
+// to allow for runtime polymorphisim.
 BaseLayer* BaseLayer::loadFromFile(std::ifstream & file)
 {
     BaseLayer* layer = NULL;
@@ -106,6 +113,9 @@ BaseLayer* BaseLayer::loadFromFile(std::ifstream & file)
     return layer;
 }
 
+// set the state of the "Learned Parameters"
+// if (TRUE), then "Gradients" are accumulated
+// in each call to "backward".
 void BaseLayer::setTrainable(bool state)
 {
     trainable = state;

@@ -4,7 +4,9 @@
 
 #include <gui/image.h>
 
-// force the compiler to generate following templates
+//
+// force the compiler to generate code for the following templates :
+//
 template class Tensor<float>;
 template class Tensor<int>;
 template class Tensor<uint8_t>;

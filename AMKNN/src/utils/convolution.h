@@ -1,17 +1,16 @@
 #pragma once
 
-#include <cassert>
 #include <utils/geometry.h>
-#include <common.h>
+#include <algorithm>  // for std::min
 
-#define _max(a, b) (( (a) > (b) ) ? (a) : (b))
-#define _min(a, b) (( (a) < (b) ) ? (a) : (b))
-
-
+/// 2D Convolution
+/// @param a : Input matrix
+/// @param b : kernel matrix
+/// @param c : Buffer to store the result
 __forceinline void convolution(Matrix a, Matrix b, Matrix c)
 {
-    int w = _min(a.w - b.w + 1, c.w);
-    int h = _min(a.h - b.h + 1, c.h);
+    int w = std::min(a.w - b.w + 1, c.w);
+    int h = std::min(a.h - b.h + 1, c.h);
 
     for (int y = 0; y < h; y++)
     {
@@ -32,10 +31,15 @@ __forceinline void convolution(Matrix a, Matrix b, Matrix c)
     }
 }
 
+/// Strided 2D Convolution
+/// @param a : Input matrix
+/// @param b : kernel matrix
+/// @param c : Buffer to store the result
+/// @param stride : step-size of sliding the Kernel over the Input
 __forceinline void convolution_stride(Matrix a, Matrix b, Matrix c, Shape stride)
 {
-    int w = _min((a.w - b.w) / stride[0] + 1, c.w);
-    int h = _min((a.h - b.h) / stride[1] + 1, c.h);
+    int w = std::min((a.w - b.w) / stride[0] + 1, c.w);
+    int h = std::min((a.h - b.h) / stride[1] + 1, c.h);
 
     for (int y = 0; y < h; y++)
     {
@@ -56,10 +60,15 @@ __forceinline void convolution_stride(Matrix a, Matrix b, Matrix c, Shape stride
     }
 }
 
+/// Dialated 2D Convolution
+/// @param a : Input matrix
+/// @param b : kernel matrix
+/// @param c : Buffer to store the result
+/// @param dialation : spacing between the elemnts of the Kernel when sliding over the Input
 __forceinline void convolution_dialate(Matrix a, Matrix b, Matrix c, Shape dialation)
 {
-    int w = _min(a.w - ((b.w - 1) * dialation[0] + 1) + 1, c.w);
-    int h = _min(a.h - ((b.h - 1) * dialation[1] + 1) + 1, c.h);
+    int w = std::min(a.w - ((b.w - 1) * dialation[0] + 1) + 1, c.w);
+    int h = std::min(a.h - ((b.h - 1) * dialation[1] + 1) + 1, c.h);
 
     for (int y = 0; y < h; y++)
     {
@@ -80,6 +89,10 @@ __forceinline void convolution_dialate(Matrix a, Matrix b, Matrix c, Shape diala
     }
 }
 
+/// Transposed 2D Convolution
+/// @param a : Input matrix
+/// @param b : kernel matrix
+/// @param c : Buffer to store the result
 __forceinline void convolution_transpose(Matrix a, Matrix b, Matrix c)
 {
     for (int y = 0; y < a.h; y++)
@@ -97,6 +110,11 @@ __forceinline void convolution_transpose(Matrix a, Matrix b, Matrix c)
     }
 }
 
+/// Strided Transposed 2D Convolution
+/// @param a : Input matrix
+/// @param b : kernel matrix
+/// @param c : Buffer to store the result
+/// @param stride : step-size of sliding the Kernel over the Input
 __forceinline void convolution_transpose(Matrix a, Matrix b, Matrix c, Shape stride)
 {
     for (int y = 0; y < a.h; y++)

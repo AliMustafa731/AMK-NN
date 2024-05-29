@@ -1,6 +1,6 @@
 #pragma once
 
-// optimizers definitions
+/// optimizers definitions
 enum OptimizerType
 {
     GRADIENT_DESCENT,
@@ -8,7 +8,7 @@ enum OptimizerType
     ADAM
 };
 
-// layers definitions
+/// layers definitions
 enum LayerType
 {
     FULL_LAYER,

@@ -1,9 +1,14 @@
 
 #include <optimizers/rms_propagation.h>
 
-//----------------------------------
-//   Optimize The Parameters
-//----------------------------------
+//
+// The "RMS Propagation" Optimizer
+// for more info, see : https://machinelearningmastery.com/gradient-descent-with-rmsprop-from-scratch/
+//
+
+//
+// tweak the parameters & zero thier gradients
+//
 void RMSPropagation::update(Array<Parameter> &parameters)
 {
     for (int i = 0; i < parameters.size(); i++)
@@ -38,11 +43,14 @@ RMSPropagation::RMSPropagation(float _learning_rate, float _beta)
     beta = _beta;
 }
 
+// save hyper parameters to a file
 void RMSPropagation::save(std::ofstream& file)
 {
     file.write((char*)&learning_rate, sizeof(float));
     file.write((char*)&beta, sizeof(float));
 }
+
+// load hyper parameters from a file
 void RMSPropagation::load(std::ifstream& file)
 {
     file.read((char*)&learning_rate, sizeof(float));

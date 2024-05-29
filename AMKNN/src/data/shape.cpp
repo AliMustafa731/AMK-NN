@@ -3,9 +3,14 @@
 #include <cassert>
 #include <common.h>
 
+/*
+ * A Structure used to hold Multi-Dimensional shape information
+ */
+
+// constructors
 Shape::Shape(){}
 
-Shape::Shape(int a, int b, int c, int d)
+Shape::Shape(size_t a, size_t b, size_t c, size_t d)
 {
     dim[0] = a;
     dim[1] = b;
@@ -13,15 +18,23 @@ Shape::Shape(int a, int b, int c, int d)
     dim[3] = d;
 }
 
-int Shape::size() const { return dim[0] * dim[1] * dim[2] * dim[3]; }
+/*
+ * @return size of the Multi-Dimensional shape,
+ * which is just the multipication of all it's dimensions.
+ */
+size_t Shape::size() const
+{
+    return dim[0] * dim[1] * dim[2] * dim[3];
+}
 
-int Shape::operator[](int idx) const
+/// setters and getters for the variable "dim"
+size_t Shape::operator[](size_t idx) const
 {
     AMK_ASSERT(idx < 4);
     return dim[idx];
 }
 
-int & Shape::operator[](int idx)
+size_t & Shape::operator[](size_t idx)
 {
     AMK_ASSERT(idx < 4);
     return dim[idx];

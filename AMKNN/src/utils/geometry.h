@@ -1,16 +1,17 @@
 #pragma once
 
 #include <cstring>
+#include <cstdint>
 #include <cassert>
 #include <common.h>
 #include "./data/shape.h"
 
 struct Rect
 {
-    int x, y, w, h;
+    size_t x, y, w, h;
 
     Rect() {}
-    Rect(int _x, int _y, int _w, int _h)
+    Rect(size_t _x, size_t _y, size_t _w, size_t _h)
     {
         x = _x;  y = _y;  w = _w; h = _h;
     }
@@ -19,22 +20,22 @@ struct Rect
 struct Matrix
 {
     float *data;
-    int w, h;
+    size_t w, h;
 
     Matrix() {}
-    Matrix(int _w, int _h, float* _data)
+    Matrix(size_t _w, size_t _h, float* _data)
     {
         w = _w; h = _h;  data = _data;
     }
-    Matrix(int _w, int _h)
+    Matrix(size_t _w, size_t _h)
     {
         init(_w, _h);
     }
 
-    inline float  operator()(int x, int y) const { AMK_ASSERT(x < w && y < h); return data[x + y * w]; }
-    inline float& operator()(int x, int y)       { AMK_ASSERT(x < w && y < h); return data[x + y * w]; }
+    inline float  operator()(size_t x, size_t y) const { AMK_ASSERT(x < w && y < h); return data[x + y * w]; }
+    inline float& operator()(size_t x, size_t y)       { AMK_ASSERT(x < w && y < h); return data[x + y * w]; }
 
-    void init(int _w, int _h)
+    void init(size_t _w, size_t _h)
     {
         w = _w;
         h = _h;

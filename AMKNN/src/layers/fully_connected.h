@@ -11,7 +11,7 @@ struct FullLayer : BaseLayer
     float weight_decay;
 
     FullLayer();
-    FullLayer(int _size, float _weight_decay = 0, Shape _out_shape = Shape(0, 0, 0));
+    FullLayer(size_t _size, float _weight_decay = 0, Shape _out_shape = Shape(0, 0, 0));
 
     void init(Shape _in_shape);
     Tensor<float>& forward(Tensor<float>& input);

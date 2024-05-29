@@ -36,9 +36,6 @@
     <ClInclude Include="src\data\array.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\data\list.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\activations\activation_layers.h">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -38,7 +38,7 @@ FullLayer::FullLayer()
     setTrainable(true);
     type = FULL_LAYER;
 }
-FullLayer::FullLayer(int _size, float _weight_decay, Shape _out_shape)
+FullLayer::FullLayer(size_t _size, float _weight_decay, Shape _out_shape)
 {
     setTrainable(true);
     weight_decay = _weight_decay;
