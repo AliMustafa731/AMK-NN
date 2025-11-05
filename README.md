@@ -15,7 +15,7 @@ The periodic **Sine** function is used as a **non-linearity** (aka. Activation).
 download from [here](https://mega.nz/file/pM0UnBxZ#bbUbsSVTP682dloHIIiZceuk7KeqJ2vdmD0oJAcH7Ys).  
 
 ### Preview
-![Demo Screenshot](./screenshot.jpg)
+![Demo Screenshot](./public/screenshot.jpg)
   
 ## How Does It Work ?
 This Implementation is limited to **Sequential Neural Networks** only.  
@@ -39,7 +39,7 @@ We optimize **$`W`$** (in an iterative manner) based on the Dataset **$`(X_{hat}
   
 Optimization of parameters is done by using **Gradient Descent** algorithm.   
   
-![Sequential Neural Network](./sequential_network.jpg)
+![Sequential Neural Network](./public/sequential_network.jpg)
 
 ## Resources
   
