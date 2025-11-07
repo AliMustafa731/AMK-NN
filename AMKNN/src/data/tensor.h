@@ -1,6 +1,7 @@
 #pragma once
 
 #include <fstream>
+#include <cstring>
 #include <cstdint>
 #include "shape.h"
 
@@ -113,8 +114,6 @@ private:
 
 
 // implementation
-#ifdef TESNOR_IMPLEMENTATION
-
 #include <common.h>
 
 // constructors
@@ -328,5 +327,3 @@ template<typename T> void Tensor<T>::copyFrom(Tensor<T> &src, Shape rect, Shape 
            = src(x + src_offset[0], y + src_offset[1], z + src_offset[2], w + src_offset[3]);
        }
 }
-
-#endif  // TESNOR_IMPLEMENTATION

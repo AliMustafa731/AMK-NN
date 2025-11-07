@@ -1,10 +1,8 @@
 
-// enable windows visual theme style
-#pragma comment(linker,"\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
-
 #include <Windows.h>
 #include <process.h>
 
+#include <amknn.h>
 #include <utils/random.h>
 #include <neural_network.h>
 #include <gui/program.h>
@@ -272,7 +270,7 @@ void train_network_thread(void *args)
                 netowrk_input[1] = ((float)y / h_f) * PI_2 - PI;
 
                 Tensor<float>& network_out = network.forward(netowrk_input);
-                network.backward(loss_function.gradient(network, network_label, size));
+                network.backward(loss_function.gradient(network_out, network_label, size));
 
                 float _loss = network_label[0] - network_out[0];
                 loss += _loss * _loss * 0.5f;

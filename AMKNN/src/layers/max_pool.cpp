@@ -1,4 +1,5 @@
 
+#include <cfloat>
 #include <layers/max_pool.h>
 #include <utils/convolution.h>
 

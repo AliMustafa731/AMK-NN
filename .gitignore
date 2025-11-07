@@ -1,12 +1,11 @@
 *.*
 !*.cpp
 !*.h
-!*.sln
-!*.vcxproj
-!*.vcxproj.user
-!*.vcxproj.filters
 !README.md
+!CMakeLists.txt
 !screenshot.jpg
 !sequential_network.jpg
 !.gitignore
 external/
+test/
+build/

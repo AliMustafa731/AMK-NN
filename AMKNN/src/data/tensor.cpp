@@ -1,7 +1,5 @@
 
-#define TESNOR_IMPLEMENTATION
 #include "tensor.h"
-
 #include <gui/image.h>
 
 //

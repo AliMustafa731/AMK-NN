@@ -1,5 +1,6 @@
 
 #include <optimizers/rms_propagation.h>
+#include <cmath>
 
 //
 // The "RMS Propagation" Optimizer

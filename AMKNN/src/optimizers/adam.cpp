@@ -1,5 +1,6 @@
 
 #include <optimizers/adam.h>
+#include <cmath>
 
 //
 // The "Adaptive Moment" (Adam) Optimizer
