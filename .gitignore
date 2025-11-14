@@ -1,6 +1,7 @@
 *.*
 !*.cpp
 !*.h
+!*.rc
 !README.md
 !CMakeLists.txt
 !screenshot.jpg
